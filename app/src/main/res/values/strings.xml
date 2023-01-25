@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Civic Climate Control</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_settings">Settings</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
@@ -19,4 +19,7 @@
     <string name="adapter_settings_title">Adapter</string>
     <string name="floating_panel_title">Floating panel</string>
     <string name="widget_title">Widget</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

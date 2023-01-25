@@ -5,6 +5,7 @@ plugins {
 android {
     compileSdk 32
 
+
     defaultConfig {
         applicationId "itacademy.snowadv.civic_climate_control"
         minSdk 21
@@ -24,6 +25,9 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        viewBinding = true
     }
 }
 

@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:clickable="false"
     android:background="@drawable/blue_gradient"
-    android:screenOrientation="landscape"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
@@ -24,8 +23,8 @@
         android:src="@drawable/ic_fan_dir_up_down"/>
     <ImageButton
         android:id="@+id/settings_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:scaleType="fitXY"
         android:src="@drawable/ic_settings"
         android:background="@color/transparent"

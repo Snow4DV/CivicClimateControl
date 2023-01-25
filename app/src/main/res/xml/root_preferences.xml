@@ -25,7 +25,8 @@
 
         <SwitchPreferenceCompat
             app:key="floating_panel_enabled"
-            app:title="Enable floating panel" />
+            app:title="Enable floating panel"
+            app:summary="Floating panel will start automatically on device boot"/>
         <SeekBarPreference
             app:title="Display duration"
             app:summary="Amount of time in seconds that floating panel will be displayed for after climate control state change"
