@@ -3,8 +3,25 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable-anydpi/ic_action_name.xml" value="0.3915" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable-anydpi/ic_connected.xml" value="0.449" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable-anydpi/ic_disconnected.xml" value="0.449" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable/ic_fan_dir_down.xml" value="0.3195" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable/ic_fan_dir_down_dark.xml" value="0.3915" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable/ic_fan_dir_up.xml" value="0.3195" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable/ic_fan_dir_up_down.xml" value="0.3195" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable/ic_fan_speed_1.xml" value="0.3195" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable/ic_fan_speed_2.xml" value="0.3195" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable/ic_fan_speed_3.xml" value="0.3195" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable/ic_fan_speed_4.xml" value="0.3195" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable/ic_fan_speed_5.xml" value="0.3195" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable/ic_fan_speed_6.xml" value="0.3195" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable/ic_fan_speed_7.xml" value="0.3195" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3195" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable/ic_temperature_background.xml" value="0.3195" />
-        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/layout/climate_overlay.xml" value="0.33" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/drawable/ic_windshield_heating.xml" value="0.3195" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/layout/activity_climate.xml" value="0.25" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/layout/climate_overlay.xml" value="0.5" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/layout/settings_activity.xml" value="0.5583333333333333" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/CivicClimateControl/app/src/main/res/xml/root_preferences.xml" value="0.39166666666666666" />
       </map>

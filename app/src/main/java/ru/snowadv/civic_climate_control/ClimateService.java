@@ -7,12 +7,17 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class ClimateService extends Service {
 
@@ -24,12 +29,19 @@ public class ClimateService extends Service {
             | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
             | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
             | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+    private static final String TAG = "CivicClimateService";
 
     private LayoutInflater inflater;
-    private Display mDisplay;
     private View layoutView;
+    private Display mDisplay;
     private WindowManager windowManager;
     private WindowManager.LayoutParams params;
+
+    private TextView tempTextView1, tempTextView2;
+    private View autoGlyph, acOnGlyph, acOffGlyph, windshieldGlyph;
+    private ImageView fanSpeedView, fanDirectionView;
+
+    private CycleChangeThread cycleChangeThread;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -50,9 +62,12 @@ public class ClimateService extends Service {
         mDisplay = windowManager.getDefaultDisplay();
         inflater = LayoutInflater.from(this);
         layoutView = inflater.inflate(R.layout.climate_overlay, null);
+        initViewFields(layoutView);
         windowManager.addView(layoutView, params);
+        cycleChangeThread = new CycleChangeThread();
+        cycleChangeThread.start();
 
-//This is needed to keep the service running in background just needs a notification to call with startForeground();
+        //This is needed to keep the service running in background just needs a notification to call with startForeground();
         if (Build.VERSION.SDK_INT >= 26) {
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, /*getString(R.string.ngk_overlay_notification)*/"Дароу", NotificationManager.IMPORTANCE_HIGH);
@@ -67,6 +82,70 @@ public class ClimateService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        cycleChangeThread.interrupt();
         windowManager.removeView(layoutView);
+    }
+
+
+
+    private class CycleChangeThread extends Thread {
+        int fanLevel = 0;
+        int temp = 10;
+        int fanDirection = 0;
+        boolean windshield = false;
+        boolean ac = false;
+        boolean auto = false;
+        @Override
+        public void run() {
+            while(!isInterrupted()) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if(++fanLevel > 6) fanLevel = 0;
+                    if(++temp > 90) temp = 10;
+                    if(++fanDirection > 2) fanDirection = 0;
+
+                    windshield = !windshield;
+                    ac = !ac;
+                    auto = !auto;
+
+                    int[] fanLevels = {R.drawable.ic_fan_speed_1,R.drawable.ic_fan_speed_2,
+                            R.drawable.ic_fan_speed_3,R.drawable.ic_fan_speed_4,
+                            R.drawable.ic_fan_speed_5,R.drawable.ic_fan_speed_6,
+                            R.drawable.ic_fan_speed_7};
+                    fanSpeedView.setImageDrawable(getDrawable(fanLevels[fanLevel]));
+
+                    tempTextView1.setText(String.valueOf(temp));
+                    tempTextView2.setText(String.valueOf(temp + 1));
+
+                    int[] fanDirections = {R.drawable.ic_fan_dir_up_down,
+                            R.drawable.ic_fan_dir_up, R.drawable.ic_fan_dir_down};
+                    fanDirectionView.setImageDrawable(getDrawable(fanDirections[fanDirection]));
+
+                    windshieldGlyph.setVisibility(windshield ? View.VISIBLE : View.GONE);
+                    acOnGlyph.setVisibility(ac ? View.VISIBLE : View.GONE);
+                    acOffGlyph.setVisibility(!ac ? View.VISIBLE : View.GONE);
+                    autoGlyph.setVisibility(auto ? View.VISIBLE : View.GONE);
+
+                });
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+
+
+    private void initViewFields(View layoutView) {
+        tempTextView1=layoutView.findViewById(R.id.temp_1);
+        tempTextView2=layoutView.findViewById(R.id.temp_2);
+        autoGlyph = layoutView.findViewById(R.id.auto_glyph);
+        acOnGlyph = layoutView.findViewById(R.id.ac_on_glyph);
+        acOffGlyph = layoutView.findViewById(R.id.ac_off_glyph);
+        windshieldGlyph = layoutView.findViewById(R.id.windshield_heating);
+        fanSpeedView = layoutView.findViewById(R.id.fan_speed);
+        fanDirectionView = layoutView.findViewById(R.id.fan_direction);
     }
 }
