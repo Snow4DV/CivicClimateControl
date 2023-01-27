@@ -4,13 +4,14 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -86,6 +87,21 @@ public class ClimateService extends Service {
         windowManager.removeView(layoutView);
     }
 
+    public static ComponentName start(Context context) {
+        return context.startService(new Intent(context, ClimateService.class));
+    }
+
+    public static boolean stop(Context context) {
+        return context.stopService(new Intent(context, ClimateService.class));
+    }
+
+    public static void changeServiceState(boolean newState, Context context) {
+        if(newState) {
+            start(context);
+        } else {
+            stop(context);
+        }
+    }
 
 
     private class CycleChangeThread extends Thread {

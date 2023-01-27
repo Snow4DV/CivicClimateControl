@@ -22,4 +22,10 @@
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="cant_get_usb_devices">Unable to get USB devices</string>
+    <string name="need_permission">Permission required</string>
+    <string name="ok">Ok</string>
+    <string name="need_permission_message">In order to display over other applications this app requires your permission</string>
+    <string name="cancel">Cancel</string>
+    <string name="please_allow_overlay">To draw overlay application needs permission to draw on top of other applications. You will need to allow it in settings.</string>
 </resources>
