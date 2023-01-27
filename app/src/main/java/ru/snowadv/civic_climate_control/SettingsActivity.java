@@ -113,18 +113,29 @@ public class SettingsActivity extends AppCompatActivity {
         private ActivityResultLauncher<String> askPermission;
 
         private void initFields() {
-            Activity parentActivity = getActivity();
-            if(parentActivity != null) {
-                usbManager = (UsbManager) parentActivity.getSystemService(Context.USB_SERVICE);
-            } else {
-                Log.e(TAG, "initFields: usbManager cannot be initialized, fragment has no parent activity");
-            }
+            usbManager = getUsbManager();
             preferenceScreen = getPreferenceScreen();
             connectedDevices = findPreference("adapter_name");
             adapterStatus = findPreference("adapter_status");
             floatingPanelSwitch = findPreference("floating_panel_enabled");
             floatingPanelDuration = findPreference("floating_panel_duration");
-            askPermission = registerForActivityResult(new ActivityResultContract<String, Boolean>() {
+            askPermission = getAskPermission();
+
+        }
+
+        private UsbManager getUsbManager() {
+            Activity parentActivity = getActivity();
+            if(parentActivity != null) {
+                return (UsbManager) parentActivity.getSystemService(Context.USB_SERVICE);
+            } else {
+                Log.e(TAG, "initFields: usbManager cannot be initialized, fragment has no parent activity");
+                return null;
+            }
+        }
+
+        @NonNull
+        private ActivityResultLauncher<String> getAskPermission() {
+            return registerForActivityResult(new ActivityResultContract<String, Boolean>() {
                 @RequiresApi(api = Build.VERSION_CODES.M)
                 @NonNull
                 @Override
@@ -139,7 +150,6 @@ public class SettingsActivity extends AppCompatActivity {
                     return Settings.canDrawOverlays(getContext());
                 }
             }, (ActivityResultCallback<Boolean>) this::processIntentResult);
-
         }
 
         private void processIntentResult(Boolean result) {
@@ -151,20 +161,25 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         private void getPermissionAndStartOverlayService() {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                new AlertDialog.Builder(requireContext())
-                        .setTitle(R.string.need_permission)
-                        .setMessage(R.string.please_allow_overlay)
-                        .setPositiveButton(R.string.ok, (dialog, which) -> {
-                            askPermission.launch("");
-                        })
-                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
-                            floatingPanelSwitch.setChecked(false);
-                        })
-                        .show();
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                    !Settings.canDrawOverlays(getContext())) {
+                explainOverlayPermission();
             } else {
                 ClimateService.start(requireContext());
             }
+        }
+
+        private void explainOverlayPermission() {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.need_permission)
+                    .setMessage(R.string.please_allow_overlay)
+                    .setPositiveButton(R.string.ok, (dialog, which) -> {
+                        askPermission.launch("");
+                    })
+                    .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                        floatingPanelSwitch.setChecked(false);
+                    })
+                    .show();
         }
 
 
