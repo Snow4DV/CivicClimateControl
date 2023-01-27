@@ -36,10 +36,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-
-        //newEditor.putBoolean("Overlay", true);
-        //Toast.makeText(MainFragment9.this.getActivity() ,"NGK Overlay enabled!", Toast.LENGTH_SHORT).show();
-
     }
 
 

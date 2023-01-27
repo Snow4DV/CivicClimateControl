@@ -28,4 +28,8 @@
     <string name="need_permission_message">In order to display over other applications this app requires your permission</string>
     <string name="cancel">Cancel</string>
     <string name="please_allow_overlay">To draw overlay application needs permission to draw on top of other applications. You will need to allow it in settings.</string>
+    <string name="overlay_notification_channel_name">Climate Control Overlay</string>
+    <string name="overlay_running">Climate Control Overlay is running</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="connected">Connected</string>
 </resources>

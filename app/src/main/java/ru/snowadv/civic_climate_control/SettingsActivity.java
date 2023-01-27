@@ -2,9 +2,11 @@ package ru.snowadv.civic_climate_control;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.net.Uri;
@@ -61,6 +63,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         setContentView(initBinding());
         showBackButton();
+
+        attachUsbBroadcastReceiver();
     }
 
 
@@ -98,6 +102,24 @@ public class SettingsActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private UsbConnectionBroadcastReceiver attachUsbBroadcastReceiver() {
+        UsbConnectionBroadcastReceiver usbConnectionBroadcastReceiver
+                = new UsbConnectionBroadcastReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        registerReceiver(usbConnectionBroadcastReceiver, filter);
+        return usbConnectionBroadcastReceiver;
+    }
+
+    public class UsbConnectionBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            settingsFragment.updateDevicesList();
+        }
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
@@ -188,13 +210,11 @@ public class SettingsActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             initFields();
             initListeners();
+
+            updateDevicesList();
         }
 
         private void initListeners() {
-            connectedDevices.setOnPreferenceClickListener(preference -> {
-                updateDevicesList();
-                return false;
-            });
             floatingPanelSwitch.setOnPreferenceChangeListener(this);
         }
 
@@ -203,7 +223,7 @@ public class SettingsActivity extends AppCompatActivity {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
         }
 
-        private void updateDevicesList() {
+        public void updateDevicesList() {
             if(usbManager == null) {
                 Toast.makeText(getContext(), getString(R.string.cant_get_usb_devices), Toast.LENGTH_SHORT).show();
                 return;
@@ -212,12 +232,19 @@ public class SettingsActivity extends AppCompatActivity {
             List<CharSequence> devicesNames = new ArrayList<>();
             List<CharSequence> devicesIds = new ArrayList<>();
             for (Map.Entry<String, UsbDevice> device : devices) {
-                devicesNames.add(device.getKey());
-                devicesIds.add(device.getValue().getVendorId() + "/"
-                        + device.getValue().getDeviceId());
+                SerializableUsbDevice serializableUsbDevice =
+                        new SerializableUsbDevice(device.getValue());
+                devicesNames.add(serializableUsbDevice.toString());
+                devicesIds.add(serializableUsbDevice.toJson());
             }
             connectedDevices.setEntries(devicesNames.toArray(new CharSequence[]{}));
             connectedDevices.setEntryValues(devicesIds.toArray(new CharSequence[]{}));
+
+            setDeviceConnectionStatus(devicesIds.contains(connectedDevices.getValue()));
+        }
+
+        private void setDeviceConnectionStatus(boolean isConnected) {
+            adapterStatus.setSummary(isConnected ? R.string.connected : R.string.disconnected);
         }
 
         private void changeFloatingPanelState(Boolean newState) {

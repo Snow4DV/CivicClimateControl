@@ -7,11 +7,13 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.provider.Settings;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,6 +21,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
+import androidx.preference.PreferenceManager;
 
 public class ClimateService extends Service {
 
@@ -44,6 +49,9 @@ public class ClimateService extends Service {
 
     private CycleChangeThread cycleChangeThread;
 
+    private NotificationManager notificationManager;
+    private NotificationChannel notificationChannel;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -52,6 +60,11 @@ public class ClimateService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkIfServiceCanDrawOverlays()) {
+            stop(this);
+        }
+
         params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT,
@@ -63,21 +76,48 @@ public class ClimateService extends Service {
         mDisplay = windowManager.getDefaultDisplay();
         inflater = LayoutInflater.from(this);
         layoutView = inflater.inflate(R.layout.climate_overlay, null);
+
         initViewFields(layoutView);
+
         windowManager.addView(layoutView, params);
         cycleChangeThread = new CycleChangeThread();
         cycleChangeThread.start();
 
         //This is needed to keep the service running in background just needs a notification to call with startForeground();
-        if (Build.VERSION.SDK_INT >= 26) {
-            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, /*getString(R.string.ngk_overlay_notification)*/"Дароу", NotificationManager.IMPORTANCE_HIGH);
-            notificationChannel.setSound(null, null);
-            notificationManager.createNotificationChannel(notificationChannel);
-            Notification.Builder builder = new Notification.Builder(this, CHANNEL_ID);
-            builder.setContentTitle(/*getString(R.string.ngk_overlay)*/"exexex").setContentText(/*getString(R.string.ngk_overlay_notification)*/"Чо как")/*.setSmallIcon(R.drawable.ic_mono2)*/;
-            startForeground(1, builder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            initNotificationChannel();
+            startNotification();
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean checkIfServiceCanDrawOverlays() {
+        if(!Settings.canDrawOverlays(this)) {
+            SharedPreferences.Editor preferencesEditor = PreferenceManager
+                    .getDefaultSharedPreferences(this).edit();
+            preferencesEditor.putBoolean("floating_panel_enabled", false);
+            preferencesEditor.apply();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void startNotification() {
+        Notification.Builder builder = new Notification.Builder(this, CHANNEL_ID);
+        builder.setContentTitle(getString(R.string.overlay_notification_channel_name)).setContentText(getString(R.string.overlay_running));
+        startForeground(1, builder.build());
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void initNotificationChannel() {
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationChannel = new NotificationChannel(CHANNEL_ID, getString(R.string.overlay_notification_channel_name), NotificationManager.IMPORTANCE_HIGH);
+        notificationChannel.setSound(null, null);
+        notificationManager.createNotificationChannel(notificationChannel);
     }
 
     @Override

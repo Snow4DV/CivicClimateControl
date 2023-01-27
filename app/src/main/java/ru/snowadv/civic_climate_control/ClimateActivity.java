@@ -2,21 +2,13 @@ package ru.snowadv.civic_climate_control;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import java.util.Objects;
 
@@ -39,8 +31,18 @@ public class ClimateActivity extends AppCompatActivity {
         setContentView(rootView);
         initFields();
         initInterfaceListeners();
+    }
 
-        restartServiceIfDead();
+
+    public void onResume() {
+        super.onResume();
+        changeOverlayServiceState(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        changeOverlayServiceState(false);
     }
 
     @NonNull
@@ -68,9 +70,12 @@ public class ClimateActivity extends AppCompatActivity {
         startActivity(settingsIntent);
     }
 
-    private void restartServiceIfDead() {
-        if (settingsPreferences.getBoolean("floating_panel_enabled", false)) {
-            startService(new Intent(this, ClimateService.class));
+    private void changeOverlayServiceState(boolean isActivityVisible) {
+        if (!isActivityVisible
+                && settingsPreferences.getBoolean("floating_panel_enabled", false)) {
+            ClimateService.start(this);
+        } else {
+            ClimateService.stop(this);
         }
     }
 
