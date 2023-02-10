@@ -25,7 +25,11 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 
-public class ClimateService extends Service {
+
+/**
+ * This activity is responsible for overlay
+ */
+public class ClimateService extends Service { // TODO: service should be binded to AdapterService
 
     static final String CHANNEL_ID = "Overlay_notification_channel";
 

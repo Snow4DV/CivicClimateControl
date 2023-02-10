@@ -51,6 +51,16 @@
 
         <service android:name=".ClimateService" />
 
+        <service android:name=".Adapter.AdapterService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+                <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
+            </intent-filter>
+            <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            <meta-data android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
+        </service>
+
     </application>
 
 

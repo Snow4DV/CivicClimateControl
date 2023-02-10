@@ -145,7 +145,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         }
 
-        private UsbManager getUsbManager() {
+        private UsbManager getUsbManager() { // TODO: Do not do it here. Bind to adapterservice
             Activity parentActivity = getActivity();
             if(parentActivity != null) {
                 return (UsbManager) parentActivity.getSystemService(Context.USB_SERVICE);
@@ -216,6 +216,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void initListeners() {
             floatingPanelSwitch.setOnPreferenceChangeListener(this);
+            connectedDevices.setOnPreferenceChangeListener(this);
         }
 
         @Override
@@ -223,7 +224,7 @@ public class SettingsActivity extends AppCompatActivity {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
         }
 
-        public void updateDevicesList() {
+        public void updateDevicesList() { // TODO: Dublicated code. Should be removed after service debug
             if(usbManager == null) {
                 Toast.makeText(getContext(), getString(R.string.cant_get_usb_devices), Toast.LENGTH_SHORT).show();
                 return;
@@ -260,6 +261,9 @@ public class SettingsActivity extends AppCompatActivity {
             switch(preference.getKey()) {
                 case "floating_panel_enabled":
                     changeFloatingPanelState((Boolean) newValue);
+                    break;
+                case "adapter_name":
+                    updateDevicesList();
                     break;
             }
             return true;
