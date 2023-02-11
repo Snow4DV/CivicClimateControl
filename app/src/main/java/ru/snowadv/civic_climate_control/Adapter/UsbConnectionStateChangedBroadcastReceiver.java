@@ -18,6 +18,8 @@ public class UsbConnectionBroadcastReceiver extends BroadcastReceiver {
     }
 
 
+
+    @FunctionalInterface
     protected interface UsbConnectionCallback {
         void callback();
     }

@@ -8,6 +8,8 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 
+import java.io.Serializable;
+
 public class SerializableUsbDevice {
     private int vendorId;
     private int deviceId;
@@ -57,17 +59,15 @@ public class SerializableUsbDevice {
         return String.format("%s. VID: %s, PID: %s", productName, vendorId, deviceId);
     }
 
+    public boolean isDescribingUsbDevice(UsbDevice device) {
+        return vendorId == device.getVendorId() && deviceId == device.getProductId();
+    }
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if(obj instanceof UsbDevice) {
-            UsbDevice device = (UsbDevice) obj;
-            return vendorId == device.getVendorId() && deviceId == device.getProductId()
-                    && device.getProductName().equals(productName);
-        } else if(obj instanceof SerializableUsbDevice) {
+        if(obj instanceof SerializableUsbDevice) {
             SerializableUsbDevice device = (SerializableUsbDevice) obj;
-            return vendorId == device.getVendorId() && deviceId == device.getDeviceId()
-                    && device.getProductName().equals(productName);
+            return vendorId == device.getVendorId() && deviceId == device.getDeviceId();
         }
         return false;
     }
