@@ -4,6 +4,7 @@
 
         <ListPreference
             app:key="adapter_name"
+            app:defaultValue="@string/default_adapter_json"
             app:summary="Select adapter device"
             app:title="Adapter device">
         </ListPreference>

@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
+import ru.snowadv.civic_climate_control.Adapter.AdapterService;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class ExampleInstrumentedTest {
+public class SerializeInstrumentedTest {
     @Test
     public void serializedUsbDevice_isDefaultCorrect() {
         // Context of the app under test.
@@ -26,5 +26,14 @@ public class ExampleInstrumentedTest {
         String expected="{\"vendorId\":4617,\"deviceId\":16,\"" +
                 "productName\":\"Climate Control Adapter\"}";
         Assert.assertEquals(serialized,expected);
+    }
+
+    @Test
+    public void adapterServiceStarts() {
+        // Context of the app under test.
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        AdapterService service = new AdapterService();
+        service.re
+        appContext.bindService()
     }
 }

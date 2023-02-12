@@ -32,4 +32,5 @@
     <string name="overlay_running">Climate Control Overlay is running</string>
     <string name="disconnected">Disconnected</string>
     <string name="connected">Connected</string>
+    <string name="default_adapter_json">{\"vendorId\":4617,\"deviceId\":16,\"productName\":\"Climate Control Adapter\"}</string>
 </resources>

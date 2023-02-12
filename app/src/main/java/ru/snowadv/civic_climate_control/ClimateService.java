@@ -27,7 +27,7 @@ import androidx.preference.PreferenceManager;
 
 
 /**
- * This activity is responsible for overlay
+ * This activity is responsible for overlay   TODO: maybe should receive USB_ATTACH
  */
 public class ClimateService extends Service { // TODO: service should be binded to AdapterService
 
