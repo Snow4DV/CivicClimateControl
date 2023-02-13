@@ -3,18 +3,17 @@ package ru.snowadv.civic_climate_control.Adapter;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.Parcelable;
-import android.text.SpannableStringBuilder;
 import android.util.Log;
-import android.widget.Toast;
 
 
 import androidx.annotation.Nullable;
@@ -28,13 +27,9 @@ import com.hoho.android.usbserial.util.SerialInputOutputManager;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import ru.snowadv.civic_climate_control.SerializableUsbDevice;
 
@@ -107,7 +102,6 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     @Override
     public void onDestroy() {
         ALIVE = false;
-        spreadNewState(new AdapterState()); // Spread dead state
         super.onDestroy();
     }
 
@@ -197,8 +191,8 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     }
 
 
-    /*public static void getAccessAndStartService(Context context, SerializableUsbDevice device,
-                                                Function<AdapterBinder, Boolean> onStartedCallback) {
+    public static void getAccessAndBindService(Context context, SerializableUsbDevice device,
+                                               Function<AdapterBinder, Boolean> onStartedCallback) {
         getAccessToDevice(context, device, (realDevice) -> {
             if(realDevice == null) { // Connection didn't go well
                 onStartedCallback.apply(null); // Sending null binder - service didn't start
@@ -206,12 +200,26 @@ public class AdapterService extends Service implements SerialInputOutputManager.
             } else {
                 Intent intent = new Intent(context, AdapterService.class);
                 intent.putExtra("device", realDevice);
-                context.bindService(intent, )
-                onStartedCallback.apply(manager.openDevice(realDevice));
+                ServiceConnection connection = new ServiceConnection() {
+                    @Override
+                    public void onServiceConnected(ComponentName name, IBinder service) {
+                        if(service instanceof AdapterService.AdapterBinder) {
+                            onStartedCallback.apply((AdapterService.AdapterBinder) service);
+                        } else {
+                            onStartedCallback.apply(null);
+                        }
+                    }
+                    @Override
+                    public void onServiceDisconnected(ComponentName name) {
+                        Log.d(TAG, "onServiceDisconnected: service died");
+                    }
+                };
+
+                context.bindService(intent, connection, BIND_AUTO_CREATE);
                 return true;
             }
         });
-    }*/
+    }
 
     /**
      * Async request to ask for permission and get access to connected device
@@ -378,4 +386,6 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     public interface OnNewStateReceivedListener {
         void onReceive(AdapterState newState);
     }
+
+
 }
