@@ -122,26 +122,16 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     }
 
 
-    private void connectToDevice(SerializableUsbDevice serializedDevice) {
-        for (UsbDevice device :
-                usbManager.getDeviceList().values()) {
-            if(serializedDevice.isDescribingUsbDevice(device)) {
-                connectToDevice(device);
-                return;
-            }
-        }
-    }
-
     /**
      * Method to connect service to UsbDevice
      * P.S. <em>permission to it should already be obtained</em>
-     * @param device
+     * @param device device that service will be connected to
      */
     private void connectToDevice(UsbDevice device) {
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
-        UsbDeviceConnection connection = manager.openDevice(device);
-        if (connection == null) {
+        currentConnection = manager.openDevice(device);
+        if (currentConnection == null) {
             Log.e(TAG, "connectToDevice: connection couldn't be established");
             stopSelf();
             return;
@@ -170,7 +160,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
         UsbSerialPort port = usbSerialDriver.getPorts().get(0); // Device should have one port
 
         try {
-            port.open(connection);
+            port.open(currentConnection);
             port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1,
                     UsbSerialPort.PARITY_NONE);
             SerialInputOutputManager usbIoManager =
@@ -191,11 +181,18 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     }
 
 
+    /**
+     * This method is used to start service and bind it to received context.
+     * @param context context for binding
+     * @param device device with which connection should be made
+     * @param onServiceStartedListener callback that will get not-null binding if service started
+     *                          successfully
+     */
     public static void getAccessAndBindService(Context context, SerializableUsbDevice device,
-                                               Function<AdapterBinder, Boolean> onStartedCallback) {
+                                               OnServiceStartedListener onServiceStartedListener) {
         getAccessToDevice(context, device, (realDevice) -> {
             if(realDevice == null) { // Connection didn't go well
-                onStartedCallback.apply(null); // Sending null binder - service didn't start
+                onServiceStartedListener.onAdapterServiceStartOrFail(null); // Sending null binder - service didn't start
                 return false;
             } else {
                 Intent intent = new Intent(context, AdapterService.class);
@@ -204,9 +201,9 @@ public class AdapterService extends Service implements SerialInputOutputManager.
                     @Override
                     public void onServiceConnected(ComponentName name, IBinder service) {
                         if(service instanceof AdapterService.AdapterBinder) {
-                            onStartedCallback.apply((AdapterService.AdapterBinder) service);
+                            onServiceStartedListener.onAdapterServiceStartOrFail((AdapterService.AdapterBinder) service);
                         } else {
-                            onStartedCallback.apply(null);
+                            onServiceStartedListener.onAdapterServiceStartOrFail(null);
                         }
                     }
                     @Override
@@ -276,7 +273,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     private void spreadNewState(AdapterState newState) {
         for (OnNewStateReceivedListener listener :
                 listeners.values()) {
-            listener.onReceive(newState);
+            listener.onNewAdapterStateReceived(newState);
         }
     }
     @Override
@@ -296,7 +293,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
         Log.e(TAG, "onRunError: communication fail", e);
     }
 
-    private class AdapterBinder extends Binder {
+    public class AdapterBinder extends Binder {
         public AdapterService getService() {
             return AdapterService.this;
         }
@@ -367,24 +364,18 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     }
 
     public static final class AdapterState {
-        private final boolean isConnectionAlive;
-        String data; // stub
+        public String state; //stub
 
-        public boolean isConnectionAlive() {
-            return isConnectionAlive;
-        }
-
-        /**
-         * Constructor creates dead state
-         */
-        public AdapterState() {
-            isConnectionAlive = false;
-        }
     }
 
     @FunctionalInterface
     public interface OnNewStateReceivedListener {
-        void onReceive(AdapterState newState);
+        void onNewAdapterStateReceived(AdapterState newState);
+    }
+
+    public interface OnServiceStartedListener {
+        void onAdapterServiceStartOrFail(AdapterBinder binder);
+        void onAdapterServiceStop();
     }
 
 

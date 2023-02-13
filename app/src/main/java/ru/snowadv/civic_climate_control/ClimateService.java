@@ -3,17 +3,20 @@ package ru.snowadv.civic_climate_control;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,15 +24,18 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
+
+import ru.snowadv.civic_climate_control.Adapter.AdapterService;
 
 
 /**
  * This activity is responsible for overlay   TODO: maybe should receive USB_ATTACH
  */
-public class ClimateService extends Service { // TODO: service should be binded to AdapterService
+public class ClimateService extends Service implements AdapterService.OnServiceStartedListener, AdapterService.OnNewStateReceivedListener {
 
     static final String CHANNEL_ID = "Overlay_notification_channel";
 
@@ -84,14 +90,44 @@ public class ClimateService extends Service { // TODO: service should be binded 
         initViewFields(layoutView);
 
         windowManager.addView(layoutView, params);
-        cycleChangeThread = new CycleChangeThread();
-        cycleChangeThread.start();
 
         //This is needed to keep the service running in background just needs a notification to call with startForeground();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             initNotificationChannel();
             startNotification();
         }
+
+        initAdapterService();
+    }
+
+    private void initAdapterService() {
+        String adapterDeviceJson = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("adapter_name", null);
+        SerializableUsbDevice adapterDevice = SerializableUsbDevice.fromJson(adapterDeviceJson);
+        AdapterService.getAccessAndBindService(this, adapterDevice, this);
+    }
+
+
+    private void reportErrorInNotification(int stringResourceId) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Intent restartClimateServiceIntent =
+                    new Intent(this, ClimateService.class);
+            PendingIntent pendingIntent = PendingIntent.getService(this, 0,
+                    restartClimateServiceIntent, PendingIntent.FLAG_IMMUTABLE);
+            Notification.Action.Builder builder = new Notification.Action.Builder(
+                    Icon.createWithResource(this, R.drawable.ic_launcher_foreground),
+                    getString(R.string.restart_service),
+                    pendingIntent);
+            Notification notification = new Notification.Builder(
+                    this, notificationChannel.getId())
+                    .setContentText(getString(stringResourceId))
+                    .setContentTitle(getString(R.string.app_name))
+                    .addAction(builder.build())
+                    .build();
+
+            notificationManager.notify(0, notification);
+        }
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -145,6 +181,29 @@ public class ClimateService extends Service { // TODO: service should be binded 
         } else {
             stop(context);
         }
+    }
+
+    @Override
+    public void onAdapterServiceStartOrFail(AdapterService.AdapterBinder binder) {
+        if(binder == null) {
+            Log.e(TAG, "onAdapterServiceStartOrFail: adapter service connection failed");
+            reportErrorInNotification(R.string.adapter_not_connected);
+            stopSelf();
+        } else {
+            binder.registerListener(this);
+        }
+    }
+
+    @Override
+    public void onAdapterServiceStop() {
+        Log.e(TAG, "onAdapterServiceStartOrFail: adapter service connection died");
+        reportErrorInNotification(R.string.adapter_not_connected);
+        stopSelf();
+    }
+
+    @Override
+    public void onNewAdapterStateReceived(AdapterService.AdapterState newState) {
+        Toast.makeText(this, newState.state, Toast.LENGTH_SHORT).show();
     }
 
 
