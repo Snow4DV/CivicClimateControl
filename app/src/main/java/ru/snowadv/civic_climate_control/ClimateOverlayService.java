@@ -30,6 +30,7 @@ import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 
 import ru.snowadv.civic_climate_control.Adapter.AdapterService;
+import ru.snowadv.civic_climate_control.Adapter.AdapterState;
 
 
 /**
@@ -202,8 +203,8 @@ public class ClimateService extends Service implements AdapterService.OnServiceS
     }
 
     @Override
-    public void onNewAdapterStateReceived(AdapterService.AdapterState newState) {
-        Toast.makeText(this, newState.state, Toast.LENGTH_SHORT).show();
+    public void onNewAdapterStateReceived(AdapterState newState) {
+        Toast.makeText(this, newState.toString(), Toast.LENGTH_SHORT).show();
     }
 
 
