@@ -36,5 +36,6 @@
 
     <!--Overlay errors-->
     <string name="adapter_not_connected">Adapter is not connected</string>
+    <string name="adapter_not_connected_legacy">Adapter is not connected. Open the app in order to restart the service.</string>
     <string name="restart_service">Restart service</string>
 </resources>

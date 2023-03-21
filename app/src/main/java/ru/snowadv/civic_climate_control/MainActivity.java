@@ -24,9 +24,9 @@ public class MainActivity extends AppCompatActivity {
 
         if(checkOverlayPermission()) {
             if (Build.VERSION.SDK_INT >= 26) {
-                getApplicationContext().startForegroundService(new Intent(getApplicationContext(), ClimateService.class));
+                getApplicationContext().startForegroundService(new Intent(getApplicationContext(), ClimateOverlayService.class));
             } else {
-                startService(new Intent(getApplicationContext(), ClimateService.class));
+                startService(new Intent(getApplicationContext(), ClimateOverlayService.class));
             }
         } else {
             Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();

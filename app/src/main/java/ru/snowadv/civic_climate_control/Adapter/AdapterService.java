@@ -18,6 +18,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.google.gson.Gson;
 import com.hoho.android.usbserial.driver.Ch34xSerialDriver;
 import com.hoho.android.usbserial.driver.ProbeTable;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
@@ -49,7 +50,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     private static final String ACTION_USB_PERMISSION =
             "ru.snowadv.civic_climate_control.Adapter.AdapterService.USB_PERMISSION";
     private static final String TAG = "AdapterService";
-    private static boolean ALIVE = false;
+    private static boolean isAlive = false;
     private UsbManager usbManager;
     private final AdapterBinder binder = new AdapterBinder();
     private UsbConnectionStateChangedBroadcastReceiver usbDetachBroadcastReceiver;
@@ -58,8 +59,14 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     private static int newListenerId = 0; // Used to give unique listeners' IDs
     private UsbDevice currentDevice;
     private UsbDeviceConnection currentConnection = null;
+    private SerialInputOutputManager usbIoManager = null;
+
+    private final Gson gson = new Gson();
 
 
+    public static boolean isAlive() {
+        return isAlive;
+    }
 
     @Override
     public void onCreate() {
@@ -87,7 +94,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        ALIVE = true;
+        isAlive = true;
         currentDevice = intent.getParcelableExtra("device");
         connectToDevice(currentDevice);
         return START_STICKY;
@@ -101,7 +108,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
 
     @Override
     public void onDestroy() {
-        ALIVE = false;
+        isAlive = false;
         super.onDestroy();
     }
 
@@ -163,7 +170,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
             port.open(currentConnection);
             port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1,
                     UsbSerialPort.PARITY_NONE);
-            SerialInputOutputManager usbIoManager =
+            usbIoManager =
                     new SerialInputOutputManager(port, this);
             usbIoManager.start();
         } catch(IOException exception) {
@@ -208,6 +215,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
                     }
                     @Override
                     public void onServiceDisconnected(ComponentName name) {
+                        onServiceStartedListener.onAdapterServiceStop();
                         Log.d(TAG, "onServiceDisconnected: service died");
                     }
                 };
@@ -267,6 +275,10 @@ public class AdapterService extends Service implements SerialInputOutputManager.
         return false;
     }
 
+    private void sendStateToListeners(AdapterState state) {
+        listeners.values().stream().forEach(action -> action.onNewAdapterStateReceived(state));
+    }
+
     private boolean unregisterListener(int id) {
         return listeners.remove(id) != null;
     }
@@ -286,6 +298,16 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     @Override
     public void onNewData(byte[] data) {
         Log.d(TAG, "onNewData: " + Arrays.toString(data));
+
+        StringBuffer jsonState = new StringBuffer();
+        for (byte ch :
+                data) {
+            jsonState.append((char) ch);
+        }
+
+        AdapterState adapterState = gson.fromJson(jsonState.toString(), AdapterState.class);
+
+        sendStateToListeners(adapterState);
     }
 
     @Override
@@ -360,11 +382,6 @@ public class AdapterService extends Service implements SerialInputOutputManager.
             }
         }
 
-
-    }
-
-    public static final class AdapterState {
-        public String state; //stub
 
     }
 

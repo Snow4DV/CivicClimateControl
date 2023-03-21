@@ -97,7 +97,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:id="@+id/windshield_heating"
             app:layout_constraintRight_toLeftOf="@id/fan_speed"
-            android:src="@drawable/ic_windshield_heating"/>
+            android:src="@drawable/ic_fan_dir_windshield"/>
         <ImageView
             android:id="@+id/fan_speed"
             android:layout_width="130dp"

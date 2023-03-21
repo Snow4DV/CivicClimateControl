@@ -50,7 +50,7 @@
         </receiver>
 
 
-        <service android:name=".ClimateService" />
+        <service android:name=".ClimateOverlayService" />
 
         <service android:name=".Adapter.AdapterService"
             android:exported="false">

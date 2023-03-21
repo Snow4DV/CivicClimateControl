@@ -36,7 +36,7 @@ import ru.snowadv.civic_climate_control.Adapter.AdapterState;
 /**
  * This activity is responsible for overlay   TODO: maybe should receive USB_ATTACH
  */
-public class ClimateService extends Service implements AdapterService.OnServiceStartedListener, AdapterService.OnNewStateReceivedListener {
+public class ClimateOverlayService extends Service implements AdapterService.OnServiceStartedListener, AdapterService.OnNewStateReceivedListener {
 
     static final String CHANNEL_ID = "Overlay_notification_channel";
 
@@ -46,7 +46,7 @@ public class ClimateService extends Service implements AdapterService.OnServiceS
             | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
             | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
             | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
-    private static final String TAG = "CivicClimateService";
+    private static final String TAG = "CivicOverlayService";
 
     private LayoutInflater inflater;
     private View layoutView;
@@ -112,7 +112,7 @@ public class ClimateService extends Service implements AdapterService.OnServiceS
     private void reportErrorInNotification(int stringResourceId) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             Intent restartClimateServiceIntent =
-                    new Intent(this, ClimateService.class);
+                    new Intent(this, ClimateOverlayService.class);
             PendingIntent pendingIntent = PendingIntent.getService(this, 0,
                     restartClimateServiceIntent, PendingIntent.FLAG_IMMUTABLE);
             Notification.Action.Builder builder = new Notification.Action.Builder(
@@ -127,6 +127,8 @@ public class ClimateService extends Service implements AdapterService.OnServiceS
                     .build();
 
             notificationManager.notify(0, notification);
+        } else {
+            //TODO: implement notifications for pre-O devices.
         }
 
     }
@@ -169,11 +171,11 @@ public class ClimateService extends Service implements AdapterService.OnServiceS
     }
 
     public static ComponentName start(Context context) {
-        return context.startService(new Intent(context, ClimateService.class));
+        return context.startService(new Intent(context, ClimateOverlayService.class));
     }
 
     public static boolean stop(Context context) {
-        return context.stopService(new Intent(context, ClimateService.class));
+        return context.stopService(new Intent(context, ClimateOverlayService.class));
     }
 
     public static void changeServiceState(boolean newState, Context context) {

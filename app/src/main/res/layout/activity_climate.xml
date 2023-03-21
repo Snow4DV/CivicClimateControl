@@ -283,7 +283,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:id="@+id/windshield_heating"
             app:layout_constraintLeft_toRightOf="@id/climate_state"
-            android:src="@drawable/ic_windshield_heating"/>
+            android:src="@drawable/ic_fan_dir_windshield"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

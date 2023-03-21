@@ -1,10 +1,8 @@
 package ru.snowadv.civic_climate_control;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
@@ -21,14 +19,12 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -43,8 +39,6 @@ import java.util.Map;
 import java.util.Set;
 
 import ru.snowadv.civic_climate_control.databinding.SettingsActivityBinding;
-
-import static androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions.EXTRA_PERMISSIONS;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -124,8 +118,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
         private static final String TAG = "SettingsFragment";
-
-        private UsbManager usbManager;
         private PreferenceScreen preferenceScreen;
         private ListPreference connectedDevices;
         private Preference adapterStatus;
@@ -135,7 +127,6 @@ public class SettingsActivity extends AppCompatActivity {
         private ActivityResultLauncher<String> askPermission;
 
         private void initFields() {
-            usbManager = getUsbManager();
             preferenceScreen = getPreferenceScreen();
             connectedDevices = findPreference("adapter_name");
             adapterStatus = findPreference("adapter_status");
@@ -145,15 +136,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         }
 
-        private UsbManager getUsbManager() { // TODO: Do not do it here. Bind to adapterservice
-            Activity parentActivity = getActivity();
-            if(parentActivity != null) {
-                return (UsbManager) parentActivity.getSystemService(Context.USB_SERVICE);
-            } else {
-                Log.e(TAG, "initFields: usbManager cannot be initialized, fragment has no parent activity");
-                return null;
-            }
-        }
 
         @NonNull
         private ActivityResultLauncher<String> getAskPermission() {
@@ -176,7 +158,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void processIntentResult(Boolean result) {
             if(result) {
-                ClimateService.start(requireContext());
+                ClimateOverlayService.start(requireContext());
             } else {
                 floatingPanelSwitch.setChecked(false);
             }
@@ -187,7 +169,7 @@ public class SettingsActivity extends AppCompatActivity {
                     !Settings.canDrawOverlays(getContext())) {
                 explainOverlayPermission();
             } else {
-                ClimateService.start(requireContext());
+                ClimateOverlayService.start(requireContext());
             }
         }
 
@@ -224,24 +206,11 @@ public class SettingsActivity extends AppCompatActivity {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
         }
 
-        public void updateDevicesList() { // TODO: Dublicated code. Should be removed after service debug
-            if(usbManager == null) {
-                Toast.makeText(getContext(), getString(R.string.cant_get_usb_devices), Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Set<HashMap.Entry<String, UsbDevice>> devices = usbManager.getDeviceList().entrySet();
-            List<CharSequence> devicesNames = new ArrayList<>();
-            List<CharSequence> devicesIds = new ArrayList<>();
-            for (Map.Entry<String, UsbDevice> device : devices) {
-                SerializableUsbDevice serializableUsbDevice =
-                        new SerializableUsbDevice(device.getValue());
-                devicesNames.add(serializableUsbDevice.toString());
-                devicesIds.add(serializableUsbDevice.toJson());
-            }
-            connectedDevices.setEntries(devicesNames.toArray(new CharSequence[]{}));
-            connectedDevices.setEntryValues(devicesIds.toArray(new CharSequence[]{}));
-
-            setDeviceConnectionStatus(devicesIds.contains(connectedDevices.getValue()));
+        public void updateDevicesList() {
+            Map<String, String> devicesList = DevicesManager.INSTANCE.getDevicesList(getContext());
+            connectedDevices.setEntries(devicesList.keySet().toArray(new CharSequence[]{}));
+            connectedDevices.setEntryValues(devicesList.values().toArray(new CharSequence[]{}));
+            setDeviceConnectionStatus(devicesList.containsValue(connectedDevices.getValue()));
         }
 
         private void setDeviceConnectionStatus(boolean isConnected) {
@@ -252,18 +221,18 @@ public class SettingsActivity extends AppCompatActivity {
             if(newState) {
                 getPermissionAndStartOverlayService();
             } else {
-                ClimateService.stop(requireContext());
+                ClimateOverlayService.stop(requireContext());
             }
         }
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             switch(preference.getKey()) {
-                case "floating_panel_enabled":
-                    changeFloatingPanelState((Boolean) newValue);
-                    break;
                 case "adapter_name":
                     updateDevicesList();
+                    changeFloatingPanelState(false); // Restart overlay if device changed
+                case "floating_panel_enabled":
+                    changeFloatingPanelState((Boolean) newValue);
                     break;
             }
             return true;

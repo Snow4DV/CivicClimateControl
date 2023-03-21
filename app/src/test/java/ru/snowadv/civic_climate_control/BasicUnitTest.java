@@ -9,8 +9,9 @@ import java.util.Arrays;
 
 import ru.snowadv.civic_climate_control.Adapter.AdapterState;
 
-public class CastAndSerializationTest {
+public class BasicUnitTest {
 
+    Gson gson = new Gson();
     @Test
     public void serializedUsbDevice_isCorrect() throws Exception {
         String serialized =
@@ -22,24 +23,20 @@ public class CastAndSerializationTest {
         Assert.assertEquals(serialized,expected);
     }
 
-
-    @Test
-    public void test_castEnumToInt() {
-        String fanDirEnums = Arrays.toString(AdapterState.FanDirection.values());
-        Assert.assertEquals("[UP, DOWN, UP_DOWN, DOWN_WINDSHIELD, WINDSHIELD]", fanDirEnums);
-        System.out.println(fanDirEnums);
-    }
-
     @Test
     public void test_serializeAdapterState() {
-        AdapterState state = new AdapterState(AdapterState.FanLevel.LEVEL_1, 15, 20, 0,false, true);
-        Gson gson = new Gson();
-        System.out.println(gson.toJson(state));
+        AdapterState state = new AdapterState(AdapterState.FanLevel.LEVEL_1, 15,
+                20, AdapterState.FanDirection.DOWN_WINDSHIELD,false, true);
+
+        Assert.assertEquals("{\"fanLevel\":\"LEVEL_1\",\"tempLeft\":15,\"tempRight\":20," +
+                "\"fanDirection\":\"DOWN_WINDSHIELD\",\"ac\":false,\"auto\":true}", gson.toJson(state));
     }
 
     @Test
     public void test_deserializeAdapterState() {
-
+        String stateJson = "{\"fanLevel\":\"LEVEL_1\",\"tempLeft\":15,\"tempRight\":20," +
+                "\"fanDirection\":\"DOWN_WINDSHIELD\",\"ac\":false,\"auto\":true}";
+        gson.fromJson(stateJson, AdapterState.class);
     }
 
 

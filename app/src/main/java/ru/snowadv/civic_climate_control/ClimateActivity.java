@@ -12,6 +12,7 @@ import android.view.WindowManager;
 
 import java.util.Objects;
 
+import ru.snowadv.civic_climate_control.Adapter.AdapterService;
 import ru.snowadv.civic_climate_control.databinding.ActivityClimateBinding;
 
 public class ClimateActivity extends AppCompatActivity {
@@ -25,12 +26,12 @@ public class ClimateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         hideTitleAndNotificationBars();
-
         View rootView = initViewBinding();
-
         setContentView(rootView);
+
         initFields();
         initInterfaceListeners();
+        restartOverlayServiceIfNeeded();
     }
 
 
@@ -49,6 +50,15 @@ public class ClimateActivity extends AppCompatActivity {
     private View initViewBinding() {
         binding = ActivityClimateBinding.inflate(getLayoutInflater());
         return binding.getRoot();
+    }
+
+    private void restartOverlayServiceIfNeeded() {
+        boolean isOverlayEnabled = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("floating_panel_enabled", false);
+
+        if(isOverlayEnabled && !AdapterService.isAlive()) {
+            ClimateOverlayService.start(this); // restart if service died by some reason
+        }
     }
 
     private void initFields() {
@@ -73,9 +83,9 @@ public class ClimateActivity extends AppCompatActivity {
     private void changeOverlayServiceState(boolean isActivityVisible) {
         if (!isActivityVisible
                 && settingsPreferences.getBoolean("floating_panel_enabled", false)) {
-            ClimateService.start(this);
+            ClimateOverlayService.start(this);
         } else {
-            ClimateService.stop(this);
+            ClimateOverlayService.stop(this);
         }
     }
 
