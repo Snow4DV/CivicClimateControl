@@ -65,8 +65,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
 
     private NotificationManager notificationManager;
     private NotificationChannel notificationChannel;
-
-    private ServiceConnection connection;
+    private NotifierUtility notifierUtility;
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -76,6 +75,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
     public void onCreate() {
         super.onCreate();
 
+        notifierUtility = new NotifierUtility(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkIfServiceCanDrawOverlays()) {
             stop(this);
         }
@@ -113,30 +113,6 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
     }
 
 
-    private void reportErrorInNotification(int stringResourceId) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            Intent restartClimateServiceIntent =
-                    new Intent(this, ClimateOverlayService.class);
-            PendingIntent pendingIntent = PendingIntent.getService(this, 0,
-                    restartClimateServiceIntent, PendingIntent.FLAG_IMMUTABLE);
-            Notification.Action.Builder builder = new Notification.Action.Builder(
-                    Icon.createWithResource(this, R.drawable.ic_launcher_foreground),
-                    getString(R.string.restart_service),
-                    pendingIntent);
-            Notification notification = new Notification.Builder(
-                    this, notificationChannel.getId())
-                    .setContentText(getString(stringResourceId))
-                    .setContentTitle(getString(R.string.app_name))
-                    .setSmallIcon(R.drawable.ic_fan_dir_down)
-                    .addAction(builder.build())
-                    .build();
-
-            notificationManager.notify(0, notification);
-        } else {
-            //TODO: implement notifications for pre-O devices.
-        }
-
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private boolean checkIfServiceCanDrawOverlays() {
@@ -172,7 +148,9 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
     public void onDestroy() {
         super.onDestroy();
         windowManager.removeView(layoutView);
-        unbindService(this);
+        if(AdapterService.isAlive()) {
+            unbindService(this);
+        }
     }
 
     public static ComponentName start(Context context) {
@@ -193,6 +171,9 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
 
     @Override
     public void onNewAdapterStateReceived(AdapterState newState) { // it runs in service's thread
+        if(newState == null) {
+            return;
+        }
         tempTextView1.post(() -> tempTextView1.setText(String.valueOf(newState.getTempLeft())));
         tempTextView2.post(() -> tempTextView2.setText(String.valueOf(newState.getTempRight())));
         acOnGlyph.post(() -> acOnGlyph.setVisibility(newState.isAc() ? View.VISIBLE : View.GONE));
@@ -225,7 +206,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
                 (AdapterService.AdapterBinder) service : null;
         if(binder == null) {
             Log.e(TAG, "onAdapterServiceStartOrFail: adapter service connection failed");
-            reportErrorInNotification(R.string.adapter_not_connected);
+            notifierUtility.reportErrorInNotification(this, R.string.adapter_not_connected);
             stopSelf();
         } else {
             binder.registerListener(this);
@@ -235,7 +216,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
     @Override
     public void onServiceDisconnected(ComponentName name) {
         Log.e(TAG, "onAdapterServiceStartOrFail: adapter service connection died");
-        reportErrorInNotification(R.string.adapter_not_connected);
+        notifierUtility.reportErrorInNotification(this, R.string.adapter_not_connected);
         stopSelf();
     }
 
