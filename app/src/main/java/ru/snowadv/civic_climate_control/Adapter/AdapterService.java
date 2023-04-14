@@ -195,34 +195,18 @@ public class AdapterService extends Service implements SerialInputOutputManager.
      * This method is used to start service and bind it to received context.
      * @param context context for binding
      * @param device device with which connection should be made
-     * @param onServiceStartedListener callback that will get not-null binding if service started
-     *                          successfully
+     * @param connection ServiceConnection object that acts as listener when service starts
      */
     public static void getAccessAndBindService(Context context, SerializableUsbDevice device,
-                                               OnServiceStartedListener onServiceStartedListener) {
+                                               ServiceConnection connection) {
         getAccessToDevice(context, device, (realDevice) -> {
             if(realDevice == null) { // Connection didn't go well
                 Log.e(TAG, "getAccessAndBindService: realDevice is null!");
-                onServiceStartedListener.onAdapterServiceStartOrFail(null); // Sending null binder - service didn't start
+                connection.onServiceConnected(null, null);
                 return false;
             } else {
                 Intent intent = new Intent(context, AdapterService.class);
                 intent.putExtra("device", realDevice);
-                ServiceConnection connection = new ServiceConnection() {
-                    @Override
-                    public void onServiceConnected(ComponentName name, IBinder service) {
-                        if(service instanceof AdapterService.AdapterBinder) {
-                            onServiceStartedListener.onAdapterServiceStartOrFail((AdapterService.AdapterBinder) service);
-                        } else {
-                            onServiceStartedListener.onAdapterServiceStartOrFail(null);
-                        }
-                    }
-                    @Override
-                    public void onServiceDisconnected(ComponentName name) {
-                        onServiceStartedListener.onAdapterServiceStop();
-                        Log.d(TAG, "onServiceDisconnected: service died");
-                    }
-                };
 
                 context.startService(intent);
                 return context.bindService(intent, connection, BIND_AUTO_CREATE);
@@ -428,7 +412,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     }
 
     public interface OnServiceStartedListener {
-        void onAdapterServiceStartOrFail(AdapterBinder binder);
+        void onAdapterServiceStartOrFail(AdapterBinder binder, ServiceConnection connection);
         void onAdapterServiceStop();
     }
 

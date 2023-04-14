@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Icon;
@@ -38,7 +39,7 @@ import ru.snowadv.civic_climate_control.Adapter.AdapterState;
 /**
  * This activity is responsible for overlay   TODO: maybe should receive USB_ATTACH
  */
-public class ClimateOverlayService extends Service implements AdapterService.OnServiceStartedListener, AdapterService.OnNewStateReceivedListener {
+public class ClimateOverlayService extends Service implements AdapterService.OnNewStateReceivedListener, ServiceConnection {
 
     static final String CHANNEL_ID = "Overlay_notification_channel";
 
@@ -65,6 +66,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnS
     private NotificationManager notificationManager;
     private NotificationChannel notificationChannel;
 
+    private ServiceConnection connection;
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -169,8 +171,8 @@ public class ClimateOverlayService extends Service implements AdapterService.OnS
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //cycleChangeThread.interrupt();
         windowManager.removeView(layoutView);
+        unbindService(this);
     }
 
     public static ComponentName start(Context context) {
@@ -187,24 +189,6 @@ public class ClimateOverlayService extends Service implements AdapterService.OnS
         } else {
             stop(context);
         }
-    }
-
-    @Override
-    public void onAdapterServiceStartOrFail(AdapterService.AdapterBinder binder) {
-        if(binder == null) {
-            Log.e(TAG, "onAdapterServiceStartOrFail: adapter service connection failed");
-            reportErrorInNotification(R.string.adapter_not_connected);
-            stopSelf();
-        } else {
-            binder.registerListener(this);
-        }
-    }
-
-    @Override
-    public void onAdapterServiceStop() {
-        Log.e(TAG, "onAdapterServiceStartOrFail: adapter service connection died");
-        reportErrorInNotification(R.string.adapter_not_connected);
-        stopSelf();
     }
 
     @Override
@@ -232,4 +216,28 @@ public class ClimateOverlayService extends Service implements AdapterService.OnS
         fanSpeedView = layoutView.findViewById(R.id.fan_speed);
         fanDirectionView = layoutView.findViewById(R.id.fan_direction);
     }
+
+
+
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        AdapterService.AdapterBinder binder = (service instanceof AdapterService.AdapterBinder) ?
+                (AdapterService.AdapterBinder) service : null;
+        if(binder == null) {
+            Log.e(TAG, "onAdapterServiceStartOrFail: adapter service connection failed");
+            reportErrorInNotification(R.string.adapter_not_connected);
+            stopSelf();
+        } else {
+            binder.registerListener(this);
+        }
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        Log.e(TAG, "onAdapterServiceStartOrFail: adapter service connection died");
+        reportErrorInNotification(R.string.adapter_not_connected);
+        stopSelf();
+    }
+
+
 }
