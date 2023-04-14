@@ -43,10 +43,6 @@ import ru.snowadv.civic_climate_control.SerializableUsbDevice;
  * 3) When device disconnected - SEND NOTIFICATION! // TODO   or maybe activites should do it?
  */
 public class AdapterService extends Service implements SerialInputOutputManager.Listener {
-    /*TODO: problem! There are
-        two possible behaviours of service:
-        1) It starts, asks for permission
-     */
     private static final String ACTION_USB_PERMISSION =
             "ru.snowadv.civic_climate_control.Adapter.AdapterService.USB_PERMISSION";
     private static final String TAG = "AdapterService";
@@ -88,7 +84,6 @@ public class AdapterService extends Service implements SerialInputOutputManager.
      * @param flags Additional data about this start request.
      * @param startId A unique integer representing this specific request to
      * start.  Use with {@link #stopSelfResult(int)}.
-     *
      *
      * @return START_STICKY is returned
      */
@@ -173,6 +168,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
             usbIoManager =
                     new SerialInputOutputManager(port, this);
             usbIoManager.start();
+            Log.d(TAG, "connectToDevice: usbIoManager started");
         } catch(IOException exception) {
             Log.e(TAG, "connectToDevice: failed to connect to device",exception);
             stopSelf();

@@ -58,7 +58,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnS
     private View autoGlyph, acOnGlyph, acOffGlyph, windshieldGlyph;
     private ImageView fanSpeedView, fanDirectionView;
 
-    private CycleChangeThread cycleChangeThread;
+    //private CycleChangeThread cycleChangeThread;
 
     private NotificationManager notificationManager;
     private NotificationChannel notificationChannel;
@@ -123,6 +123,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnS
                     this, notificationChannel.getId())
                     .setContentText(getString(stringResourceId))
                     .setContentTitle(getString(R.string.app_name))
+                    .setSmallIcon(R.drawable.ic_fan_dir_down)
                     .addAction(builder.build())
                     .build();
 
@@ -166,7 +167,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnS
     @Override
     public void onDestroy() {
         super.onDestroy();
-        cycleChangeThread.interrupt();
+        //cycleChangeThread.interrupt();
         windowManager.removeView(layoutView);
     }
 
@@ -207,54 +208,6 @@ public class ClimateOverlayService extends Service implements AdapterService.OnS
     @Override
     public void onNewAdapterStateReceived(AdapterState newState) {
         Toast.makeText(this, newState.toString(), Toast.LENGTH_SHORT).show();
-    }
-
-
-    private class CycleChangeThread extends Thread {
-        int fanLevel = 0;
-        int temp = 10;
-        int fanDirection = 0;
-        boolean windshield = false;
-        boolean ac = false;
-        boolean auto = false;
-        @Override
-        public void run() {
-            while(!isInterrupted()) {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    if(++fanLevel > 6) fanLevel = 0;
-                    if(++temp > 90) temp = 10;
-                    if(++fanDirection > 2) fanDirection = 0;
-
-                    windshield = !windshield;
-                    ac = !ac;
-                    auto = !auto;
-
-                    int[] fanLevels = {R.drawable.ic_fan_speed_1,R.drawable.ic_fan_speed_2,
-                            R.drawable.ic_fan_speed_3,R.drawable.ic_fan_speed_4,
-                            R.drawable.ic_fan_speed_5,R.drawable.ic_fan_speed_6,
-                            R.drawable.ic_fan_speed_7};
-                    fanSpeedView.setImageDrawable(getDrawable(fanLevels[fanLevel]));
-
-                    tempTextView1.setText(String.valueOf(temp));
-                    tempTextView2.setText(String.valueOf(temp + 1));
-
-                    int[] fanDirections = {R.drawable.ic_fan_dir_up_down,
-                            R.drawable.ic_fan_dir_up, R.drawable.ic_fan_dir_down};
-                    fanDirectionView.setImageDrawable(getDrawable(fanDirections[fanDirection]));
-
-                    windshieldGlyph.setVisibility(windshield ? View.VISIBLE : View.GONE);
-                    acOnGlyph.setVisibility(ac ? View.VISIBLE : View.GONE);
-                    acOffGlyph.setVisibility(!ac ? View.VISIBLE : View.GONE);
-                    autoGlyph.setVisibility(auto ? View.VISIBLE : View.GONE);
-
-                });
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
 

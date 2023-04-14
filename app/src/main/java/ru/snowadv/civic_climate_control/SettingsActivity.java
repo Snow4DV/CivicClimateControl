@@ -231,6 +231,8 @@ public class SettingsActivity extends AppCompatActivity {
                 case "adapter_name":
                     updateDevicesList();
                     changeFloatingPanelState(false); // Restart overlay if device changed
+                    changeFloatingPanelState(floatingPanelSwitch.isChecked());
+                    break;
                 case "floating_panel_enabled":
                     changeFloatingPanelState((Boolean) newValue);
                     break;

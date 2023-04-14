@@ -92,6 +92,7 @@
             android:src="@drawable/ic_fan_dir_up_down"/>
         <ImageView
             android:layout_width="60dp"
+            android:visibility="gone"
             android:layout_height="60dp"
             app:tint="@color/white"
             app:layout_constraintTop_toTopOf="parent"
