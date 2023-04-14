@@ -139,8 +139,24 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
         if(newState == null) {
             return;
         }
-        binding.temp1.post(() -> binding.temp1.setText(newState.getTempLeftString()));
-        binding.temp2.post(() -> binding.temp2.setText(newState.getTempRightString()));
+        String tempLeftString = newState.getTempLeftString();
+        if(tempLeftString != null) {
+            binding.temp1Background.post(() -> binding.temp1Background.setVisibility(View.VISIBLE));
+            binding.temp1.post(() -> binding.temp1.setVisibility(View.VISIBLE));
+            binding.temp1.post(() -> binding.temp1.setText(tempLeftString));
+        } else {
+            binding.temp1.post(() -> binding.temp1.setVisibility(View.GONE));;
+            binding.temp1Background.post(() -> binding.temp1Background.setVisibility(View.GONE));
+        }
+        String tempRightString = newState.getTempRightString();
+        if(tempRightString != null) {
+            binding.temp2Background.post(() -> binding.temp2Background.setVisibility(View.VISIBLE));
+            binding.temp2.post(() -> binding.temp2.setVisibility(View.VISIBLE));
+            binding.temp2.post(() -> binding.temp2.setText(tempLeftString));
+        } else {
+            binding.temp2Background.post(() -> binding.temp2Background.setVisibility(View.GONE));
+            binding.temp2.post(() -> binding.temp2.setVisibility(View.GONE));;
+        }
         binding.acOnGlyph.post(() -> binding.acOnGlyph.setVisibility(newState.isAc() ? View.VISIBLE : View.GONE));
         binding.acOffGlyph.post(() -> binding.acOffGlyph.setVisibility(newState.isAc() ? View.GONE : View.VISIBLE));
         binding.autoGlyph.post(() -> binding.autoGlyph.setVisibility(newState.isAuto() ? View.VISIBLE : View.GONE));

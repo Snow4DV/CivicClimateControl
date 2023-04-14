@@ -71,6 +71,8 @@ public final class AdapterState {
 
     public String getTempLeftString() {
         switch(tempLeft) {
+            case -1:
+                return null;
             case 0:
                 return "LO";
             case 99:
@@ -82,6 +84,8 @@ public final class AdapterState {
 
     public String getTempRightString() {
         switch(tempRight) {
+            case -1:
+                return null;
             case 0:
                 return "LO";
             case 99:

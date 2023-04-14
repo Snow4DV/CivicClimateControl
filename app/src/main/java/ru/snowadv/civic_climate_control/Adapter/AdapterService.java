@@ -131,7 +131,8 @@ public class AdapterService extends Service implements SerialInputOutputManager.
                 = new UsbConnectionStateChangedBroadcastReceiver(callback);
         IntentFilter filter = new IntentFilter();
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        registerReceiver(usbConnectionStateChangedBroadcastReceiver, filter);
+        //registerReceiver(usbConnectionStateChangedBroadcastReceiver, filter);
+        //TODO: detach usb should be registered correctly
         return usbConnectionStateChangedBroadcastReceiver;
     }
 
