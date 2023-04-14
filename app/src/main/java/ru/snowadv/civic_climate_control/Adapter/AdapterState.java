@@ -3,16 +3,14 @@ package ru.snowadv.civic_climate_control.Adapter;
 import ru.snowadv.civic_climate_control.R;
 
 public final class AdapterState {
-    public static final int UNAVAILABLE = -1;
+    private FanLevel fanLevel = FanLevel.LEVEL_0;
 
-
-    private final FanLevel fanLevel;
-
-    private final int tempLeft;
-    private final int tempRight;
+    private int tempLeft = 0;
+    private int tempRight = 0;
 
 
     public enum FanLevel {
+        LEVEL_0(R.drawable.ic_fan_speed_0),
         LEVEL_1(R.drawable.ic_fan_speed_1),
         LEVEL_2(R.drawable.ic_fan_speed_2),
         LEVEL_3(R.drawable.ic_fan_speed_3),
@@ -32,6 +30,7 @@ public final class AdapterState {
 
     }
     public enum FanDirection {
+        NONE(R.drawable.ic_fan_dir_none),
         UP(R.drawable.ic_fan_dir_up),
         DOWN(R.drawable.ic_fan_dir_down),
         UP_DOWN(R.drawable.ic_fan_dir_up_down),
@@ -49,17 +48,17 @@ public final class AdapterState {
         }
     }
 
-    private final FanDirection fanDirection;
+    private FanDirection fanDirection = FanDirection.NONE;
 
     public FanDirection getFanDirection() {
-        return fanDirection;
+        return fanDirection == null ? FanDirection.UP : fanDirection;
     }
 
-    private final boolean ac;
-    private final boolean auto;
+    private boolean ac = false;
+    private boolean auto = false;
 
     public FanLevel getFanLevel() {
-        return fanLevel;
+        return fanLevel == null ? FanLevel.LEVEL_0 : fanLevel;
     }
 
     public int getTempLeft() {
@@ -68,6 +67,28 @@ public final class AdapterState {
 
     public int getTempRight() {
         return tempRight;
+    }
+
+    public String getTempLeftString() {
+        switch(tempLeft) {
+            case 0:
+                return "LO";
+            case 99:
+                return "HI";
+            default:
+                return String.valueOf(tempLeft);
+        }
+    }
+
+    public String getTempRightString() {
+        switch(tempRight) {
+            case 0:
+                return "LO";
+            case 99:
+                return "HI";
+            default:
+                return String.valueOf(tempRight);
+        }
     }
 
     public boolean isAc() {
@@ -86,4 +107,6 @@ public final class AdapterState {
         this.ac = ac;
         this.auto = auto;
     }
+
+
 }

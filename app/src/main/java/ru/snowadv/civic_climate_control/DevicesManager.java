@@ -31,7 +31,7 @@ public enum DevicesManager {
 
 
     private UsbManager getUsbManager(Context context) {
-        return (UsbManager) context.getSystemService(Context.USB_SERVICE);
+        return context == null ? null : (UsbManager) context.getSystemService(Context.USB_SERVICE);
     }
 
 

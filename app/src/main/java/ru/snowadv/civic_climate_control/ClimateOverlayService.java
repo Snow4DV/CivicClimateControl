@@ -174,10 +174,12 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
         if(newState == null) {
             return;
         }
-        tempTextView1.post(() -> tempTextView1.setText(String.valueOf(newState.getTempLeft())));
-        tempTextView2.post(() -> tempTextView2.setText(String.valueOf(newState.getTempRight())));
-        acOnGlyph.post(() -> acOnGlyph.setVisibility(newState.isAc() ? View.VISIBLE : View.GONE));
-        acOffGlyph.post(() -> acOffGlyph.setVisibility(newState.isAc() ? View.GONE : View.VISIBLE));
+        tempTextView1.post(() -> tempTextView1.setText(newState.getTempLeftString()));
+        tempTextView2.post(() -> tempTextView2.setText(newState.getTempRightString()));
+        acOnGlyph.post(() -> acOnGlyph.setVisibility(newState.isAc() && !newState.isAuto()
+                ? View.VISIBLE : View.GONE));
+        acOffGlyph.post(() -> acOffGlyph.setVisibility(newState.isAc() || newState.isAuto()
+                ? View.GONE : View.VISIBLE));
         autoGlyph.post(() -> autoGlyph.setVisibility(newState.isAuto() ? View.VISIBLE : View.GONE));
         fanSpeedView.post(() -> fanSpeedView.setImageResource(newState.getFanLevel().getResourceId()));
         fanDirectionView.post(() -> fanDirectionView.setImageResource(newState.getFanDirection().getResourceId()));

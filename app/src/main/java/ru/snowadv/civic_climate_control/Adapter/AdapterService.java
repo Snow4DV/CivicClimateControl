@@ -95,6 +95,10 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand: service is starting");
+        if(intent == null) {
+            stopSelf();
+            Log.e(TAG, "onStartCommand: INTENT IS NULL");
+        }
         isAlive = true;
         currentDevice = intent.getParcelableExtra("device");
         connectToDevice(currentDevice);

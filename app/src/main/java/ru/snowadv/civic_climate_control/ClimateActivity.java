@@ -50,7 +50,11 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
         String adapterDeviceJson = PreferenceManager.getDefaultSharedPreferences(this)
                 .getString("adapter_name", null);
         SerializableUsbDevice adapterDevice = SerializableUsbDevice.fromJson(adapterDeviceJson);
-        AdapterService.getAccessAndBindService(this, adapterDevice, this);
+        if(adapterDevice == null) {
+            Log.e(TAG, "initAdapterService: Null adapterDevice");
+        } else {
+            AdapterService.getAccessAndBindService(this, adapterDevice, this);
+        }
     }
 
     public void onResume() {
@@ -135,8 +139,8 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
         if(newState == null) {
             return;
         }
-        binding.temp1.post(() -> binding.temp1.setText(String.valueOf(newState.getTempLeft())));
-        binding.temp2.post(() -> binding.temp2.setText(String.valueOf(newState.getTempRight())));
+        binding.temp1.post(() -> binding.temp1.setText(newState.getTempLeftString()));
+        binding.temp2.post(() -> binding.temp2.setText(newState.getTempRightString()));
         binding.acOnGlyph.post(() -> binding.acOnGlyph.setVisibility(newState.isAc() ? View.VISIBLE : View.GONE));
         binding.acOffGlyph.post(() -> binding.acOffGlyph.setVisibility(newState.isAc() ? View.GONE : View.VISIBLE));
         binding.autoGlyph.post(() -> binding.autoGlyph.setVisibility(newState.isAuto() ? View.VISIBLE : View.GONE));
