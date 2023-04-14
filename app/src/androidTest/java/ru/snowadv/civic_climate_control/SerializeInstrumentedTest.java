@@ -23,17 +23,10 @@ public class SerializeInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         String serialized = appContext.getString(R.string.default_adapter_json);
-        String expected="{\"vendorId\":4617,\"deviceId\":16,\"" +
+        String expected="{\"vendorId\":4617,\"productId\":16,\"" +
                 "productName\":\"Climate Control Adapter\"}";
         Assert.assertEquals(serialized,expected);
     }
 
-    @Test
-    public void adapterServiceStarts() {
-        // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        AdapterService service = new AdapterService();
-        service.re
-        appContext.bindService()
-    }
+
 }

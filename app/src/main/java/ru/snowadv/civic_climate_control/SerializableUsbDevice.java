@@ -1,25 +1,24 @@
 package ru.snowadv.civic_climate_control;
 
 import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 
-import java.io.Serializable;
-
 public class SerializableUsbDevice {
+    private static final String TAG = "SerializableUsbDevice";
     private int vendorId;
-    private int deviceId;
+    private int productId;
     private String productName;
     private static final Gson gson = new Gson();
 
 
-    public SerializableUsbDevice(int vendorId, int deviceId, String productName) {
+    public SerializableUsbDevice(int vendorId, int productId, String productName) {
         this.vendorId = vendorId;
-        this.deviceId = deviceId;
+        this.productId = productId;
         this.productName = productName;
     }
 
@@ -27,8 +26,8 @@ public class SerializableUsbDevice {
         return vendorId;
     }
 
-    public int getDeviceId() {
-        return deviceId;
+    public int getProductId() {
+        return productId;
     }
 
     public String getProductName() {
@@ -41,7 +40,7 @@ public class SerializableUsbDevice {
 
     public SerializableUsbDevice(UsbDevice usbDevice) {
         this.vendorId = usbDevice.getVendorId();
-        this.deviceId = usbDevice.getDeviceId();
+        this.productId = usbDevice.getProductId();
         this.productName = usbDevice.getProductName();
     }
 
@@ -56,18 +55,18 @@ public class SerializableUsbDevice {
     @NonNull
     @Override
     public String toString() {
-        return String.format("%s. VID: %s, PID: %s", productName, vendorId, deviceId);
+        return String.format("%s. VID: %s, PID: %s", productName, vendorId, productId);
     }
 
     public boolean isDescribingUsbDevice(UsbDevice device) {
-        return vendorId == device.getVendorId() && deviceId == device.getProductId();
+        return vendorId == device.getVendorId() && productId == device.getProductId();
     }
 
     @Override
     public boolean equals(@Nullable Object obj) {
         if(obj instanceof SerializableUsbDevice) {
             SerializableUsbDevice device = (SerializableUsbDevice) obj;
-            return vendorId == device.getVendorId() && deviceId == device.getDeviceId();
+            return vendorId == device.getVendorId() && productId == device.getProductId();
         }
         return false;
     }

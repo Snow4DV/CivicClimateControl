@@ -14,6 +14,7 @@ import android.hardware.usb.UsbManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import androidx.annotation.Nullable;
@@ -28,10 +29,13 @@ import com.hoho.android.usbserial.util.SerialInputOutputManager;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import ru.snowadv.civic_climate_control.R;
 import ru.snowadv.civic_climate_control.SerializableUsbDevice;
 
 /**
@@ -58,6 +62,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     private SerialInputOutputManager usbIoManager = null;
 
     private final Gson gson = new Gson();
+    private StringBuilder buildingResponse = new StringBuilder();
 
 
     public static boolean isAlive() {
@@ -67,7 +72,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Log.d(TAG, "onCreate: service is being created");
         usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
         usbDetachBroadcastReceiver
                 = detachUsbBroadcastReceiver(this::onUsbDetach);
@@ -89,6 +94,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand: service is starting");
         isAlive = true;
         currentDevice = intent.getParcelableExtra("device");
         connectToDevice(currentDevice);
@@ -98,12 +104,14 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     private void onUsbDetach() {
         if(!usbManager.getDeviceList().containsValue(currentDevice)) {
             stopSelf();
+            Toast.makeText(this, getString(R.string.adapter_not_connected), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onDestroy() {
         isAlive = false;
+        Log.d(TAG, "onDestroy: service is destroyed");
         super.onDestroy();
     }
 
@@ -131,7 +139,6 @@ public class AdapterService extends Service implements SerialInputOutputManager.
      */
     private void connectToDevice(UsbDevice device) {
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
-
         currentConnection = manager.openDevice(device);
         if (currentConnection == null) {
             Log.e(TAG, "connectToDevice: connection couldn't be established");
@@ -163,7 +170,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
 
         try {
             port.open(currentConnection);
-            port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1,
+            port.setParameters(9600, 8, UsbSerialPort.STOPBITS_1,
                     UsbSerialPort.PARITY_NONE);
             usbIoManager =
                     new SerialInputOutputManager(port, this);
@@ -195,6 +202,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
                                                OnServiceStartedListener onServiceStartedListener) {
         getAccessToDevice(context, device, (realDevice) -> {
             if(realDevice == null) { // Connection didn't go well
+                Log.e(TAG, "getAccessAndBindService: realDevice is null!");
                 onServiceStartedListener.onAdapterServiceStartOrFail(null); // Sending null binder - service didn't start
                 return false;
             } else {
@@ -216,8 +224,8 @@ public class AdapterService extends Service implements SerialInputOutputManager.
                     }
                 };
 
-                context.bindService(intent, connection, BIND_AUTO_CREATE);
-                return true;
+                context.startService(intent);
+                return context.bindService(intent, connection, BIND_AUTO_CREATE);
             }
         });
     }
@@ -238,7 +246,12 @@ public class AdapterService extends Service implements SerialInputOutputManager.
                 .findAny()
                 .orElse(null);
 
+
         if(realDevice == null) {
+            Log.e(TAG, "getAccessToDevice: realDevice is null!! Expected: " + device.toJson()
+                    + "\nGot these: " + manager.getDeviceList().values().stream().map(usbDevice -> usbDevice.getProductName() +
+                    " | PID: " + usbDevice.getProductId() + " | VID: "
+                    + usbDevice.getVendorId()).collect(Collectors.toList()));
             onAllowedCallback.apply(null); // device is not connected
             return;
         }
@@ -255,8 +268,15 @@ public class AdapterService extends Service implements SerialInputOutputManager.
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
         context.registerReceiver(receiver, filter);
 
-        PendingIntent permissionIntent = PendingIntent.getBroadcast(context, 0,
-                new Intent(ACTION_USB_PERMISSION), 0);
+        PendingIntent permissionIntent = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionIntent = PendingIntent.getBroadcast(context, 0,
+                    new Intent(ACTION_USB_PERMISSION),
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        } else {
+            permissionIntent = PendingIntent.getBroadcast(context, 0,
+                    new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_UPDATE_CURRENT);
+        }
         manager.requestPermission(realDevice, permissionIntent);
     }
 
@@ -272,7 +292,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     }
 
     private void sendStateToListeners(AdapterState state) {
-        listeners.values().stream().forEach(action -> action.onNewAdapterStateReceived(state));
+        listeners.values().forEach(action -> action.onNewAdapterStateReceived(state));
     }
 
     private boolean unregisterListener(int id) {
@@ -287,23 +307,44 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     @Override
     public boolean onUnbind(Intent intent) {
         unregisterReceiver(usbDetachBroadcastReceiver);
-        unregisterReceiver(usbConnectionAllowedReceiver);
+        //unregisterReceiver(usbConnectionAllowedReceiver);
         return super.onUnbind(intent);
     }
 
     @Override
     public void onNewData(byte[] data) {
-        Log.d(TAG, "onNewData: " + Arrays.toString(data));
 
-        StringBuffer jsonState = new StringBuffer();
-        for (byte ch :
-                data) {
-            jsonState.append((char) ch);
+        String jsonState = new String(data);
+        int startIndex = jsonState.indexOf('^');
+        int endIndex = jsonState.indexOf('$');
+
+
+        jsonState = jsonState.substring(startIndex != -1 ? startIndex + 1 : 0,
+                endIndex != -1 ? endIndex : jsonState.length());
+
+
+        if(startIndex != -1) {
+            buildingResponse.setLength(0);
         }
 
-        AdapterState adapterState = gson.fromJson(jsonState.toString(), AdapterState.class);
+        buildingResponse.append(jsonState);
 
-        sendStateToListeners(adapterState);
+        if(endIndex != -1) {
+            Log.e(TAG, "onNewData: BUILT " + buildingResponse.toString());
+            AdapterState adapterState =
+                    new AdapterState(AdapterState.FanLevel.LEVEL_1,
+                            0, 0, AdapterState.FanDirection.WINDSHIELD,
+                            false, false);
+            try {
+                adapterState = gson.fromJson(buildingResponse.toString(), AdapterState.class);
+            } catch(Exception ex) {
+                Log.e(TAG, "onNewData: communication failed when deserializing");
+                ex.printStackTrace();
+            }
+            sendStateToListeners(adapterState);
+        }
+
+
     }
 
     @Override

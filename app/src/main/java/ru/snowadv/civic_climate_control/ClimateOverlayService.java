@@ -29,6 +29,8 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 
+import com.google.gson.Gson;
+
 import ru.snowadv.civic_climate_control.Adapter.AdapterService;
 import ru.snowadv.civic_climate_control.Adapter.AdapterState;
 
@@ -206,8 +208,15 @@ public class ClimateOverlayService extends Service implements AdapterService.OnS
     }
 
     @Override
-    public void onNewAdapterStateReceived(AdapterState newState) {
-        Toast.makeText(this, newState.toString(), Toast.LENGTH_SHORT).show();
+    public void onNewAdapterStateReceived(AdapterState newState) { // it runs in service's thread
+        tempTextView1.post(() -> tempTextView1.setText(String.valueOf(newState.getTempLeft())));
+        tempTextView2.post(() -> tempTextView2.setText(String.valueOf(newState.getTempRight())));
+        acOnGlyph.post(() -> acOnGlyph.setVisibility(newState.isAc() ? View.VISIBLE : View.GONE));
+        acOffGlyph.post(() -> acOffGlyph.setVisibility(newState.isAc() ? View.GONE : View.VISIBLE));
+        autoGlyph.post(() -> autoGlyph.setVisibility(newState.isAuto() ? View.VISIBLE : View.GONE));
+        fanSpeedView.post(() -> fanSpeedView.setImageResource(newState.getFanLevel().getResourceId()));
+        fanDirectionView.post(() -> fanDirectionView.setImageResource(newState.getFanDirection().getResourceId()));
+//        Log.e(TAG, "onNewAdapterStateReceived: " + new Gson().toJson(newState));
     }
 
 

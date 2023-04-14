@@ -13,7 +13,23 @@ public final class AdapterState {
 
 
     public enum FanLevel {
-        LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_5, LEVEL_6, LEVEL_7
+        LEVEL_1(R.drawable.ic_fan_speed_1),
+        LEVEL_2(R.drawable.ic_fan_speed_2),
+        LEVEL_3(R.drawable.ic_fan_speed_3),
+        LEVEL_4(R.drawable.ic_fan_speed_4),
+        LEVEL_5(R.drawable.ic_fan_speed_5),
+        LEVEL_6(R.drawable.ic_fan_speed_6),
+        LEVEL_7(R.drawable.ic_fan_speed_7);
+        private final int resourceId;
+
+        FanLevel(int resourceId) {
+            this.resourceId = resourceId;
+        }
+
+        public int getResourceId() {
+            return resourceId;
+        }
+
     }
     public enum FanDirection {
         UP(R.drawable.ic_fan_dir_up),
