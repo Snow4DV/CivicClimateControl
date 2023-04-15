@@ -1,5 +1,7 @@
 package ru.snowadv.civic_climate_control.Adapter;
 
+import java.util.Objects;
+
 import ru.snowadv.civic_climate_control.R;
 
 public final class AdapterState {
@@ -67,6 +69,19 @@ public final class AdapterState {
 
     public int getTempRight() {
         return tempRight;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AdapterState that = (AdapterState) o;
+        return tempLeft == that.tempLeft && tempRight == that.tempRight && ac == that.ac && auto == that.auto && fanLevel == that.fanLevel && fanDirection == that.fanDirection;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fanLevel, tempLeft, tempRight, fanDirection, ac, auto);
     }
 
     public String getTempLeftString() {

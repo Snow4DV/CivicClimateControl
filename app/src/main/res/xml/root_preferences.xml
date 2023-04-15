@@ -33,7 +33,8 @@
             app:summary="Amount of time in seconds that floating panel will be displayed for after climate control state change"
             app:showSeekBarValue="true"
             app:key="floating_panel_duration"
-            app:defaultValue="10"/>
+            app:max="20"
+            app:defaultValue="5"/>
 
 
     </PreferenceCategory>

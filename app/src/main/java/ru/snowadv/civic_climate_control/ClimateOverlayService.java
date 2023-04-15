@@ -32,6 +32,9 @@ import androidx.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import ru.snowadv.civic_climate_control.Adapter.AdapterService;
 import ru.snowadv.civic_climate_control.Adapter.AdapterState;
 
@@ -61,11 +64,14 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
     private View autoGlyph, acOnGlyph, acOffGlyph, windshieldGlyph;
     private ImageView fanSpeedView, fanDirectionView;
 
+
     //private CycleChangeThread cycleChangeThread;
 
     private NotificationManager notificationManager;
     private NotificationChannel notificationChannel;
     private NotifierUtility notifierUtility;
+    private TimerThread thread;
+    private AdapterState lastState;
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -169,11 +175,24 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
         }
     }
 
+    private int getSecondsToCloseFromPreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(this)
+                .getInt("floating_panel_duration", 0);
+    }
+
     @Override
     public void onNewAdapterStateReceived(AdapterState newState) { // it runs in service's thread
         if(newState == null) {
             return;
         }
+
+        if(lastState == null || !lastState.equals(newState)) {
+            if(thread != null) {
+                thread.interrupt();
+            }
+            thread = new TimerThread(getSecondsToCloseFromPreferences());
+        }
+
         String tempLeftString = newState.getTempLeftString();
         if(tempLeftString != null) {
             tempTextView1.post(() -> tempTextView1.setText(tempLeftString));
@@ -231,6 +250,35 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
         Log.e(TAG, "onAdapterServiceStartOrFail: adapter service connection died");
         notifierUtility.reportErrorInNotification(this, R.string.adapter_not_connected);
         stopSelf();
+
+    }
+
+    private class TimerThread extends Thread {
+
+        private long endMillis;
+        private Calendar calendar;
+
+        public TimerThread(int secondsToClose) {
+            Calendar pastCalendar = Calendar.getInstance();
+            pastCalendar.add(Calendar.SECOND, secondsToClose);
+            endMillis = pastCalendar.getTimeInMillis();
+            calendar = Calendar.getInstance();
+        }
+
+        @Override
+        public void run() {
+            layoutView.setVisibility(View.VISIBLE);
+            while(calendar.getTimeInMillis() < endMillis) {
+                try {
+                    Thread.sleep(endMillis - calendar.getTimeInMillis());
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if(isAlive()) {
+                layoutView.setVisibility(View.GONE);
+            }
+        }
     }
 
 
