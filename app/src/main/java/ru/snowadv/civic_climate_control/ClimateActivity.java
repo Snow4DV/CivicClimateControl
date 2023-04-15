@@ -139,28 +139,29 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
         if(newState == null) {
             return;
         }
-        String tempLeftString = newState.getTempLeftString();
-        if(tempLeftString != null) {
-            binding.temp1Background.post(() -> binding.temp1Background.setVisibility(View.VISIBLE));
-            binding.temp1.post(() -> binding.temp1.setVisibility(View.VISIBLE));
-            binding.temp1.post(() -> binding.temp1.setText(tempLeftString));
-        } else {
-            binding.temp1.post(() -> binding.temp1.setVisibility(View.GONE));;
-            binding.temp1Background.post(() -> binding.temp1Background.setVisibility(View.GONE));
-        }
-        String tempRightString = newState.getTempRightString();
-        if(tempRightString != null) {
-            binding.temp2Background.post(() -> binding.temp2Background.setVisibility(View.VISIBLE));
-            binding.temp2.post(() -> binding.temp2.setVisibility(View.VISIBLE));
-            binding.temp2.post(() -> binding.temp2.setText(tempLeftString));
-        } else {
-            binding.temp2Background.post(() -> binding.temp2Background.setVisibility(View.GONE));
-            binding.temp2.post(() -> binding.temp2.setVisibility(View.GONE));;
-        }
-        binding.acOnGlyph.post(() -> binding.acOnGlyph.setVisibility(newState.isAc() ? View.VISIBLE : View.GONE));
-        binding.acOffGlyph.post(() -> binding.acOffGlyph.setVisibility(newState.isAc() ? View.GONE : View.VISIBLE));
-        binding.autoGlyph.post(() -> binding.autoGlyph.setVisibility(newState.isAuto() ? View.VISIBLE : View.GONE));
-        binding.fanSpeed.post(() -> binding.fanSpeed.setImageResource(newState.getFanLevel().getResourceId()));
-        binding.fanDirection.post(() -> binding.fanDirection.setImageResource(newState.getFanDirection().getResourceId()));
+
+        binding.temp1Background.post(() -> binding.temp1Background.setVisibility(
+                newState.isTempLeftVisible() ? View.VISIBLE : View.GONE));
+        binding.temp1.post(() -> binding.temp1.setVisibility(newState.isTempLeftVisible() ?
+                View.VISIBLE : View.GONE));
+        binding.temp1.post(() -> binding.temp1.setText(newState.getTempLeftString()));
+
+        binding.temp2Background.post(() -> binding.temp2Background.setVisibility(
+                newState.isTempRightVisible() ? View.VISIBLE : View.GONE));
+        binding.temp2.post(() -> binding.temp2.setVisibility(newState.isTempRightVisible() ?
+                View.VISIBLE : View.GONE));
+        binding.temp2.post(() -> binding.temp2.setText(newState.getTempRightString()));
+
+        binding.acOnGlyph.post(() -> binding.acOnGlyph.setVisibility(newState.getAcState() ==
+                AdapterState.ACState.ON ? View.VISIBLE : View.GONE));
+        binding.acOffGlyph.post(() -> binding.acOffGlyph.setVisibility(newState.getAcState()
+                == AdapterState.ACState.OFF ? View.VISIBLE : View.GONE));
+
+        binding.autoGlyph.post(() -> binding.autoGlyph.setVisibility(newState.isAuto() ?
+                View.VISIBLE : View.GONE));
+        binding.fanSpeed.post(() -> binding.fanSpeed.setImageResource(
+                newState.getFanLevel().getResourceId()));
+        binding.fanDirection.post(() -> binding.fanDirection.setImageResource(
+                newState.getFanDirection().getResourceId()));
     }
 }

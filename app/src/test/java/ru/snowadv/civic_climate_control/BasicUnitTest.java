@@ -25,8 +25,8 @@ public class BasicUnitTest {
 
     @Test
     public void test_serializeAdapterState() {
-        AdapterState state = new AdapterState(AdapterState.FanLevel.LEVEL_1, 15,
-                20, AdapterState.FanDirection.DOWN_WINDSHIELD,false, true);
+        AdapterState state = new AdapterState(0, 15,
+                20, 0,0, true);
 
         Assert.assertEquals("{\"fanLevel\":\"LEVEL_1\",\"tempLeft\":15,\"tempRight\":20," +
                 "\"fanDirection\":\"DOWN_WINDSHIELD\",\"ac\":false,\"auto\":true}", gson.toJson(state));

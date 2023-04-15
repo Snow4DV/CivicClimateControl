@@ -321,9 +321,9 @@ public class AdapterService extends Service implements SerialInputOutputManager.
         if(endIndex != -1) {
             Log.e(TAG, "onNewData: BUILT " + buildingResponse.toString());
             AdapterState adapterState =
-                    new AdapterState(AdapterState.FanLevel.LEVEL_1,
-                            0, 0, AdapterState.FanDirection.WINDSHIELD,
-                            false, false);
+                    new AdapterState(0,
+                            0, 0, 0,
+                            0, false);
             try {
                 adapterState = gson.fromJson(buildingResponse.toString(), AdapterState.class);
             } catch(Exception ex) {

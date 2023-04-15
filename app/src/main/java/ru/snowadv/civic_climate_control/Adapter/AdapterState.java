@@ -5,11 +5,14 @@ import java.util.Objects;
 import ru.snowadv.civic_climate_control.R;
 
 public final class AdapterState {
-    private FanLevel fanLevel = FanLevel.LEVEL_0;
+    private int fanLevel;
 
     private int tempLeft = 0;
     private int tempRight = 0;
 
+    public enum ACState {
+        HIDDEN, ON, OFF
+    }
 
     public enum FanLevel {
         LEVEL_0(R.drawable.ic_fan_speed_0),
@@ -50,17 +53,49 @@ public final class AdapterState {
         }
     }
 
-    private FanDirection fanDirection = FanDirection.NONE;
+    private int fanDirection;
 
     public FanDirection getFanDirection() {
-        return fanDirection == null ? FanDirection.UP : fanDirection;
+        switch (fanDirection) {
+            default:
+            case 0:
+                return FanDirection.NONE;
+            case 1:
+                return FanDirection.UP;
+            case 2:
+                return FanDirection.UP_DOWN;
+            case 3:
+                return FanDirection.DOWN;
+            case 4:
+                return FanDirection.DOWN_WINDSHIELD;
+            case 5:
+                return FanDirection.WINDSHIELD;
+        }
     }
 
-    private boolean ac = false;
+    private int ac = 0; // 0 - not shown; 1 - on; 2 - off
     private boolean auto = false;
 
     public FanLevel getFanLevel() {
-        return fanLevel == null ? FanLevel.LEVEL_0 : fanLevel;
+        switch (fanLevel) {
+            default:
+            case 0:
+                return FanLevel.LEVEL_0;
+            case 1:
+                return FanLevel.LEVEL_1;
+            case 2:
+                return FanLevel.LEVEL_2;
+            case 3:
+                return FanLevel.LEVEL_3;
+            case 4:
+                return FanLevel.LEVEL_4;
+            case 5:
+                return FanLevel.LEVEL_5;
+            case 6:
+                return FanLevel.LEVEL_6;
+            case 7:
+                return FanLevel.LEVEL_7;
+        }
     }
 
     public int getTempLeft() {
@@ -87,7 +122,7 @@ public final class AdapterState {
     public String getTempLeftString() {
         switch(tempLeft) {
             case -1:
-                return null;
+                return "";
             case 0:
                 return "LO";
             case 99:
@@ -97,10 +132,18 @@ public final class AdapterState {
         }
     }
 
+    public boolean isTempRightVisible() {
+        return tempRight == -1;
+    }
+
+    public boolean isTempLeftVisible() {
+        return tempLeft == -1;
+    }
+
     public String getTempRightString() {
         switch(tempRight) {
             case -1:
-                return null;
+                return "";
             case 0:
                 return "LO";
             case 99:
@@ -110,15 +153,29 @@ public final class AdapterState {
         }
     }
 
-    public boolean isAc() {
+    public int getAcRaw() {
         return ac;
     }
+
+    public ACState getAcState() {
+        switch(ac) {
+            default:
+            case 0:
+                return ACState.HIDDEN;
+            case 1:
+                return ACState.ON;
+            case 2:
+                return ACState.OFF;
+        }
+    }
+
+
 
     public boolean isAuto() {
         return auto;
     }
 
-    public AdapterState(FanLevel fanLevel, int tempLeft, int tempRight, FanDirection fanDirection, boolean ac, boolean auto) {
+    public AdapterState(int fanLevel, int tempLeft, int tempRight, int fanDirection, int ac, boolean auto) {
         this.fanLevel = fanLevel;
         this.tempLeft = tempLeft;
         this.tempRight = tempRight;
@@ -128,4 +185,15 @@ public final class AdapterState {
     }
 
 
+    @Override
+    public String toString() {
+        return "AdapterState{" +
+                "fanLevel=" + fanLevel +
+                ", tempLeft=" + tempLeft +
+                ", tempRight=" + tempRight +
+                ", fanDirection=" + fanDirection +
+                ", ac=" + ac +
+                ", auto=" + auto +
+                '}';
+    }
 }

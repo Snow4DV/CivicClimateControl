@@ -186,30 +186,27 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
             return;
         }
 
-        if(lastState == null || !lastState.equals(newState)) {
+        int secondsToCloseFromPreferences = getSecondsToCloseFromPreferences();
+        if((lastState == null || !lastState.equals(newState)) && secondsToCloseFromPreferences != 0) {
             if(thread != null) {
                 thread.interrupt();
             }
-            thread = new TimerThread(getSecondsToCloseFromPreferences());
+
+            thread = new TimerThread(secondsToCloseFromPreferences);
         }
 
-        String tempLeftString = newState.getTempLeftString();
-        if(tempLeftString != null) {
-            tempTextView1.post(() -> tempTextView1.setText(tempLeftString));
+        tempTextView1.post(() -> tempTextView1.setVisibility(newState.isTempLeftVisible() ?
+                View.VISIBLE : View.GONE));
+        tempTextView1.post(() -> tempTextView1.setText(newState.getTempLeftString()));
 
-        } else {
-            tempTextView1.post(() -> tempTextView1.setVisibility(View.GONE));
-        }
-        String tempRightString = newState.getTempRightString();
-        if(tempRightString != null) {
-            tempTextView2.post(() -> tempTextView2.setText(tempRightString));
-        } else {
-            tempTextView2.post(() -> tempTextView2.setVisibility(View.GONE));
-        }
-        acOnGlyph.post(() -> acOnGlyph.setVisibility(newState.isAc() && !newState.isAuto()
-                ? View.VISIBLE : View.GONE));
-        acOffGlyph.post(() -> acOffGlyph.setVisibility(newState.isAc() || newState.isAuto()
-                ? View.GONE : View.VISIBLE));
+        tempTextView2.post(() -> tempTextView2.setVisibility(newState.isTempRightVisible() ?
+                View.VISIBLE : View.GONE));
+        tempTextView2.post(() -> tempTextView2.setText(newState.getTempRightString()));
+
+        acOnGlyph.post(() -> acOnGlyph.setVisibility(newState.getAcState() ==
+                AdapterState.ACState.ON ? View.VISIBLE : View.GONE));
+        acOffGlyph.post(() -> acOffGlyph.setVisibility(newState.getAcState() ==
+                AdapterState.ACState.OFF ? View.VISIBLE : View.GONE));
         autoGlyph.post(() -> autoGlyph.setVisibility(newState.isAuto() ? View.VISIBLE : View.GONE));
         fanSpeedView.post(() -> fanSpeedView.setImageResource(newState.getFanLevel().getResourceId()));
         fanDirectionView.post(() -> fanDirectionView.setImageResource(newState.getFanDirection().getResourceId()));
