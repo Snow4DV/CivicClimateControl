@@ -109,6 +109,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
         }
 
         initAdapterService();
+        onNewAdapterStateReceived(new AdapterState(0, 0, 0, 0, 0, false));
     }
 
     private void initAdapterService() {
@@ -155,7 +156,12 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
         super.onDestroy();
         windowManager.removeView(layoutView);
         if(AdapterService.isAlive()) {
-            unbindService(this);
+            try {
+                unbindService(this);
+            } catch(IllegalArgumentException ex) {
+                Log.e(TAG, "onDestroy: unable to kill service");
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -182,17 +188,22 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
 
     @Override
     public void onNewAdapterStateReceived(AdapterState newState) { // it runs in service's thread
+        Log.e(TAG, "onNewAdapterStateReceived: " + newState.toString());
         if(newState == null) {
             return;
         }
 
         int secondsToCloseFromPreferences = getSecondsToCloseFromPreferences();
-        if((lastState == null || !lastState.equals(newState)) && secondsToCloseFromPreferences != 0) {
+
+        if((lastState == null || (!lastState.equals(newState)) && secondsToCloseFromPreferences != 0)) {
             if(thread != null) {
                 thread.interrupt();
             }
 
             thread = new TimerThread(secondsToCloseFromPreferences);
+            thread.start();
+
+            lastState = newState;
         }
 
         tempTextView1.post(() -> tempTextView1.setVisibility(newState.isTempLeftVisible() ?
@@ -203,10 +214,10 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
                 View.VISIBLE : View.GONE));
         tempTextView2.post(() -> tempTextView2.setText(newState.getTempRightString()));
 
-        acOnGlyph.post(() -> acOnGlyph.setVisibility(newState.getAcState() ==
-                AdapterState.ACState.ON ? View.VISIBLE : View.GONE));
-        acOffGlyph.post(() -> acOffGlyph.setVisibility(newState.getAcState() ==
-                AdapterState.ACState.OFF ? View.VISIBLE : View.GONE));
+        acOnGlyph.post(() -> acOnGlyph.setAlpha(newState.getAcState() ==
+                AdapterState.ACState.ON ? 1.0f : 0.0f));
+        acOffGlyph.post(() -> acOffGlyph.setAlpha(newState.getAcState() ==
+                AdapterState.ACState.OFF ? 1.0f : 0.0f));
         autoGlyph.post(() -> autoGlyph.setVisibility(newState.isAuto() ? View.VISIBLE : View.GONE));
         fanSpeedView.post(() -> fanSpeedView.setImageResource(newState.getFanLevel().getResourceId()));
         fanDirectionView.post(() -> fanDirectionView.setImageResource(newState.getFanDirection().getResourceId()));
@@ -252,28 +263,34 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
 
     private class TimerThread extends Thread {
 
-        private long endMillis;
-        private Calendar calendar;
+        private final int waitMillis;
+
+        private boolean interrupted = false;
+
+        public void interrupt() {
+            interrupted = true;
+        }
+
+        @Override
+        public boolean isInterrupted() {
+            return interrupted;
+        }
 
         public TimerThread(int secondsToClose) {
-            Calendar pastCalendar = Calendar.getInstance();
-            pastCalendar.add(Calendar.SECOND, secondsToClose);
-            endMillis = pastCalendar.getTimeInMillis();
-            calendar = Calendar.getInstance();
+            waitMillis = secondsToClose * 1000;
         }
 
         @Override
         public void run() {
-            layoutView.setVisibility(View.VISIBLE);
-            while(calendar.getTimeInMillis() < endMillis) {
-                try {
-                    Thread.sleep(endMillis - calendar.getTimeInMillis());
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+            if(layoutView == null) return;
+            layoutView.post(() -> layoutView.setAlpha(1.0f));
+            try {
+                Thread.sleep(waitMillis);
+            } catch (InterruptedException e) {
+                Log.d(TAG, "timerThread: sleeping for " + waitMillis);
             }
-            if(isAlive()) {
-                layoutView.setVisibility(View.GONE);
+            if(!isInterrupted()) {
+                layoutView.post(() -> layoutView.setAlpha(0.0f));
             }
         }
     }

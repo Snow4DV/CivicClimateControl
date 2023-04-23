@@ -133,11 +133,11 @@ public final class AdapterState {
     }
 
     public boolean isTempRightVisible() {
-        return tempRight == -1;
+        return tempRight != -1;
     }
 
     public boolean isTempLeftVisible() {
-        return tempLeft == -1;
+        return tempLeft != -1;
     }
 
     public String getTempRightString() {

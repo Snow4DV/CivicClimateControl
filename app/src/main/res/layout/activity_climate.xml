@@ -73,7 +73,7 @@
             android:maxLines="1"
 
             android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="50sp"
+            android:autoSizeMinTextSize="30sp"
             android:autoSizeMaxTextSize="140sp"
 
             android:text="27"/>
@@ -127,7 +127,7 @@
             android:maxLines="1"
 
             android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="50sp"
+            android:autoSizeMinTextSize="30sp"
             android:autoSizeMaxTextSize="140sp"
 
             android:text="LO"/>
@@ -276,6 +276,7 @@
         <ImageView
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:visibility="gone"
             app:layout_constraintHeight="percent"
             app:layout_constraintHeight_percent=".78"
             app:layout_constraintWidth="percent"

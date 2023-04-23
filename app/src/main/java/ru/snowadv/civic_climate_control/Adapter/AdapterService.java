@@ -319,7 +319,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
         buildingResponse.append(jsonState);
 
         if(endIndex != -1) {
-            Log.e(TAG, "onNewData: BUILT " + buildingResponse.toString());
+            //Log.e(TAG, "onNewData: BUILT " + buildingResponse.toString());
             AdapterState adapterState =
                     new AdapterState(0,
                             0, 0, 0,

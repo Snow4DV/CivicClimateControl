@@ -152,10 +152,10 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
                 View.VISIBLE : View.GONE));
         binding.temp2.post(() -> binding.temp2.setText(newState.getTempRightString()));
 
-        binding.acOnGlyph.post(() -> binding.acOnGlyph.setVisibility(newState.getAcState() ==
-                AdapterState.ACState.ON ? View.VISIBLE : View.GONE));
-        binding.acOffGlyph.post(() -> binding.acOffGlyph.setVisibility(newState.getAcState()
-                == AdapterState.ACState.OFF ? View.VISIBLE : View.GONE));
+        binding.acOnGlyph.post(() -> binding.acOnGlyph.setAlpha(newState.getAcState() ==
+                AdapterState.ACState.ON ? 1.0f : 0.0f));
+        binding.acOffGlyph.post(() -> binding.acOffGlyph.setAlpha(newState.getAcState()
+                == AdapterState.ACState.OFF ? 1.0f : 0.0f));
 
         binding.autoGlyph.post(() -> binding.autoGlyph.setVisibility(newState.isAuto() ?
                 View.VISIBLE : View.GONE));
