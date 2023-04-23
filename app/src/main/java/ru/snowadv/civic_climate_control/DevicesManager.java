@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,9 @@ public enum DevicesManager {
     }
 
     public Map<String, String> getDevicesList(UsbManager usbManager) {
+        if(usbManager == null) {
+            return new HashMap<>();
+        }
         return usbManager.getDeviceList().values().stream()
                 .map(SerializableUsbDevice::new)
                 .collect(Collectors.toMap(SerializableUsbDevice::toString,

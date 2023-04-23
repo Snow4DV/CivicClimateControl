@@ -29,6 +29,7 @@ import com.hoho.android.usbserial.util.SerialInputOutputManager;
 import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -92,7 +93,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand: service is starting");
         if(intent == null) {
-            stopSelf();
+            unbindClientsAndStop();
             Log.e(TAG, "onStartCommand: INTENT IS NULL");
         }
         isAlive = true;
@@ -103,7 +104,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
 
     private void onUsbDetach() {
         if(!usbManager.getDeviceList().containsValue(currentDevice)) {
-            stopSelf();
+            unbindClientsAndStop();
             Toast.makeText(this, getString(R.string.adapter_not_connected), Toast.LENGTH_SHORT).show();
         }
     }
@@ -143,7 +144,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
         currentConnection = manager.openDevice(device);
         if (currentConnection == null) {
             Log.e(TAG, "connectToDevice: connection couldn't be established");
-            stopSelf();
+            unbindClientsAndStop();
             return;
         }
 
@@ -163,7 +164,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
 
         if(usbSerialDriver == null) {
             Log.e(TAG, "connectToDevice: driver not found");
-            stopSelf();
+            unbindClientsAndStop();
             return;
         }
 
@@ -179,7 +180,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
             Log.d(TAG, "connectToDevice: usbIoManager started");
         } catch(IOException exception) {
             Log.e(TAG, "connectToDevice: failed to connect to device",exception);
-            stopSelf();
+            unbindClientsAndStop();
         }
 
 
@@ -291,8 +292,6 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     }
     @Override
     public boolean onUnbind(Intent intent) {
-        unregisterReceiver(usbDetachBroadcastReceiver);
-        //unregisterReceiver(usbConnectionAllowedReceiver);
         return super.onUnbind(intent);
     }
 
@@ -334,7 +333,14 @@ public class AdapterService extends Service implements SerialInputOutputManager.
 
     @Override
     public void onRunError(Exception e) {
-        Log.e(TAG, "onRunError: communication fail", e);
+        Log.e(TAG, "onRunError: communication fail. Stopping service", e);
+        unbindClientsAndStop();
+    }
+
+    public void unbindClientsAndStop() {
+        listeners.values().forEach(OnNewStateReceivedListener::onAdapterDisconnected);
+        listeners.clear();
+        stopSelf();
     }
 
     public class AdapterBinder extends Binder {
@@ -389,6 +395,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
 
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            context.unregisterReceiver(this);
             if (ACTION_USB_PERMISSION.equals(action)) {
                 synchronized (this) {
                     UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
@@ -402,7 +409,6 @@ public class AdapterService extends Service implements SerialInputOutputManager.
                         Log.w(TAG, "permission denied for device " + device);
                         callback.apply(null);
                     }
-                    context.unregisterReceiver(this);
                 }
             }
         }
@@ -410,15 +416,11 @@ public class AdapterService extends Service implements SerialInputOutputManager.
 
     }
 
-    @FunctionalInterface
     public interface OnNewStateReceivedListener {
         void onNewAdapterStateReceived(AdapterState newState);
+        void onAdapterDisconnected();
     }
 
-    public interface OnServiceStartedListener {
-        void onAdapterServiceStartOrFail(AdapterBinder binder, ServiceConnection connection);
-        void onAdapterServiceStop();
-    }
 
 
 }

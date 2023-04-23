@@ -108,8 +108,9 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
             startNotification();
         }
 
+        layoutView.setAlpha(0.0f); // hide at start
+
         initAdapterService();
-        onNewAdapterStateReceived(new AdapterState(0, 0, 0, 0, 0, false));
     }
 
     private void initAdapterService() {
@@ -195,7 +196,10 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
 
         int secondsToCloseFromPreferences = getSecondsToCloseFromPreferences();
 
-        if(lastState == null || ((!lastState.equals(newState)) && secondsToCloseFromPreferences != 0)) {
+        if(lastState == null) {
+            lastState = newState;
+            return;
+        } else if((!lastState.equals(newState)) && secondsToCloseFromPreferences != 0) {
             if(thread != null) {
                 thread.interrupt();
             }
@@ -224,7 +228,14 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
 //        Log.e(TAG, "onNewAdapterStateReceived: " + new Gson().toJson(newState));
     }
 
-
+    @Override
+    public void onAdapterDisconnected() {
+        try {
+            unbindService(this);
+        } catch(IllegalArgumentException exception) {
+            Log.e(TAG, "onAdapterDisconnected: tried to unbind service, but it is already dead");
+        }
+    }
 
 
     private void initViewFields(View layoutView) {

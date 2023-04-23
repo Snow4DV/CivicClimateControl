@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreferenceCompat;
@@ -133,7 +134,6 @@ public class SettingsActivity extends AppCompatActivity {
             floatingPanelSwitch = findPreference("floating_panel_enabled");
             floatingPanelDuration = findPreference("floating_panel_duration");
             askPermission = getAskPermission();
-
         }
 
 

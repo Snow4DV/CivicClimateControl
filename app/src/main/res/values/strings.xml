@@ -38,4 +38,9 @@
     <string name="adapter_not_connected">Adapter is not connected</string>
     <string name="adapter_not_connected_legacy">Adapter is not connected. Open the app in order to restart the service.</string>
     <string name="restart_service">Restart service</string>
+    <string name="set_default_device">%s is set as default device</string>
+    <string name="set_device_please">Device is not set. Go to settings and set the adapter device or connect it and allow the connection.</string>
+    <string name="connection_failed">Failed connecting to the adapter. Try reconnecting or setting it in settings.</string>
+    <string name="device_detected">New device detected</string>
+    <string name="set_new_device_as_default">Do you want to set %s as default device?</string>
 </resources>

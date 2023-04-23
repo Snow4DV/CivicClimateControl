@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 public class SerializableUsbDevice {
     private static final String TAG = "SerializableUsbDevice";
@@ -48,8 +49,14 @@ public class SerializableUsbDevice {
         return gson.toJson(this);
     }
 
-    public static SerializableUsbDevice fromJson(String json) {
-        return gson.fromJson(json, SerializableUsbDevice.class);
+    public static @Nullable SerializableUsbDevice fromJson(String json) {
+        try {
+            SerializableUsbDevice serializableUsbDevice = gson.fromJson(json, SerializableUsbDevice.class);
+            return serializableUsbDevice;
+        } catch(JsonSyntaxException exception) {
+            Log.e(TAG, "fromJson: error while parsing", exception);
+            return null;
+        }
     }
 
     @NonNull
