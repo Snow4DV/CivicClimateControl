@@ -12,13 +12,10 @@ import androidx.preference.PreferenceManager;
 
 public class ClimateAutoStart extends BroadcastReceiver
 {
-
-    // TODO: fix it
     private static final String TAG = "CivicClimateAutostart";
 
     public void onReceive(Context context, Intent arg1)
     {
-        context.startActivity(new Intent(context, ClimateActivity.class));
         startService(context);
 
     }

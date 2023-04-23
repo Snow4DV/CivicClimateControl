@@ -152,7 +152,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
         ProbeTable adapterProbeTable = new ProbeTable();
 
         adapterProbeTable.addProduct(currentDevice.getVendorId(), currentDevice.getProductId(),
-                Ch34xSerialDriver.class); // TODO: add driver selection - defaulting to ch34x atm
+                Ch34xSerialDriver.class); // TODO: add driver selection
 
         UsbSerialProber prober = (true ? UsbSerialProber.getDefaultProber() : new UsbSerialProber(adapterProbeTable));
 
