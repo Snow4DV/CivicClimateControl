@@ -8,10 +8,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 public class NotifierUtility {
 
@@ -27,11 +31,11 @@ public class NotifierUtility {
 
 
     public void reportErrorInNotification(Context context, int stringResourceId) {
+        Intent restartClimateServiceIntent =
+                new Intent(context, ClimateOverlayService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(context, 0,
+                restartClimateServiceIntent, PendingIntent.FLAG_IMMUTABLE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            Intent restartClimateServiceIntent =
-                    new Intent(context, ClimateOverlayService.class);
-            PendingIntent pendingIntent = PendingIntent.getService(context, 0,
-                    restartClimateServiceIntent, PendingIntent.FLAG_IMMUTABLE);
             Notification.Action.Builder builder = new Notification.Action.Builder(
                     Icon.createWithResource(context, R.drawable.ic_launcher_foreground),
                     context.getString(R.string.restart_service),
@@ -45,8 +49,33 @@ public class NotifierUtility {
                     .build();
 
             notificationManager.notify(0, notification);
-        } else {
-            //TODO: implement notifications for pre-O devices.
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            NotificationCompat.Action action = new NotificationCompat.Action.Builder(
+                    R.drawable.ic_launcher_foreground, context.getString(R.string.restart_service),
+                    pendingIntent).build();
+            Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setContentTitle(context.getString(R.string.app_name))
+                    .setContentText(context.getString(stringResourceId))
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .addAction(action).build();
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            if (ActivityCompat.checkSelfPermission
+                    (context, android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions. Fix later!
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+
+                // That is android 13 bs. There's no single car headunit that uses api > 30.
+                return;
+            }
+            notificationManager.notify(0, notification);
+
         }
 
     }
