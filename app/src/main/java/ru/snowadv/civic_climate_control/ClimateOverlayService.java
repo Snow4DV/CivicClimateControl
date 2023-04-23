@@ -195,7 +195,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
 
         int secondsToCloseFromPreferences = getSecondsToCloseFromPreferences();
 
-        if((lastState == null || (!lastState.equals(newState)) && secondsToCloseFromPreferences != 0)) {
+        if(lastState == null || ((!lastState.equals(newState)) && secondsToCloseFromPreferences != 0)) {
             if(thread != null) {
                 thread.interrupt();
             }

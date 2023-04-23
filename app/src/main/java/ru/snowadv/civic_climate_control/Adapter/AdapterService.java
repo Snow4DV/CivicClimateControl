@@ -3,7 +3,6 @@ package ru.snowadv.civic_climate_control.Adapter;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -28,8 +27,6 @@ import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.hoho.android.usbserial.util.SerialInputOutputManager;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -82,8 +79,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
      * On start service tries to connect to adapter. You should start receiving states after
      * service start.
      *
-     * WARNING! There are different possible behaviours:
-     * 1) Service starts and instantly connects - everything is fine
+     * If everything is fine: service starts and instantly connects - everything is fine
      * @param intent The Intent supplied to {@link android.content.Context#startService},
      * as given. It should have parceled UsbDevice as extra inside intent with key <em>"device"</em>
      * @param flags Additional data about this start request.
@@ -157,7 +153,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
         adapterProbeTable.addProduct(currentDevice.getVendorId(), currentDevice.getProductId(),
                 Ch34xSerialDriver.class); // TODO: add driver selection - defaulting to ch34x atm
 
-        UsbSerialProber prober = new UsbSerialProber(adapterProbeTable);
+        UsbSerialProber prober = (true ? UsbSerialProber.getDefaultProber() : new UsbSerialProber(adapterProbeTable));
 
         UsbSerialDriver usbSerialDriver = prober
                 .findAllDrivers(manager).stream()
@@ -253,7 +249,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
 
         // Otherwise ask for permission
         UsbConnectionAllowedBroadcastReceiver receiver =
-                new UsbConnectionAllowedBroadcastReceiver(onAllowedCallback);
+                new UsbConnectionAllowedBroadcastReceiver(onAllowedCallback, context);
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
         context.registerReceiver(receiver, filter);
 
@@ -383,10 +379,12 @@ public class AdapterService extends Service implements SerialInputOutputManager.
 
 
         private final Function<UsbDevice, Boolean> callback;
+        private final Context context;
 
 
-        public UsbConnectionAllowedBroadcastReceiver(Function<UsbDevice, Boolean> callback) {
+        public UsbConnectionAllowedBroadcastReceiver(Function<UsbDevice, Boolean> callback, Context context) {
             this.callback = callback;
+            this.context = context;
         }
 
         public void onReceive(Context context, Intent intent) {
@@ -404,6 +402,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
                         Log.w(TAG, "permission denied for device " + device);
                         callback.apply(null);
                     }
+                    context.unregisterReceiver(this);
                 }
             }
         }
