@@ -110,6 +110,9 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
 
     public void onResume() {
         super.onResume();
+        if(!serviceConnectionAlive) {
+            initAdapterService();
+        }
         changeOverlayServiceState(true);
     }
 
@@ -137,6 +140,7 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
     private void initFields() {
         settingsPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
+
 
     @Override
     protected void onDestroy() {
