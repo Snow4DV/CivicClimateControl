@@ -28,8 +28,9 @@ import com.hoho.android.usbserial.util.SerialInputOutputManager;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,7 +43,6 @@ import ru.snowadv.civic_climate_control.SerializableUsbDevice;
  * Behaviour:
  * 1) Alive only when it is connected to device
  * 2) Customer binds to it with Context.bindService()
- * 3) When device disconnected - SEND NOTIFICATION! // TODO   or maybe activites should do it?
  */
 public class AdapterService extends Service implements SerialInputOutputManager.Listener {
     private static final String ACTION_USB_PERMISSION =
@@ -61,6 +61,9 @@ public class AdapterService extends Service implements SerialInputOutputManager.
 
     private final Gson gson = new Gson();
     private StringBuilder buildingResponse = new StringBuilder();
+    private int retries = 0;
+
+    private DelayedDestroyThread destroyThread = null;
 
 
     public static boolean isAlive() {
@@ -138,14 +141,16 @@ public class AdapterService extends Service implements SerialInputOutputManager.
      * Method to connect service to UsbDevice
      * P.S. <em>permission to it should already be obtained</em>
      * @param device device that service will be connected to
+     *
+     * @return Was the connection successful or not
      */
-    private void connectToDevice(UsbDevice device) {
+    private boolean connectToDevice(UsbDevice device) {
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         currentConnection = manager.openDevice(device);
         if (currentConnection == null) {
             Log.e(TAG, "connectToDevice: connection couldn't be established");
             unbindClientsAndStop();
-            return;
+            return false;
         }
 
 
@@ -165,22 +170,24 @@ public class AdapterService extends Service implements SerialInputOutputManager.
         if(usbSerialDriver == null) {
             Log.e(TAG, "connectToDevice: driver not found");
             unbindClientsAndStop();
-            return;
+            return false;
         }
 
         UsbSerialPort port = usbSerialDriver.getPorts().get(0); // Device should have one port
 
         try {
             port.open(currentConnection);
-            port.setParameters(9600, 8, UsbSerialPort.STOPBITS_1,
+            port.setParameters(57600, 8, UsbSerialPort.STOPBITS_1,
                     UsbSerialPort.PARITY_NONE);
             usbIoManager =
                     new SerialInputOutputManager(port, this);
             usbIoManager.start();
             Log.d(TAG, "connectToDevice: usbIoManager started");
+            return true;
         } catch(IOException exception) {
             Log.e(TAG, "connectToDevice: failed to connect to device",exception);
             unbindClientsAndStop();
+            return false;
         }
 
 
@@ -298,6 +305,10 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     @Override
     public void onNewData(byte[] data) {
 
+        if(destroyThread != null && !destroyThread.isInterrupted()) {
+            destroyThread.interrupt();
+        }
+
         String jsonState = new String(data);
         int startIndex = jsonState.indexOf('^');
         int endIndex = jsonState.indexOf('$');
@@ -333,9 +344,47 @@ public class AdapterService extends Service implements SerialInputOutputManager.
 
     @Override
     public void onRunError(Exception e) {
-        Log.e(TAG, "onRunError: communication fail. Stopping service", e);
-        unbindClientsAndStop();
+        Log.e(TAG, "onRunError: communication fail. Dying in 500 ms.", e);
+        destroyThread = new DelayedDestroyThread();
+        destroyThread.start();
     }
+
+    public class DelayedDestroyThread extends Thread {
+
+        private int destroyDelayMillis = 500;
+
+        public DelayedDestroyThread() {
+        }
+
+        public DelayedDestroyThread(int destroyDelayMillis) {
+            this.destroyDelayMillis = destroyDelayMillis;
+        }
+
+        private boolean interrupted = false;
+
+        public void interrupt() {
+            interrupted = true;
+        }
+
+        @Override
+        public boolean isInterrupted() {
+            return interrupted;
+        }
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(destroyDelayMillis);
+            } catch (InterruptedException e) {
+            }
+
+            if(!isInterrupted()) {
+                unbindClientsAndStop();
+            }
+
+        }
+    }
+
+
 
     public void unbindClientsAndStop() {
         listeners.values().forEach(OnNewStateReceivedListener::onAdapterDisconnected);

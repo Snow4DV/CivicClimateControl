@@ -45,6 +45,7 @@ import ru.snowadv.civic_climate_control.Adapter.AdapterState;
 public class ClimateOverlayService extends Service implements AdapterService.OnNewStateReceivedListener, ServiceConnection {
 
     static final String CHANNEL_ID = "Overlay_notification_channel";
+    private static boolean climateActivityIsVisible = false;
 
     private static final int LayoutParamFlags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
             | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
@@ -80,9 +81,10 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Log.d(TAG, "onCreate: creating overlay service");
         notifierUtility = new NotifierUtility(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkIfServiceCanDrawOverlays()) {
+            Log.e(TAG, "onCreate: service cant draw overlay. stopping");
             stop(this);
         }
 
@@ -114,6 +116,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
     }
 
     private void initAdapterService() {
+        Log.d(TAG, "initAdapterService: starting adapter service");
         String adapterDeviceJson = PreferenceManager.getDefaultSharedPreferences(this)
                 .getString("adapter_name", null);
         SerializableUsbDevice adapterDevice = SerializableUsbDevice.fromJson(adapterDeviceJson);
@@ -155,6 +158,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy: stopping overlay service");
         windowManager.removeView(layoutView);
         if(AdapterService.isAlive()) {
             try {
@@ -164,7 +168,15 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
                 ex.printStackTrace();
             }
         }
+        notifierUtility.reportErrorInNotification(this, R.string.service_died);
     }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        Toast.makeText(this, "Civic climate service was killed due to low memory", Toast.LENGTH_LONG).show();
+    }
+
 
     public static ComponentName start(Context context) {
         return context.startService(new Intent(context, ClimateOverlayService.class));
@@ -189,8 +201,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
 
     @Override
     public void onNewAdapterStateReceived(AdapterState newState) { // it runs in service's thread
-        Log.e(TAG, "onNewAdapterStateReceived: " + newState.toString());
-        if(newState == null) {
+        if(newState == null || climateActivityIsVisible) {
             return;
         }
 
@@ -232,6 +243,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
     public void onAdapterDisconnected() {
         try {
             unbindService(this);
+            stopSelf();
         } catch(IllegalArgumentException exception) {
             Log.e(TAG, "onAdapterDisconnected: tried to unbind service, but it is already dead");
         }
@@ -253,10 +265,11 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
+        Log.d(TAG, "onServiceConnected: connected to adapter service");
         AdapterService.AdapterBinder binder = (service instanceof AdapterService.AdapterBinder) ?
                 (AdapterService.AdapterBinder) service : null;
         if(binder == null) {
-            Log.e(TAG, "onAdapterServiceStartOrFail: adapter service connection failed");
+            Log.e(TAG, "onServiceConnected: adapter service connection failed");
             notifierUtility.reportErrorInNotification(this, R.string.adapter_not_connected);
             stopSelf();
         } else {
@@ -306,5 +319,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
         }
     }
 
-
+    public static void setClimateActivityIsVisible(boolean climateActivityIsVisible) {
+        ClimateOverlayService.climateActivityIsVisible = climateActivityIsVisible;
+    }
 }

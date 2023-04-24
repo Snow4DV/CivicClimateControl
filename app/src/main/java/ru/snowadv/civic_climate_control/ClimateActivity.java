@@ -152,6 +152,21 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
 
     private void initInterfaceListeners() {
         binding.settingsButton.setOnClickListener(view -> openSettingsActivity());
+        binding.adapterStatusButton.setOnClickListener(view ->
+                restartServiceDialog(serviceConnectionAlive));
+    }
+
+    private void restartServiceDialog(boolean isAdapterConnectionAlive) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(isAdapterConnectionAlive ? getString(R.string.adapter_connected) :
+                        getString(R.string.adapter_not_connected))
+                .setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
+        if(!isAdapterConnectionAlive) {
+            builder.setPositiveButton(R.string.restart_service_button, (dialog, which) -> {
+                initAdapterService();
+            });
+        }
+        builder.create().show();
     }
 
     private void hideTitleAndNotificationBars() {
@@ -165,12 +180,10 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
     }
 
     private void changeOverlayServiceState(boolean isActivityVisible) {
-        if (!isActivityVisible
-                && settingsPreferences.getBoolean("floating_panel_enabled", false)) {
+        if(!isActivityVisible) {
             ClimateOverlayService.start(this);
-        } else {
-            ClimateOverlayService.stop(this);
         }
+        ClimateOverlayService.setClimateActivityIsVisible(isActivityVisible);
     }
 
 

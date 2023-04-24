@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Климат Civic</string>
+    <string name="title_activity_settings">Настройки</string>
+    <string name="messages_header">Сообщения</string>
+    <string name="sync_header">Синхронизировать</string>
+    <string name="signature_title">Ваша подпись</string>
+    <string name="reply_title">Действие по умолчанию</string>
+    <string name="sync_title">Синхронизировать Email периодически</string>
+    <string name="attachment_title">Скачать входящее приложение</string>
+    <string name="attachment_summary_on">Автоматически скачивать приложения из входящих писем</string>
+    <string name="attachment_summary_off">Скачать только вложения</string>
+    <string name="adapter_settings_title">Адаптер</string>
+    <string name="floating_panel_title">Всплывающая панель</string>
+    <string name="widget_title">Виджет</string>
+    <string name="title_activity_fullscreen">Полноэкранная активность</string>
+    <string name="dummy_button">Кнопка-заглушка</string>
+    <string name="dummy_content">Заглушка</string>
+    <string name="cant_get_usb_devices">Невозможно получить USB-устройства</string>
+    <string name="need_permission">Требуется разрешение</string>
+    <string name="ok">Ок</string>
+    <string name="need_permission_message">Для отображения оверлея нужно разрешение</string>
+    <string name="cancel">Отменить</string>
+    <string name="please_allow_overlay">Для автозапуска оверлея и отрисовки поверх других приложений нужно разрешение. Вам потребуется выдать его в настройках.</string>
+    <string name="overlay_notification_channel_name">Оверлей климата</string>
+    <string name="overlay_running">Оверлей запущен</string>
+    <string name="disconnected">Отключено</string>
+    <string name="connected">Подключено</string>
+    <string name="adapter_not_connected">Адаптер не подключен</string>
+    <string name="adapter_not_connected_legacy">Адаптер не подключен. Откройте приложение для перезапуска сервиса.</string>
+    <string name="restart_service">Перезапуск сервиса</string>
+    <string name="set_default_device">%s установлен в качестве устройства по умолчанию</string>
+    <string name="set_device_please">Адаптер не задан в настройках. Нажмите на шестеренку справа сверху и выберите устройство.</string>
+    <string name="connection_failed">Ошибка при подключении к адаптеру. Проверьте правильность выбранного адаптер в настройках или попробуйте переподключить.</string>
+    <string name="device_detected">Обнаружено новое устройство</string>
+    <string name="set_new_device_as_default">Хотите ли вы задать %s как устройство по умолчанию? Не забудьте также поставить галочку, чтобы приложение больше не спрашивало об этом.</string>
+    <string name="adapter_connected">Адаптер подключен</string>
+    <string name="restart_service_button">Перезапуск сервиса</string>
+    <string name="service_died">Сервис  умер</string>
+    <string name="overlay_autostart">Автозапуск оверлея климат-контроля</string>
+    <string name="climate_autostarted">Оверлей успешно запущен</string>
+    <string name="overlay_disabled">"Автозапуск отработал успешно, но оверлей отключен в настройках. "</string>
+</resources>

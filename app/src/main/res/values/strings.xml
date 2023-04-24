@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Civic Climate Control</string>
+    <string name="app_name">Climate Civic</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Preference Titles -->
@@ -32,7 +32,7 @@
     <string name="overlay_running">Climate Control Overlay is running</string>
     <string name="disconnected">Disconnected</string>
     <string name="connected">Connected</string>
-    <string name="default_adapter_json">{\"vendorId\":4617,\"productId\":16,\"productName\":\"Climate Control Adapter\"}</string>
+    <string name="default_adapter_json" translatable="false">{\"vendorId\":4617,\"productId\":16,\"productName\":\"Climate Control Adapter\"}</string>
 
     <!--Overlay errors-->
     <string name="adapter_not_connected">Adapter is not connected</string>
@@ -42,5 +42,11 @@
     <string name="set_device_please">Device is not set. Go to settings and set the adapter device or connect it and allow the connection.</string>
     <string name="connection_failed">Failed connecting to the adapter. Try reconnecting or setting it in settings.</string>
     <string name="device_detected">New device detected</string>
-    <string name="set_new_device_as_default">Do you want to set %s as default device?</string>
+    <string name="set_new_device_as_default">Do you want to set %s as default device? Please also tick the check to prevent app from asking it again later.</string>
+    <string name="adapter_connected">Adapter is connected</string>
+    <string name="restart_service_button">Restart service</string>
+    <string name="service_died">Service died</string>
+    <string name="overlay_autostart">Autostart climate overlay</string>
+    <string name="climate_autostarted">Climate overlay service started</string>
+    <string name="overlay_disabled">Overlay is disabled in settings. Enable it first before putting it to autostart</string>
 </resources>

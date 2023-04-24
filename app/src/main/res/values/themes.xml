@@ -14,6 +14,11 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="noAnimTheme" parent="android:Theme">
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+
     <style name="Theme.CivicClimateControl.Fullscreen" parent="Theme.CivicClimateControl">
         <item name="android:actionBarStyle">
             @style/Widget.Theme.CivicClimateControl.ActionBar.Fullscreen
