@@ -49,4 +49,11 @@
     <string name="overlay_autostart">Autostart climate overlay</string>
     <string name="climate_autostarted">Climate overlay service started</string>
     <string name="overlay_disabled">Overlay is disabled in settings. Enable it first before putting it to autostart</string>
+    <string name="select_adapter">Select adapter device</string>
+    <string name="current_adapter_device">Current adapter device</string>
+    <string name="current_adapter_status">Current adapter status</string>
+    <string name="enable_overlay">Enable floating panel</string>
+    <string name="overlay_starts_on_boot">Floating panel will start automatically on device boot</string>
+    <string name="display_duration">Display duration</string>
+    <string name="display_duration_description">Amount of time in seconds that floating panel will be displayed for after climate control state change</string>
 </resources>

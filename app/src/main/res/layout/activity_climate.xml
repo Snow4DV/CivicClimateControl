@@ -67,14 +67,13 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:targetApi="o"
-            android:padding="45dp"
+            android:padding="10dp"
 
             android:gravity="center"
             android:maxLines="1"
+            android:textSize="85sp"
 
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="30sp"
-            android:autoSizeMaxTextSize="140sp"
+
 
             android:text="27"/>
 
@@ -121,14 +120,12 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:targetApi="o"
-            android:padding="50dp"
+            android:padding="10dp"
 
             android:gravity="center"
             android:maxLines="1"
 
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="30sp"
-            android:autoSizeMaxTextSize="140sp"
+            android:textSize="85sp"
 
             android:text="LO"/>
 

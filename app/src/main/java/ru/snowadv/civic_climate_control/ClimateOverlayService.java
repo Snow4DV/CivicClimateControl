@@ -110,7 +110,9 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
             startNotification();
         }
 
-        layoutView.setAlpha(0.0f); // hide at start
+        if(getSecondsToCloseFromPreferences() != 0) {
+            layoutView.setAlpha(0.0f); // hide at start
+        }
 
         initAdapterService();
     }

@@ -34,6 +34,7 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import ru.snowadv.civic_climate_control.NotifierUtility;
 import ru.snowadv.civic_climate_control.R;
 import ru.snowadv.civic_climate_control.SerializableUsbDevice;
 

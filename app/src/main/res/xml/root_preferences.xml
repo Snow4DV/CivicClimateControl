@@ -5,15 +5,15 @@
         <ListPreference
             app:key="adapter_name"
             app:defaultValue="@string/default_adapter_json"
-            app:summary="Select adapter device"
-            app:title="Adapter device">
+            app:summary="@string/select_adapter"
+            app:title="@string/current_adapter_device">
         </ListPreference>
 
         <Preference
             app:selectable="true"
             app:enabled="true"
             app:key="adapter_status"
-            app:title="Current adapter status"
+            app:title="@string/current_adapter_status"
             app:summary="Disconnected" />
 
 
@@ -26,11 +26,11 @@
 
         <SwitchPreferenceCompat
             app:key="floating_panel_enabled"
-            app:title="Enable floating panel"
-            app:summary="Floating panel will start automatically on device boot"/>
+            app:title="@string/enable_overlay"
+            app:summary="@string/overlay_starts_on_boot"/>
         <SeekBarPreference
-            app:title="Display duration"
-            app:summary="Amount of time in seconds that floating panel will be displayed for after climate control state change"
+            app:title="@string/display_duration"
+            app:summary="@string/display_duration_description"
             app:showSeekBarValue="true"
             app:key="floating_panel_duration"
             app:defaultValue="5"/>

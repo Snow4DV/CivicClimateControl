@@ -36,8 +36,15 @@
     <string name="set_new_device_as_default">Хотите ли вы задать %s как устройство по умолчанию? Не забудьте также поставить галочку, чтобы приложение больше не спрашивало об этом.</string>
     <string name="adapter_connected">Адаптер подключен</string>
     <string name="restart_service_button">Перезапуск сервиса</string>
-    <string name="service_died">Сервис  умер</string>
+    <string name="service_died">Сервис оверлея был завершен</string>
     <string name="overlay_autostart">Автозапуск оверлея климат-контроля</string>
     <string name="climate_autostarted">Оверлей успешно запущен</string>
     <string name="overlay_disabled">"Автозапуск отработал успешно, но оверлей отключен в настройках. "</string>
+    <string name="select_adapter">Выберите адаптер</string>
+    <string name="current_adapter_device">Текущий адаптер</string>
+    <string name="current_adapter_status">Текущее состояние адаптера</string>
+    <string name="enable_overlay">Включить оверлей</string>
+    <string name="overlay_starts_on_boot">Оверлей будет запущен автоматически при загрузке устройства</string>
+    <string name="display_duration">Длительность отображения изменений</string>
+    <string name="display_duration_description">Время, на которое покажется оверлей климата при изменении его состояния</string>
 </resources>
