@@ -56,4 +56,13 @@
     <string name="overlay_starts_on_boot">Floating panel will start automatically on device boot</string>
     <string name="display_duration">Display duration</string>
     <string name="display_duration_description">Amount of time in seconds that floating panel will be displayed for after climate control state change</string>
+    <string name="flash_summary">Use it if you\'ve just assembled your adapter</string>
+    <string name="flash_title">Flash adapter</string>
+    <string name="uno_only">Only for Uno and Nano</string>
+    <string name="uno_only_are_you_sure">This feature is available for Arduino Uno only. Do you want to continue?</string>
+    <string name="please_choose_adapter">Choose connected adapter at first</string>
+    <string name="usb_request_button">Usb Request</string>
+    <string name="flash_adapter">Flash adapter</string>
+    <string name="adapter_is_in_master_mode">Adapter is in MASTER mode</string>
+    <string name="master_checkbox_description">Set the checkbox checked if adapter is working on its own (in MASTER mode) and is not connected in parallel with Connects2/Trioma/Stock headunit</string>
 </resources>

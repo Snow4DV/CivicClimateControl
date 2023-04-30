@@ -1,6 +1,5 @@
 package ru.snowadv.civic_climate_control;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +13,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -28,18 +26,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.function.Function;
 
+import ru.snowadv.civic_climate_control.Adapter.AdapterService;
 import ru.snowadv.civic_climate_control.databinding.SettingsActivityBinding;
+import ru.snowadv.civic_climate_control.flasher.FlasherActivity;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -124,6 +120,7 @@ public class SettingsActivity extends AppCompatActivity {
         private Preference adapterStatus;
         private SwitchPreferenceCompat floatingPanelSwitch;
         private SeekBarPreference floatingPanelDuration;
+        private Preference flashAdapterButton;
 
         private ActivityResultLauncher<String> askPermission;
 
@@ -133,8 +130,10 @@ public class SettingsActivity extends AppCompatActivity {
             adapterStatus = findPreference("adapter_status");
             floatingPanelSwitch = findPreference("floating_panel_enabled");
             floatingPanelDuration = findPreference("floating_panel_duration");
+            flashAdapterButton = findPreference("flash_adapter");
             askPermission = getAskPermission();
         }
+        
 
 
         @NonNull
@@ -199,8 +198,44 @@ public class SettingsActivity extends AppCompatActivity {
         private void initListeners() {
             floatingPanelSwitch.setOnPreferenceChangeListener(this);
             connectedDevices.setOnPreferenceChangeListener(this);
+            flashAdapterButton.setOnPreferenceClickListener(preference -> askAndOpenFlashActivity());
         }
 
+        private boolean askAndOpenFlashActivity() {
+            if(getActivity() == null) return false;
+
+
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            if(!isAdapterConnected()) {
+                builder.setMessage(R.string.please_choose_adapter)
+                        .setPositiveButton(android.R.string.ok, null);
+            } else {
+                builder.setTitle(R.string.uno_only).setMessage(R.string.uno_only_are_you_sure)
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> openFlashActivity())
+                        .setNegativeButton(android.R.string.no, null);
+            }
+
+            return builder.show() != null;
+        }
+        private void openFlashActivity() {
+            if(getActivity() == null) return;
+            SerializableUsbDevice serializedDevice =
+                    SerializableUsbDevice.fromJson(connectedDevices.getValue());
+
+            AdapterService.getAccessToDevice(getActivity(), serializedDevice, usbDevice -> {
+                Log.d(TAG, "openFlashActivity: opening");
+                Intent intent = new Intent(getActivity(), FlasherActivity.class);
+                intent.putExtra("adapter", usbDevice);
+                if(getActivity() != null) {
+                    getActivity().startActivity(intent);
+                }
+                return true;
+            });
+
+
+        }
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
@@ -210,9 +245,18 @@ public class SettingsActivity extends AppCompatActivity {
             Map<String, String> devicesList = DevicesManager.INSTANCE.getDevicesList(getContext());
             connectedDevices.setEntries(devicesList.keySet().toArray(new CharSequence[]{}));
             connectedDevices.setEntryValues(devicesList.values().toArray(new CharSequence[]{}));
-            setDeviceConnectionStatus(devicesList.containsValue(connectedDevices.getValue()));
+            setDeviceConnectionStatus(isAdapterConnected(devicesList));
         }
 
+        private boolean isAdapterConnected(Map<String, String> devicesList) {
+            return devicesList.containsValue(connectedDevices.getValue());
+        }
+
+
+        private boolean isAdapterConnected() {
+            Map<String, String> devicesList = DevicesManager.INSTANCE.getDevicesList(getContext());
+            return isAdapterConnected(devicesList);
+        }
         private void setDeviceConnectionStatus(boolean isConnected) {
             adapterStatus.setSummary(isConnected ? R.string.connected : R.string.disconnected);
         }

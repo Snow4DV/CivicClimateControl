@@ -15,3 +15,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Civic Climate Control"
 include ':app'
+include ':IntelHexFormatReader'
+include ':androidarduinosketchuploader'

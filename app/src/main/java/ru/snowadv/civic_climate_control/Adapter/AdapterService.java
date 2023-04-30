@@ -234,6 +234,12 @@ public class AdapterService extends Service implements SerialInputOutputManager.
      */
     public static void getAccessToDevice(Context context, SerializableUsbDevice device,
                                             Function<UsbDevice, Boolean> onAllowedCallback) {
+
+        if(device == null) {
+            Log.e(TAG, "getAccessToDevice: device is null!");
+            return;
+        }
+
         UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
         UsbDevice realDevice = manager.getDeviceList().values().stream()
                 .filter(device::isDescribingUsbDevice)

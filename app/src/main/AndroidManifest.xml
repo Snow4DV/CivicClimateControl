@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.RECEIVE_MMS" />
-
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-feature android:name="android.hardware.usb.host" />
 
     <uses-permission android:name="android.permission.USB_PERMISSION" />
@@ -20,28 +20,32 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CivicClimateControl">
         <activity
+            android:name=".flasher.FlasherActivity"
+            android:exported="false" />
+        <activity
             android:name=".AutostartActivity"
+            android:exported="true"
             android:icon="@mipmap/ic_launcher"
-            android:roundIcon="@mipmap/ic_launcher_round"
             android:label="@string/overlay_autostart"
-            android:theme="@style/noAnimTheme"
+            android:roundIcon="@mipmap/ic_launcher_round"
             android:taskAffinity=".task.autostart"
-            android:exported="true">
+            android:theme="@style/noAnimTheme">
             <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ClimateActivity"
-            android:taskAffinity=".task.launcher"
             android:exported="true"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape"
+            android:taskAffinity=".task.launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
 
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />

@@ -11,7 +11,7 @@ android {
         minSdk 21
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName "1.1"
 
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -52,4 +52,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.github.mik3y:usb-serial-for-android:3.4.6'
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.2"
+    implementation project(':androidarduinosketchuploader')
+    implementation "com.github.felHR85:UsbSerial:6.1.0"
 }

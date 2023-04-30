@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/deviceName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:scrollbars="vertical"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/flashLog"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="34dp"
+        android:gravity="bottom"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@id/deviceName"
+        app:layout_constraintBottom_toTopOf="@id/master_checkbox"/>
+
+    <CheckBox
+        android:id="@+id/master_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/adapter_is_in_master_mode"
+        android:checked="true"
+        app:layout_constraintBottom_toTopOf="@id/checkbox_description"
+        android:padding="5dp"/>
+
+    <TextView
+        android:id="@+id/checkbox_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/master_checkbox_description"
+        app:layout_constraintBottom_toTopOf="@id/buttonRequest"
+        android:padding="10dp"/>
+
+
+    <Button
+        android:id="@+id/buttonRequest"
+        style="?borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="42dp"
+        android:text="@string/usb_request_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:padding="20dp"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/buttonFlash"
+        style="?borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="42dp"
+        android:text="@string/flash_adapter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:padding="20dp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

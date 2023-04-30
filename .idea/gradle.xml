@@ -11,6 +11,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/IntelHexFormatReader" />
+            <option value="$PROJECT_DIR$/androidarduinosketchuploader" />
             <option value="$PROJECT_DIR$/app" />
           </set>
         </option>

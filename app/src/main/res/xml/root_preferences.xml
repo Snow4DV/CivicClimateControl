@@ -16,6 +16,14 @@
             app:title="@string/current_adapter_status"
             app:summary="Disconnected" />
 
+        <Preference
+            app:selectable="true"
+            app:enabled="true"
+            app:key="flash_adapter"
+            app:title="@string/flash_title"
+            app:summary="@string/flash_summary" />
+
+
 
 
 
