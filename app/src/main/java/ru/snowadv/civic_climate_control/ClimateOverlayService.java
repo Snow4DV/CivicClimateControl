@@ -198,7 +198,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
 
     private int getSecondsToCloseFromPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this)
-                .getInt("floating_panel_duration", 0);
+                .getInt("floating_panel_duration", 3);
     }
 
     @Override

@@ -55,6 +55,7 @@ public class FlasherActivity extends AppCompatActivity {
                 case UsbSerialManager.ACTION_USB_NOT_SUPPORTED: // USB NOT SUPPORTED
                 case UsbSerialManager.ACTION_USB_DEVICE_NOT_WORKING:
                     Toast.makeText(context, R.string.adapter_not_connected, Toast.LENGTH_SHORT).show();
+                    finish();
                     break;
             }
         }
@@ -103,7 +104,7 @@ public class FlasherActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        unregisterReceiver(mUsbNotifyReceiver);
+        //unregisterReceiver(mUsbNotifyReceiver);
     }
 
     public void uploadHex() {

@@ -37,6 +37,7 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
 
 
     private static final String TAG = "ClimateActivity";
+    private static final boolean DONT_SHOW_NEW_DEVICE_DIALOG = true;
     private ActivityClimateBinding binding;
     private SharedPreferences settingsPreferences;
     private NotifierUtility notifierUtility;
@@ -281,6 +282,9 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
     }
 
     private void offerToSetNewUsbDevice(SerializableUsbDevice device) {
+        if(DONT_SHOW_NEW_DEVICE_DIALOG) {
+            return;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.device_detected)
                 .setMessage(String.format(getString(R.string.set_new_device_as_default),
