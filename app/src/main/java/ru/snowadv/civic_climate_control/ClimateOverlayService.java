@@ -88,14 +88,15 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
             stop(this);
         }
 
+
         params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
                 LayoutParamFlags,
                 PixelFormat.TRANSLUCENT);
         params.gravity = Gravity.TOP | Gravity.END;
-        windowManager = (WindowManager) this.getSystemService(WINDOW_SERVICE);
+        windowManager = (WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE);
         mDisplay = windowManager.getDefaultDisplay();
         inflater = LayoutInflater.from(this);
         layoutView = inflater.inflate(R.layout.climate_overlay, null);

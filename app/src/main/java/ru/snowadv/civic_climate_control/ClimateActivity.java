@@ -181,8 +181,12 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
     }
 
     private void changeOverlayServiceState(boolean isActivityVisible) {
+        boolean isOverlayEnabled = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("floating_panel_enabled", false);
+        if(!isOverlayEnabled) return;
+
         if(!isActivityVisible) {
-            ClimateOverlayService.start(this);
+            ClimateOverlayService.start(this); // this will restart service if needed
         }
         ClimateOverlayService.setClimateActivityIsVisible(isActivityVisible);
     }
