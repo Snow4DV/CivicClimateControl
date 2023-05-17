@@ -13,21 +13,19 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import java.io.BufferedInputStream;
-import java.io.InputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import ArduinoUploader.ArduinoSketchUploader;
-import ArduinoUploader.ArduinoUploaderException;
 import ArduinoUploader.Config.Arduino;
 import ArduinoUploader.Config.McuIdentifier;
 import ArduinoUploader.Config.Protocol;
@@ -74,7 +72,11 @@ public class FlasherActivity extends AppCompatActivity {
     }
 
 
-
+    private void setAdapterTypesDropdownListAdapter() {
+        ArrayAdapter<Boards> adapter = new ArrayAdapter<>(this, R.layout.list_item, Boards.values());
+        binding.adapterTypeTextView.setText(Boards.ARDUINO_UNO.toString());
+        binding.adapterTypeTextView.setAdapter(adapter);
+    }
 
 
 
@@ -97,6 +99,7 @@ public class FlasherActivity extends AppCompatActivity {
             new Thread(new UploadRunnable()).start();
         });
         initFields();
+        setAdapterTypesDropdownListAdapter();
     }
 
 
@@ -108,7 +111,15 @@ public class FlasherActivity extends AppCompatActivity {
     }
 
     public void uploadHex() {
-        Boards board = Boards.ARDUINO_UNO;
+        logUI("Starting the upload");
+        Boards board;
+        try {
+            board = Boards.valueOf(binding.adapterTypeTextView.getText().toString());
+        } catch (IllegalArgumentException exception) {
+            logUI("Choose the board first");
+            return;
+        }
+        logUI("Selected board: " + board);
         Arduino arduinoBoard = new Arduino(board.name, board.chipType, board.uploadBaudrate, board.uploadProtocol);
         Protocol protocol = Protocol.valueOf(arduinoBoard.getProtocol().name());
         McuIdentifier mcu = McuIdentifier.valueOf(arduinoBoard.getMcu().name());
@@ -176,8 +187,8 @@ public class FlasherActivity extends AppCompatActivity {
         };
 
         try {
-            final BufferedInputStream in = new BufferedInputStream(new URL(getFirmwareDownloadLink()).openStream());
-            logUI(String.format("Downloading firmware {%s}", getFirmwareDownloadLink()));
+            final BufferedInputStream in = new BufferedInputStream(new URL(getFirmwareDownloadLink(board)).openStream());
+            logUI(String.format("Downloading firmware {%s}", getFirmwareDownloadLink(board)));
             Reader reader = new InputStreamReader(in);
             Collection<String> hexFileContents = new LineReader(reader).readLines();
             double size = String.join("", hexFileContents).getBytes().length / 1024.0;
@@ -185,6 +196,12 @@ public class FlasherActivity extends AppCompatActivity {
             ArduinoSketchUploader<SerialPortStreamImpl> uploader = new ArduinoSketchUploader<SerialPortStreamImpl>(
                     this, SerialPortStreamImpl.class, null, logger, progress);
             uploader.UploadSketch(hexFileContents, customArduino, deviceKeyName);
+        } catch(FileNotFoundException ex) {
+            ex.printStackTrace();
+            logUI("ERROR: " + getString(R.string.file_not_found_exception));
+        } catch(UnknownHostException exception) {
+            exception.printStackTrace();
+            logUI("ERROR: " + getString(R.string.no_internet_exception));
         } catch (Exception ex) {
             ex.printStackTrace();
             logUI("ERROR: " + ex);
@@ -204,10 +221,10 @@ public class FlasherActivity extends AppCompatActivity {
     }
 
 
-    private String getFirmwareDownloadLink() {
+    private String getFirmwareDownloadLink(Boards board) {
         boolean isMaster = binding.masterCheckbox.isChecked();
         return String.format("https://github.com/Snow4DV/civic-adapter-platformio/releases/" +
-                "latest/download/%s.hex", isMaster ? "MASTER" : "SLAVE");
+                "latest/download/%s-%s.hex", isMaster ? "MASTER" : "SLAVE", board.toString());
     }
 
 
