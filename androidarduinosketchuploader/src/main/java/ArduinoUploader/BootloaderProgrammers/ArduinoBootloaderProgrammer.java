@@ -122,7 +122,7 @@ public abstract class ArduinoBootloaderProgrammer<E extends ISerialPortStream> e
             getSerialPort().close();
         } catch (RuntimeException e) {
             e.printStackTrace();
-            // Ignore
+
         }
     }
 

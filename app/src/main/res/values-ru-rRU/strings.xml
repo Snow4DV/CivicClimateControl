@@ -49,11 +49,13 @@
     <string name="display_duration_description">Время, на которое покажется оверлей климата при изменении его состояния</string>
     <string name="flash_summary">Используйте, если вы только что собрали адаптер</string>
     <string name="flash_title">Прошить адаптер</string>
-    <string name="uno_only">Только для Uno и Nano</string>
-    <string name="uno_only_are_you_sure">Возможность прошивки доступна только для Arduino Uno / Nano. Вы точно хотите продолжить?</string>
+    <string name="uno_only">Только для Uno</string>
+    <string name="uno_only_are_you_sure">Возможность прошивки протестирована только для Arduino Uno. Вы точно хотите продолжить?</string>
     <string name="please_choose_adapter">Сначала выберите подключенный адаптер из списка</string>
     <string name="usb_request_button">Запросить разрешение</string>
     <string name="flash_adapter">Прошить адаптер</string>
-    <string name="adapter_is_in_master_mode">Адаптер в режиме \"MASTER\"</string>
+    <string name="adapter_is_in_master_mode">Режим \"MASTER\"</string>
     <string name="master_checkbox_description">Отметьте галочку, если адаптер работает самостоятельно (в режиме MASTER) и не подключен в параллель с Connects2/Триомой/штатной мультимедиа</string>
+    <string name="file_not_found_exception">Исключение: файл не найден. Скорее всего, прошивки для такой платы еще нет. Если прям надо - можно скомпилировать прошивку вручную.</string>
+    <string name="no_internet_exception">У меня нет связи с гитхабом. Проверьте интернет-соединение.</string>
 </resources>

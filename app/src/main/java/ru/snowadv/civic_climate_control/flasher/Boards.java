@@ -14,7 +14,7 @@ public enum Boards {
     ARDUINO_NANO_168            ( "na16", McuIdentifier.AtMega168,      Protocol.Stk500v1,      57600, ComProtocols.UART, "Arduino Nano ATmega168",                         "DTR;true",     "DTR-RTS;250;50",           ""),
     ARDUINO_MEGA_2560_ADK       ( "mg25", McuIdentifier.AtMega2560,     Protocol.Stk500v2,      115200, ComProtocols.UART, "Arduino Mega 2560 or ADK",                      "DTR-RTS;50;250;true",        "",           "DTR-RTS;250;50;true"),
 //  ARDUINO_MEGA_1280           ( "mg16", ChipTypes.M1280,              Protocol.Stk500v1,      57600, ComProtocols.UART, "Arduino Mega (ATmega1280)"),
-    ARDUINO_LEONARD             ( "leon", McuIdentifier.AtMega32U4,     Protocol.Avr109,        57600, ComProtocols.UART, "Arduino Leonardo",                               "1200bps",      "",                         ""),
+    ARDUINO_LEONARDO             ( "leon", McuIdentifier.AtMega32U4,     Protocol.Avr109,        57600, ComProtocols.UART, "Arduino Leonardo",                               "1200bps",      "",                         ""),
     ARDUINO_ESPLORA             ( "espl", McuIdentifier.AtMega32U4,     Protocol.Avr109,        57600, ComProtocols.UART, "Arduino Esplora",                                "1200bps",      "",                         ""),
     ARDUINO_MICRO               ( "micr", McuIdentifier.AtMega32U4,     Protocol.Avr109,        57600, ComProtocols.UART, "Arduino Micro",                                  "1200bps",      "",                         ""),
     ARDUINO_MINI_328            ( "mn32", McuIdentifier.AtMega328P,     Protocol.Stk500v1,      57600, ComProtocols.UART, "Arduino Mini ATmega328",                         "DTR;true",     "DTR-RTS;250;50",           ""),
