@@ -50,7 +50,7 @@
     <string name="flash_summary">Используйте, если вы только что собрали адаптер</string>
     <string name="flash_title">Прошить адаптер</string>
     <string name="uno_only">Только для Uno</string>
-    <string name="uno_only_are_you_sure">Возможность прошивки протестирована только для Arduino Uno. Вы точно хотите продолжить?</string>
+    <string name="uno_only_are_you_sure">Возможность прошивки протестирована только для Arduino Uno. Прошить Arduino Nano таким способом не получится. Вы точно хотите продолжить?</string>
     <string name="please_choose_adapter">Сначала выберите подключенный адаптер из списка</string>
     <string name="usb_request_button">Запросить разрешение</string>
     <string name="flash_adapter">Прошить адаптер</string>

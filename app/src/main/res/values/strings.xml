@@ -59,7 +59,7 @@
     <string name="flash_summary">Use it if you\'ve just assembled your adapter</string>
     <string name="flash_title">Flash adapter</string>
     <string name="uno_only">Uno only</string>
-    <string name="uno_only_are_you_sure">This feature was tested on Arduino Uno only. Do you want to continue?</string>
+    <string name="uno_only_are_you_sure">This feature was tested on Arduino Uno only. Arduino Nano won\'t work. Do you want to continue?</string>
     <string name="please_choose_adapter">Choose connected adapter at first</string>
     <string name="usb_request_button">Usb Request</string>
     <string name="flash_adapter">Flash adapter</string>
