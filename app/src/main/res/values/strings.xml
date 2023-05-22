@@ -67,4 +67,8 @@
     <string name="master_checkbox_description">Set the checkbox checked if adapter is working on its own (in MASTER mode) and is not connected in parallel with Connects2/Trioma/Stock headunit</string>
     <string name="file_not_found_exception">File not found exception: probably firmware doesn\'t exist yet for such board.</string>
     <string name="no_internet_exception">I have no connection to GitHub. Connect me to the internet!</string>
+    <string name="overlay_height_title">Overlay height</string>
+    <string name="overlay_height_summary">Height of overlay, in DP. Fullscreen skins don\'t support this setting.</string>
+    <string name="fullscreen_honda_skin">Fullscreen skin Honda MID-style</string>
+    <string name="bottom_overlay_honda_skin">Semitransparent bottom overlay skin</string>
 </resources>

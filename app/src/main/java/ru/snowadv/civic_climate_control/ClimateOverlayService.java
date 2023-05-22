@@ -22,8 +22,10 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -99,11 +101,13 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
         windowManager = (WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE);
         mDisplay = windowManager.getDefaultDisplay();
         inflater = LayoutInflater.from(this);
-        layoutView = inflater.inflate(R.layout.climate_overlay, null);
+        layoutView = inflater.inflate(R.layout.climate_fullscreen, null);
 
         initViewFields(layoutView);
 
         windowManager.addView(layoutView, params);
+
+        setHeightFromSharedPrefs();
 
         //This is needed to keep the service running in background just needs a notification to call with startForeground();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -126,6 +130,18 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
         AdapterService.getAccessAndBindService(this, adapterDevice, this);
     }
 
+
+    private void setHeightFromSharedPrefs() {
+        int overlay_height = PreferenceManager
+                .getDefaultSharedPreferences(this).getInt("overlay_height", 110);
+        View overlayLayout = layoutView.findViewById(R.id.overlay_layout);
+        if(overlayLayout == null) {
+            Log.d(TAG, "setHeightFromSharedPrefs: not supported for this layout");
+            return;
+        }
+        ViewGroup.LayoutParams layoutParams = overlayLayout.getLayoutParams();
+        layoutParams.height = overlay_height;
+    }
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -314,7 +330,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
             try {
                 Thread.sleep(waitMillis);
             } catch (InterruptedException e) {
-                Log.d(TAG, "timerThread: sleeping for " + waitMillis);
+                Log.d(TAG, "timerThread: sleep interrupted. length was " + waitMillis);
             }
             if(!isInterrupted()) {
                 layoutView.post(() -> layoutView.setAlpha(0.0f));

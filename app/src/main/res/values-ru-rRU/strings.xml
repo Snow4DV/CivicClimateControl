@@ -58,4 +58,8 @@
     <string name="master_checkbox_description">Отметьте галочку, если адаптер работает самостоятельно (в режиме MASTER) и не подключен в параллель с Connects2/Триомой/штатной мультимедиа</string>
     <string name="file_not_found_exception">Исключение: файл не найден. Скорее всего, прошивки для такой платы еще нет. Если прям надо - можно скомпилировать прошивку вручную.</string>
     <string name="no_internet_exception">У меня нет связи с гитхабом. Проверьте интернет-соединение.</string>
+    <string name="overlay_height_title">Высота панели</string>
+    <string name="overlay_height_summary">Высота всплывающей панели, в DP. Полноэкранные темы не поддерживают эту настройку.</string>
+    <string name="fullscreen_honda_skin">Полноэкранная тема в стиле Honda MID</string>
+    <string name="bottom_overlay_honda_skin">Полупрозрачная черная всплывающая панель (стиль Honda)</string>
 </resources>

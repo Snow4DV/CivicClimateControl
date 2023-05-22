@@ -103,8 +103,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
         isAlive = true;
         currentDevice = intent.getParcelableExtra("device");
         connectToDevice(currentDevice);
-        destroyThread = new DelayedDestroyThread();
-        destroyThread.start();
+        restartDestroyThread();
         return START_STICKY;
     }
 
@@ -354,10 +353,18 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     @Override
     public void onRunError(Exception e) {
         Log.e(TAG, "onRunError: communication fail. Dying in 500 ms.", e);
+        restartDestroyThread();
+    }
+
+
+    private void restartDestroyThread() {
+        if(destroyThread != null && !destroyThread.isInterrupted()) {
+            destroyThread.interrupt();
+            Log.d(TAG, "onNewData: interrupting");
+        }
         destroyThread = new DelayedDestroyThread();
         destroyThread.start();
     }
-
     public class DelayedDestroyThread extends Thread {
 
         private int destroyDelayMillis = 3000;
@@ -384,9 +391,13 @@ public class AdapterService extends Service implements SerialInputOutputManager.
             try {
                 Thread.sleep(destroyDelayMillis);
             } catch (InterruptedException e) {
+                // Destroy thread interrupted
             }
 
-            if(!isInterrupted()) {
+
+            if(destroyThread != this) {
+                return; // Thread shouldn't be replaced without interruption! - TODO: fix
+            } else if(!isInterrupted()) {
                 Log.d(TAG, "destroythread: KILLING ADAPTER SERVICE - No data/Error occurred");
                 unbindClientsAndStop();
             }

@@ -30,8 +30,13 @@ import androidx.preference.PreferenceScreen;
 import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import ru.snowadv.civic_climate_control.Adapter.AdapterService;
 import ru.snowadv.civic_climate_control.databinding.SettingsActivityBinding;
@@ -42,7 +47,38 @@ public class SettingsActivity extends AppCompatActivity {
     private SettingsActivityBinding binding;
     private SettingsFragment settingsFragment;
 
+    public enum Theme {
+        HONDA_FULLSCREEN(R.layout.climate_fullscreen, R.string.fullscreen_honda_skin),
+        HONDA_OVERLAY(R.layout.climate_overlay, R.string.bottom_overlay_honda_skin);
+        private int layoutId;
+        private int stringNameId;
 
+        Theme(int layoutId, int stringNameId) {
+            this.layoutId = layoutId;
+            this.stringNameId = stringNameId;
+        }
+
+        public int getLayoutId() {
+            return layoutId;
+        }
+
+        public int getStringNameId() {
+            return stringNameId;
+        }
+
+        public static String[] stringKeys() {
+            return Arrays.stream(values()).map(Objects::toString).toArray(String[]::new);
+        }
+        public static String[] stringValues(Context context) {
+            return Arrays.stream(Theme.values()).map((value) -> value.toString(context))
+                    .toArray(String[]::new);
+        }
+
+       @NonNull
+        public String toString(Context context) {
+            return context.getString(stringNameId);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,9 +110,6 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.settings, settingsFragment)
                 .commit();
     }
-
-
-
 
 
     private View initBinding() {
@@ -117,9 +150,11 @@ public class SettingsActivity extends AppCompatActivity {
         private static final String TAG = "SettingsFragment";
         private PreferenceScreen preferenceScreen;
         private ListPreference connectedDevices;
+        private ListPreference selectedSkin;
         private Preference adapterStatus;
         private SwitchPreferenceCompat floatingPanelSwitch;
         private SeekBarPreference floatingPanelDuration;
+        private SeekBarPreference floatingPanelHeight;
         private Preference flashAdapterButton;
 
         private ActivityResultLauncher<String> askPermission;
@@ -130,7 +165,9 @@ public class SettingsActivity extends AppCompatActivity {
             adapterStatus = findPreference("adapter_status");
             floatingPanelSwitch = findPreference("floating_panel_enabled");
             floatingPanelDuration = findPreference("floating_panel_duration");
+            floatingPanelHeight = findPreference("overlay_height");
             flashAdapterButton = findPreference("flash_adapter");
+            selectedSkin = findPreference("selected_skin");
             askPermission = getAskPermission();
         }
         
@@ -152,7 +189,7 @@ public class SettingsActivity extends AppCompatActivity {
                 public Boolean parseResult(int resultCode, @Nullable Intent intent) {
                     return Settings.canDrawOverlays(getContext());
                 }
-            }, (ActivityResultCallback<Boolean>) this::processIntentResult);
+            }, this::processIntentResult);
         }
 
         private void processIntentResult(Boolean result) {
@@ -193,11 +230,14 @@ public class SettingsActivity extends AppCompatActivity {
             initListeners();
 
             updateDevicesList();
+            updateSkinsList();
         }
 
         private void initListeners() {
             floatingPanelSwitch.setOnPreferenceChangeListener(this);
             connectedDevices.setOnPreferenceChangeListener(this);
+            floatingPanelDuration.setOnPreferenceChangeListener(this);
+            floatingPanelHeight.setOnPreferenceChangeListener(this);
             flashAdapterButton.setOnPreferenceClickListener(preference -> askAndOpenFlashActivity());
         }
 
@@ -241,11 +281,17 @@ public class SettingsActivity extends AppCompatActivity {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
         }
 
-        public void updateDevicesList() {
+        private void updateDevicesList() {
             Map<String, String> devicesList = DevicesManager.INSTANCE.getDevicesList(getContext());
             connectedDevices.setEntries(devicesList.keySet().toArray(new CharSequence[]{}));
             connectedDevices.setEntryValues(devicesList.values().toArray(new CharSequence[]{}));
             setDeviceConnectionStatus(isAdapterConnected(devicesList));
+        }
+
+
+        private void updateSkinsList() {
+            selectedSkin.setEntries(Theme.stringValues(requireContext()));
+            selectedSkin.setEntryValues(Theme.stringKeys());
         }
 
         private boolean isAdapterConnected(Map<String, String> devicesList) {
@@ -271,9 +317,13 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
+            Log.d(TAG, "onPreferenceChange: " + preference.getKey());
             switch(preference.getKey()) {
                 case "adapter_name":
                     updateDevicesList();
+                case "floating_panel_duration": //TODO: fix. use onseekbarchangelistener
+                case "overlay_height":
+                    Log.d(TAG, "onPreferenceChange: restarting overlay");
                     changeFloatingPanelState(false); // Restart overlay if device changed
                     changeFloatingPanelState(floatingPanelSwitch.isChecked());
                     break;

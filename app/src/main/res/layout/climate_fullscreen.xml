@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:clickable="false"
-    android:background="@drawable/blue_gradient"
+    android:background="@drawable/blue_gradient_transparent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
@@ -21,26 +21,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:id="@+id/fan_direction"
         android:src="@drawable/ic_fan_dir_up_down"/>
-    <ImageButton
-        android:id="@+id/settings_button"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/ic_settings"
-        android:background="@color/transparent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_margin="15dp"/>
-    <ImageButton
-        android:id="@+id/adapter_status_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/ic_disconnected"
-        android:background="@color/transparent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_margin="15dp"/>
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -69,8 +51,6 @@
             tools:targetApi="o"
             android:padding="25dp"
             app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeMaxTextSize="100sp"
             android:gravity="center"
             android:maxLines="1"
 
@@ -118,7 +98,6 @@
             app:layout_constraintWidth_percent="0.8"
             android:layout_height="match_parent"
             android:textColor="@color/white"
-
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -126,9 +105,6 @@
             tools:targetApi="o"
             android:padding="25dp"
             app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeMaxTextSize="100sp"
-            android:textSize="80sp"
             android:gravity="center"
             android:maxLines="1"
 

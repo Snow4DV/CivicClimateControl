@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="@string/adapter_settings_title">
 
@@ -43,7 +44,20 @@
             app:key="floating_panel_duration"
             app:defaultValue="5"/>
 
-
+        <SeekBarPreference
+            app:title="@string/overlay_height_title"
+            app:summary="@string/overlay_height_summary"
+            app:showSeekBarValue="true"
+            app:key="overlay_height"
+            android:max="400"
+            app:min="10"
+            app:defaultValue="110"/>
+        <ListPreference
+            app:key="selected_skin"
+            app:defaultValue="HONDA_OVERLAY"
+            app:summary="@string/select_adapter"
+            app:title="Overlay skin">
+        </ListPreference>
     </PreferenceCategory>
 
 
