@@ -37,7 +37,7 @@
         android:padding="5dp"
         >
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/temp_1"
             android:layout_width="0dp"
             app:layout_constraintWidth="percent"
@@ -183,7 +183,7 @@
             android:id="@+id/ac_state"
             android:orientation="vertical">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:text="A/C ON"
                 android:id="@+id/ac_on_glyph"
                 android:textStyle="bold"
@@ -200,7 +200,7 @@
                 app:autoSizeTextType="uniform"
                 app:autoSizeMinTextSize="10sp"
                 app:autoSizeMaxTextSize="260sp"/>
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
 
                 android:text="A/C OFF"
                 android:id="@+id/ac_off_glyph"
@@ -233,7 +233,7 @@
             android:gravity="center"
             android:id="@+id/climate_state"
             android:orientation="vertical">
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:text="AUTO"
                 android:id="@+id/auto_glyph"
                 android:textStyle="bold"

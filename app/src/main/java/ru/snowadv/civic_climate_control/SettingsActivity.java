@@ -239,6 +239,7 @@ public class SettingsActivity extends AppCompatActivity {
             floatingPanelDuration.setOnPreferenceChangeListener(this);
             floatingPanelHeight.setOnPreferenceChangeListener(this);
             flashAdapterButton.setOnPreferenceClickListener(preference -> askAndOpenFlashActivity());
+            selectedSkin.setOnPreferenceChangeListener(this);
         }
 
         private boolean askAndOpenFlashActivity() {
@@ -321,8 +322,9 @@ public class SettingsActivity extends AppCompatActivity {
             switch(preference.getKey()) {
                 case "adapter_name":
                     updateDevicesList();
-                case "floating_panel_duration": //TODO: fix. use onseekbarchangelistener
+                case "floating_panel_duration":
                 case "overlay_height":
+                case "selected_skin":
                     Log.d(TAG, "onPreferenceChange: restarting overlay");
                     changeFloatingPanelState(false); // Restart overlay if device changed
                     changeFloatingPanelState(floatingPanelSwitch.isChecked());
