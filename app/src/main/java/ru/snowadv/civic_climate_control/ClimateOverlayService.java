@@ -101,7 +101,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
         windowManager = (WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE);
         mDisplay = windowManager.getDefaultDisplay();
         inflater = LayoutInflater.from(this);
-        layoutView = inflater.inflate(R.layout.climate_fullscreen, null);
+        layoutView = inflater.inflate(getThemeFromSharedPrefs().getLayoutId(), null);
 
         initViewFields(layoutView);
 
@@ -141,6 +141,12 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
         }
         ViewGroup.LayoutParams layoutParams = overlayLayout.getLayoutParams();
         layoutParams.height = overlay_height;
+    }
+
+    private SettingsActivity.Theme getThemeFromSharedPrefs() {
+        String selectedSkinString = PreferenceManager
+                .getDefaultSharedPreferences(this).getString("selected_skin", "HONDA_OVERLAY");
+        return SettingsActivity.Theme.valueOf(selectedSkinString);
     }
 
 
