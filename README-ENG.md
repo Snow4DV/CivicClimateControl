@@ -1,4 +1,4 @@
-# Civic Climate Control - Android-приложение для ГУ для отображения показаний климат-контроля с Civic 5D (хэтчбек, 8th gen)
+# Civic Climate Control - Android app for android headunit to show cliamte control's state of Civic 5D (hatchback, 8th gen)
 This app shows climate control's state of Honda Civic 5D-Hatchback (2006-2011) with the help of arduino adapter [with such firmware](https://github.com/Snow4DV/civic-adapter-platformio). 
 </br>
 ![Pic1](/images/pic1.png)
