@@ -1,3 +1,5 @@
+## [This README is available in English here](https://github.com/Snow4DV/CivicClimateControl/blob/master/README-ENG.md)
+
 # Civic Climate Control - Android-приложение для ГУ для отображения показаний климат-контроля с Civic 5D (хэтчбек, 8th gen)
 Приложение для отображения показаний с климат-контроля Honda Civic 5D (2006-2011) с помощью адаптера [с вот такой прошивкой](https://github.com/Snow4DV/civic-adapter-platformio). 
 </br>
