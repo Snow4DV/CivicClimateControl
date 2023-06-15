@@ -56,7 +56,7 @@
             app:key="selected_skin"
             app:defaultValue="HONDA_OVERLAY"
             app:summary="@string/select_adapter"
-            app:title="Overlay skin">
+            app:title="@string/overlay_skin">
         </ListPreference>
     </PreferenceCategory>
 
