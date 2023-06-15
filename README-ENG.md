@@ -15,10 +15,10 @@ If your headunit has МТК cpu (or AutoChips like AC8257) - there's huge probab
 Warning! Works on Arduino Uno only at the moment!
 * Connect Android headunit to the internet
 * [Get latest app version and install it](https://github.com/Snow4DV/CivicClimateControl/releases/latest)
-* Connect adapter to the climate control's connector using [this diagram:](https://github.com/Snow4DV/civic-adapter-platformio/#%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B1%D0%B5%D0%B7-%D0%BE%D0%B1%D0%B2%D1%8F%D0%B7%D0%BA%D0%B8)
+* Connect adapter to the climate control's connector using [this diagram:](https://github.com/Snow4DV/civic-adapter-platformio/#%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B1%D0%B5%D0%B7-%D0%BE%D0%B1%D0%B2%D1%8F%D0%B7%D0%BA%D0%B8)  
 ![Connection diagram](https://github.com/Snow4DV/civic-adapter-platformio/raw/master/connection-example.png)
 * Connected unflashed adapter via usb to the headunit
-* Give permission to use adapter usb device (tick the checkbox "Always open this app")
+* Give permission to use adapter usb device (tick the checkbox "Always open this app")  
 ![Give permission](https://www.virtualhere.com/sites/default/files/android_allow_use.png)
 * Go to settings and choose adapter from the drop down list 
 * Click on "Flash adapter" item in settings
