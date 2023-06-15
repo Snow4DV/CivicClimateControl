@@ -49,7 +49,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     public enum Theme {
         HONDA_FULLSCREEN(R.layout.climate_fullscreen, R.string.fullscreen_honda_skin),
-        HONDA_OVERLAY(R.layout.climate_overlay, R.string.bottom_overlay_honda_skin);
+        HONDA_OVERLAY(R.layout.climate_overlay, R.string.bottom_overlay_honda_skin),
+        HONDA_FULLSCREEN_TYPE_R(R.layout.climate_fullscreen_type_r, R.string.fullscren_type_r_honda_skin);
         private int layoutId;
         private int stringNameId;
 

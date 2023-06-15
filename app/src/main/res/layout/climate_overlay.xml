@@ -180,6 +180,7 @@
                 android:text="23"/>
             <ImageView
                 android:id="@+id/temp_2_background"
+
                 android:layout_width="match_parent"
                 android:adjustViewBounds="true"
                 app:layout_constraintLeft_toLeftOf="parent"

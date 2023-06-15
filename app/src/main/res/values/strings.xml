@@ -71,4 +71,5 @@
     <string name="overlay_height_summary">Height of overlay, in DP. Fullscreen skins don\'t support this setting.</string>
     <string name="fullscreen_honda_skin">Fullscreen skin Honda MID-style</string>
     <string name="bottom_overlay_honda_skin">Semitransparent bottom overlay skin</string>
+    <string name="fullscren_type_r_honda_skin">Fullscreen skin Honda MID-style [Type R]</string>
 </resources>

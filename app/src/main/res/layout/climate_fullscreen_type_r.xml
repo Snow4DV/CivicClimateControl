@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:clickable="false"
+    android:background="@drawable/red_gradient_transparent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight="percent"
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintWidth="percent"
+        app:layout_constraintWidth_percent=".4"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/fan_direction"
+        android:src="@drawable/ic_fan_dir_up_down"/>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textColor="@color/white"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/fan_direction"
+        tools:targetApi="o"
+        android:gravity="center"
+        android:maxLines="1"
+        android:padding="5dp"
+        >
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/temp_1"
+            android:layout_width="0dp"
+            app:layout_constraintWidth="percent"
+            app:layout_constraintWidth_percent="0.8"
+            android:layout_height="match_parent"
+            android:textColor="@color/white"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:targetApi="o"
+            android:padding="25dp"
+            app:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:maxLines="1"
+
+
+
+
+            android:text="27"/>
+
+        <ImageView
+            android:id="@+id/temp_1_background"
+            android:adjustViewBounds="true"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintHeight="percent"
+            app:layout_constraintWidth="percent"
+            app:layout_constraintWidth_percent="0.8"
+            app:layout_constraintHeight_percent="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_temp_background"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textColor="@color/white"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/fan_direction"
+        tools:targetApi="o"
+        android:gravity="center"
+        android:maxLines="1"
+        android:padding="5dp"
+        >
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/temp_2"
+            android:layout_width="0dp"
+            app:layout_constraintWidth="percent"
+            app:layout_constraintWidth_percent="0.8"
+            android:layout_height="match_parent"
+            android:textColor="@color/white"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:targetApi="o"
+            android:padding="25dp"
+            app:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:maxLines="1"
+
+
+
+            android:text="LO"/>
+
+        <ImageView
+            android:id="@+id/temp_2_background"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            app:layout_constraintHeight="percent"
+            app:layout_constraintWidth="percent"
+            app:layout_constraintWidth_percent="0.8"
+            app:layout_constraintHeight_percent="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_temp_background"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        app:layout_constraintHeight="percent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+
+        app:layout_constraintHeight_percent=".2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/ic_bottom_separator">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth="percent"
+            app:layout_constraintWidth_percent="0.33">
+
+            <ImageView
+                android:id="@+id/fan_speed"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:padding="16dp"
+                android:layout_marginBottom="-3dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_fan_speed_0"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHeight="percent"
+                app:layout_constraintHorizontal_bias="0.538"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintHeight="percent"
+            app:layout_constraintHeight_percent=".78"
+            app:layout_constraintWidth="percent"
+            app:layout_constraintWidth_percent=".12"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginHorizontal="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center"
+            android:padding="8dp"
+            android:id="@+id/ac_state"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:text="A/C ON"
+                android:id="@+id/ac_on_glyph"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                tools:targetApi="o"
+
+                android:gravity="center"
+                android:maxLines="1"
+
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="10sp"
+                app:autoSizeMaxTextSize="260sp"/>
+            <androidx.appcompat.widget.AppCompatTextView
+
+                android:text="A/C OFF"
+                android:id="@+id/ac_off_glyph"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_weight="50"
+                android:layout_height="wrap_content"
+                tools:targetApi="o"
+
+                android:gravity="center"
+                android:maxLines="1"
+
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="10sp"
+                app:autoSizeMaxTextSize="260sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintHeight="percent"
+            app:layout_constraintHeight_percent=".78"
+            app:layout_constraintWidth="percent"
+            app:layout_constraintWidth_percent=".12"
+            app:layout_constraintLeft_toRightOf="@id/ac_state"
+            android:layout_marginHorizontal="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center"
+            android:id="@+id/climate_state"
+            android:orientation="vertical">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:text="AUTO"
+                android:id="@+id/auto_glyph"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                tools:targetApi="o"
+
+                android:gravity="center"
+                android:maxLines="1"
+
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="10sp"
+                app:autoSizeMaxTextSize="260sp"
+                />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintHeight="percent"
+            app:layout_constraintHeight_percent=".78"
+            app:layout_constraintWidth="percent"
+            app:layout_constraintWidth_percent=".12"
+            android:layout_marginHorizontal="10dp"
+            app:tint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/windshield_heating"
+            app:layout_constraintLeft_toRightOf="@id/climate_state"
+            android:src="@drawable/ic_fan_dir_windshield"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

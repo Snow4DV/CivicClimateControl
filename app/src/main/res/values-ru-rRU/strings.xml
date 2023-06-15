@@ -62,4 +62,5 @@
     <string name="overlay_height_summary">Высота всплывающей панели, в DP. Полноэкранные темы не поддерживают эту настройку.</string>
     <string name="fullscreen_honda_skin">Полноэкранная тема в стиле Honda MID</string>
     <string name="bottom_overlay_honda_skin">Полупрозрачная черная всплывающая панель (стиль Honda)</string>
+    <string name="fullscren_type_r_honda_skin">Полноэкранная тема в стиле Honda MID [Type R]</string>
 </resources>

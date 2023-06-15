@@ -64,6 +64,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
     private WindowManager.LayoutParams params;
 
     private TextView tempTextView1, tempTextView2;
+    private View tempBackground1, tempBackground2;
     private View autoGlyph, acOnGlyph, acOffGlyph, windshieldGlyph;
     private ImageView fanSpeedView, fanDirectionView;
 
@@ -115,7 +116,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
             startNotification();
         }
 
-        if(getSecondsToCloseFromPreferences() != 0 && false) {
+        if(getSecondsToCloseFromPreferences() != 0) {
             layoutView.setAlpha(0.0f); // hide at start
         }
 
@@ -246,10 +247,16 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
             lastState = newState;
         }
 
+
+        tempBackground1.post(() -> tempBackground1.setVisibility(newState.isTempLeftVisible() ?
+                View.VISIBLE : View.GONE));
         tempTextView1.post(() -> tempTextView1.setVisibility(newState.isTempLeftVisible() ?
                 View.VISIBLE : View.GONE));
         tempTextView1.post(() -> tempTextView1.setText(newState.getTempLeftString()));
 
+
+        tempBackground2.post(() -> tempBackground2.setVisibility(newState.isTempRightVisible() ?
+                View.VISIBLE : View.GONE));
         tempTextView2.post(() -> tempTextView2.setVisibility(newState.isTempRightVisible() ?
                 View.VISIBLE : View.GONE));
         tempTextView2.post(() -> tempTextView2.setText(newState.getTempRightString()));
@@ -258,6 +265,7 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
                 AdapterState.ACState.ON ? 1.0f : 0.0f));
         acOffGlyph.post(() -> acOffGlyph.setAlpha(newState.getAcState() ==
                 AdapterState.ACState.OFF ? 1.0f : 0.0f));
+
         autoGlyph.post(() -> autoGlyph.setVisibility(newState.isAuto() ? View.VISIBLE : View.GONE));
         fanSpeedView.post(() -> fanSpeedView.setImageResource(newState.getFanLevel().getResourceId()));
         fanDirectionView.post(() -> fanDirectionView.setImageResource(newState.getFanDirection().getResourceId()));
@@ -278,6 +286,8 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
     private void initViewFields(View layoutView) {
         tempTextView1=layoutView.findViewById(R.id.temp_1);
         tempTextView2=layoutView.findViewById(R.id.temp_2);
+        tempBackground1=layoutView.findViewById(R.id.temp_1_background);
+        tempBackground2=layoutView.findViewById(R.id.temp_2_background);
         autoGlyph = layoutView.findViewById(R.id.auto_glyph);
         acOnGlyph = layoutView.findViewById(R.id.ac_on_glyph);
         acOffGlyph = layoutView.findViewById(R.id.ac_off_glyph);
