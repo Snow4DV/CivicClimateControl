@@ -1,4 +1,4 @@
-package ru.snowadv.civic_climate_control.Adapter;
+package ru.snowadv.civic_climate_control.adapter;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -28,13 +28,10 @@ import com.hoho.android.usbserial.util.SerialInputOutputManager;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import ru.snowadv.civic_climate_control.NotifierUtility;
 import ru.snowadv.civic_climate_control.R;
 import ru.snowadv.civic_climate_control.SerializableUsbDevice;
 

@@ -3,7 +3,6 @@ package ru.snowadv.civic_climate_control;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,11 +10,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
-import android.graphics.drawable.Icon;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
@@ -25,20 +21,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 
-import com.google.gson.Gson;
-
-import java.util.Calendar;
-import java.util.Date;
-
-import ru.snowadv.civic_climate_control.Adapter.AdapterService;
-import ru.snowadv.civic_climate_control.Adapter.AdapterState;
+import ru.snowadv.civic_climate_control.adapter.AdapterService;
+import ru.snowadv.civic_climate_control.adapter.AdapterState;
 
 
 /**
@@ -248,16 +238,16 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
         }
 
 
-        tempBackground1.post(() -> tempBackground1.setVisibility(newState.isTempLeftVisible() ?
+        tempBackground1.post(() -> tempBackground1.setVisibility(newState.getTempLeftVisibility() ?
                 View.VISIBLE : View.GONE));
-        tempTextView1.post(() -> tempTextView1.setVisibility(newState.isTempLeftVisible() ?
+        tempTextView1.post(() -> tempTextView1.setVisibility(newState.getTempLeftVisibility() ?
                 View.VISIBLE : View.GONE));
         tempTextView1.post(() -> tempTextView1.setText(newState.getTempLeftString()));
 
 
-        tempBackground2.post(() -> tempBackground2.setVisibility(newState.isTempRightVisible() ?
+        tempBackground2.post(() -> tempBackground2.setVisibility(newState.getTempRightVisibility() ?
                 View.VISIBLE : View.GONE));
-        tempTextView2.post(() -> tempTextView2.setVisibility(newState.isTempRightVisible() ?
+        tempTextView2.post(() -> tempTextView2.setVisibility(newState.getTempRightVisibility() ?
                 View.VISIBLE : View.GONE));
         tempTextView2.post(() -> tempTextView2.setText(newState.getTempRightString()));
 

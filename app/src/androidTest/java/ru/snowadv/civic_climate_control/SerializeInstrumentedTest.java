@@ -9,8 +9,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import ru.snowadv.civic_climate_control.Adapter.AdapterService;
-
 /**
  * Instrumented test, which will execute on an Android device.
  *

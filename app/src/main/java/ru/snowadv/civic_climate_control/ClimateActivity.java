@@ -5,17 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Icon;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
@@ -29,8 +25,8 @@ import com.google.gson.JsonSyntaxException;
 
 import java.util.Objects;
 
-import ru.snowadv.civic_climate_control.Adapter.AdapterService;
-import ru.snowadv.civic_climate_control.Adapter.AdapterState;
+import ru.snowadv.civic_climate_control.adapter.AdapterService;
+import ru.snowadv.civic_climate_control.adapter.AdapterState;
 import ru.snowadv.civic_climate_control.databinding.ActivityClimateBinding;
 
 public class ClimateActivity extends AppCompatActivity implements ServiceConnection, AdapterService.OnNewStateReceivedListener {
@@ -233,14 +229,14 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
         }
 
         binding.temp1Background.post(() -> binding.temp1Background.setVisibility(
-                newState.isTempLeftVisible() ? View.VISIBLE : View.GONE));
-        binding.temp1.post(() -> binding.temp1.setVisibility(newState.isTempLeftVisible() ?
+                newState.getTempLeftVisibility() ? View.VISIBLE : View.GONE));
+        binding.temp1.post(() -> binding.temp1.setVisibility(newState.getTempLeftVisibility() ?
                 View.VISIBLE : View.GONE));
         binding.temp1.post(() -> binding.temp1.setText(newState.getTempLeftString()));
 
         binding.temp2Background.post(() -> binding.temp2Background.setVisibility(
-                newState.isTempRightVisible() ? View.VISIBLE : View.GONE));
-        binding.temp2.post(() -> binding.temp2.setVisibility(newState.isTempRightVisible() ?
+                newState.getTempRightVisibility() ? View.VISIBLE : View.GONE));
+        binding.temp2.post(() -> binding.temp2.setVisibility(newState.getTempRightVisibility() ?
                 View.VISIBLE : View.GONE));
         binding.temp2.post(() -> binding.temp2.setText(newState.getTempRightString()));
 

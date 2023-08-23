@@ -1,4 +1,4 @@
-package ru.snowadv.civic_climate_control.Adapter;
+package ru.snowadv.civic_climate_control.adapter;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

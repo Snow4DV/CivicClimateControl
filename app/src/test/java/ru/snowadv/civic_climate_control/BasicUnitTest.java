@@ -5,9 +5,7 @@ import com.google.gson.Gson;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-
-import ru.snowadv.civic_climate_control.Adapter.AdapterState;
+import ru.snowadv.civic_climate_control.adapter.AdapterState;
 
 public class BasicUnitTest {
 

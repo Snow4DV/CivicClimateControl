@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.net.Uri;
 import android.os.Build;
@@ -14,7 +13,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
@@ -31,14 +29,10 @@ import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import ru.snowadv.civic_climate_control.Adapter.AdapterService;
+import ru.snowadv.civic_climate_control.adapter.AdapterService;
 import ru.snowadv.civic_climate_control.databinding.SettingsActivityBinding;
 import ru.snowadv.civic_climate_control.flasher.FlasherActivity;
 
