@@ -1,5 +1,6 @@
 package ru.snowadv.civic_climate_control.adapter
 
+import android.content.Context
 import ru.snowadv.civic_climate_control.R
 
 data class AdapterState(
@@ -10,22 +11,22 @@ data class AdapterState(
     private val acRaw: Int = 0,
     private val autoRaw: Boolean = false
 ) {
-    enum class ACState {
-        HIDDEN, ON, OFF
+    enum class ACState (val displayStringId: Int) {
+        HIDDEN(R.string.climate_none), ON(R.string.climate_on), OFF(R.string.climate_off)
     }
 
-    enum class FanLevel(val resourceId: Int) {
-        LEVEL_0(R.drawable.ic_fan_speed_0), LEVEL_1(R.drawable.ic_fan_speed_1),
-        LEVEL_2(R.drawable.ic_fan_speed_2), LEVEL_3(R.drawable.ic_fan_speed_3),
-        LEVEL_4(R.drawable.ic_fan_speed_4), LEVEL_5(R.drawable.ic_fan_speed_5),
-        LEVEL_6(R.drawable.ic_fan_speed_6), LEVEL_7(R.drawable.ic_fan_speed_7);
+    enum class FanLevel(val resourceId: Int, val value: Int) {
+        LEVEL_0(R.drawable.ic_fan_speed_0, 0), LEVEL_1(R.drawable.ic_fan_speed_1, 1),
+        LEVEL_2(R.drawable.ic_fan_speed_2, 2), LEVEL_3(R.drawable.ic_fan_speed_3, 3),
+        LEVEL_4(R.drawable.ic_fan_speed_4, 4), LEVEL_5(R.drawable.ic_fan_speed_5, 5),
+        LEVEL_6(R.drawable.ic_fan_speed_6, 6), LEVEL_7(R.drawable.ic_fan_speed_7, 7);
 
     }
 
-    enum class FanDirection(val resourceId: Int) {
-        NONE(R.drawable.ic_fan_dir_none), UP(R.drawable.ic_fan_dir_up), DOWN(R.drawable.ic_fan_dir_down),
-        UP_DOWN(R.drawable.ic_fan_dir_up_down), DOWN_WINDSHIELD(R.drawable.ic_fan_dir_down_windshield),
-        WINDSHIELD(R.drawable.ic_fan_dir_windshield);
+    enum class FanDirection(val resourceId: Int, val stringId: Int) {
+        NONE(R.drawable.ic_fan_dir_none, R.string.climate_none), UP(R.drawable.ic_fan_dir_up, R.string.fan_up), DOWN(R.drawable.ic_fan_dir_down, R.string.fan_down),
+        UP_DOWN(R.drawable.ic_fan_dir_up_down, R.string.fan_up_and_down), DOWN_WINDSHIELD(R.drawable.ic_fan_dir_down_windshield, R.string.fan_down_windshield),
+        WINDSHIELD(R.drawable.ic_fan_dir_windshield, R.string.fan_windshield);
 
     }
 
@@ -78,4 +79,11 @@ data class AdapterState(
         get() = tempRight != -1 && tempLeft != 78 && tempLeft != 79 // adapter returns it when connection to climate unit is lost
     val tempLeftVisibility: Boolean
         get() = tempLeft != -1 && tempLeft != 78 && tempLeft != 79
+
+    fun toDisplayString(context: Context): String {
+        return "${if (tempLeftVisibility) "[$tempLeftString] | " else ""}${context.getString(R.string.mode)}: ${context.getString(fanDirection.stringId)} |" +
+                " ${context.getString(R.string.fan)}: ${fanLevel.value} | ${context.getString(R.string.ac)}: ${context.getString(acState.displayStringId)}${if (tempRightVisibility) " | [$tempRightString]" else ""}"
+    }
+
+
 }

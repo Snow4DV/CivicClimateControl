@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 import com.hoho.android.usbserial.driver.Ch34xSerialDriver;
@@ -37,7 +38,6 @@ import ru.snowadv.civic_climate_control.SerializableUsbDevice;
 
 /**
  * This service is responsible for adapter connection.
- *
  * Behaviour:
  * 1) Alive only when it is connected to device
  * 2) Customer binds to it with Context.bindService()
@@ -486,6 +486,15 @@ public class AdapterService extends Service implements SerialInputOutputManager.
     public interface OnNewStateReceivedListener {
         void onNewAdapterStateReceived(AdapterState newState);
         void onAdapterDisconnected();
+    }
+
+
+    public static void initAdapterService(Context context, ServiceConnection connection) {
+        Log.d(TAG, "initAdapterService: starting adapter service");
+        String adapterDeviceJson = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString("adapter_name", null);
+        SerializableUsbDevice adapterDevice = SerializableUsbDevice.fromJson(adapterDeviceJson);
+        AdapterService.getAccessAndBindService(context, adapterDevice, connection);
     }
 
 

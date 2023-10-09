@@ -6,15 +6,19 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.RECEIVE_MMS" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-feature android:name="android.hardware.usb.host" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.USB_PERMISSION" />
 
     <application
+        android:name=".ClimateApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:name=".ClimateApplication"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -79,7 +83,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".ClimateOverlayService" />
+        <service android:name=".overlay.LayoutClimateOverlay" />
         <service
             android:name=".adapter.AdapterService"
             android:exported="false">

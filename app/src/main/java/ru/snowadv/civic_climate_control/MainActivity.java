@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.Toast;
 
+import ru.snowadv.civic_climate_control.overlay.LayoutClimateOverlay;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -24,9 +26,9 @@ public class MainActivity extends AppCompatActivity {
 
         if(checkOverlayPermission()) {
             if (Build.VERSION.SDK_INT >= 26) {
-                getApplicationContext().startForegroundService(new Intent(getApplicationContext(), ClimateOverlayService.class));
+                getApplicationContext().startForegroundService(new Intent(getApplicationContext(), LayoutClimateOverlay.class));
             } else {
-                startService(new Intent(getApplicationContext(), ClimateOverlayService.class));
+                startService(new Intent(getApplicationContext(), LayoutClimateOverlay.class));
             }
         } else {
             Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
