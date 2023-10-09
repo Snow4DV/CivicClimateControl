@@ -26,8 +26,9 @@ import com.google.gson.JsonSyntaxException;
 import java.util.Objects;
 
 import ru.snowadv.civic_climate_control.adapter.AdapterService;
-import ru.snowadv.civic_climate_control.adapter.AdapterState;
+import ru.snowadv.civic_climate_control.adapter.*;
 import ru.snowadv.civic_climate_control.databinding.ActivityClimateBinding;
+import ru.snowadv.civic_climate_control.overlay.LayoutClimateOverlay;
 
 public class ClimateActivity extends AppCompatActivity implements ServiceConnection, AdapterService.OnNewStateReceivedListener {
 
@@ -130,7 +131,7 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
                 .getBoolean("floating_panel_enabled", false);
 
         if(isOverlayEnabled && !AdapterService.isAlive()) {
-            ClimateOverlayService.start(this); // restart if service died by some reason
+            LayoutClimateOverlay.start(this); // restart if service died by some reason
         }
     }
 
@@ -182,9 +183,9 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
         if(!isOverlayEnabled) return;
 
         if(!isActivityVisible) {
-            ClimateOverlayService.start(this); // this will restart service if needed
+            LayoutClimateOverlay.start(this); // this will restart service if needed
         }
-        ClimateOverlayService.setClimateActivityIsVisible(isActivityVisible);
+        LayoutClimateOverlay.setClimateActivityIsVisible(isActivityVisible);
     }
 
 
@@ -245,8 +246,8 @@ public class ClimateActivity extends AppCompatActivity implements ServiceConnect
         binding.acOffGlyph.post(() -> binding.acOffGlyph.setAlpha(newState.getAcState()
                 == AdapterState.ACState.OFF ? 1.0f : 0.0f));
 
-        binding.autoGlyph.post(() -> binding.autoGlyph.setVisibility(newState.isAuto() ?
-                View.VISIBLE : View.GONE));
+        binding.autoGlyph.post(() -> binding.autoGlyph.setVisibility(newState.getAcState() ==
+                AdapterState.ACState.ON ? View.VISIBLE : View.GONE));
         binding.fanSpeed.post(() -> binding.fanSpeed.setImageResource(
                 newState.getFanLevel().getResourceId()));
         binding.fanDirection.post(() -> binding.fanDirection.setImageResource(

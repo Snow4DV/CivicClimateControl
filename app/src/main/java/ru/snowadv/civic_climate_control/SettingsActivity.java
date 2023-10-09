@@ -35,6 +35,8 @@ import java.util.Objects;
 import ru.snowadv.civic_climate_control.adapter.AdapterService;
 import ru.snowadv.civic_climate_control.databinding.SettingsActivityBinding;
 import ru.snowadv.civic_climate_control.flasher.FlasherActivity;
+import ru.snowadv.civic_climate_control.overlay.LayoutClimateOverlay;
+import ru.snowadv.civic_climate_control.overlay.NotificationClimateOverlay;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -189,7 +191,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void processIntentResult(Boolean result) {
             if(result) {
-                ClimateOverlayService.start(requireContext());
+                LayoutClimateOverlay.start(requireContext());
             } else {
                 floatingPanelSwitch.setChecked(false);
             }
@@ -200,7 +202,7 @@ public class SettingsActivity extends AppCompatActivity {
                     !Settings.canDrawOverlays(getContext())) {
                 explainOverlayPermission();
             } else {
-                ClimateOverlayService.start(requireContext());
+                LayoutClimateOverlay.start(requireContext());
             }
         }
 
@@ -307,7 +309,7 @@ public class SettingsActivity extends AppCompatActivity {
             if(newState) {
                 getPermissionAndStartOverlayService();
             } else {
-                ClimateOverlayService.stop(requireContext());
+                LayoutClimateOverlay.stop(requireContext());
             }
         }
 
@@ -326,6 +328,9 @@ public class SettingsActivity extends AppCompatActivity {
                     break;
                 case "floating_panel_enabled":
                     changeFloatingPanelState((Boolean) newValue);
+                    break;
+                case "notifications_enabled":
+                    NotificationClimateOverlay.changeServiceState((Boolean) newValue, getContext());
                     break;
             }
             return true;

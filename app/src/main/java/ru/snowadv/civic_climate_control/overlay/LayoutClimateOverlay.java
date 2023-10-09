@@ -1,4 +1,4 @@
-package ru.snowadv.civic_climate_control;
+package ru.snowadv.civic_climate_control.overlay;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -27,14 +27,18 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 
+import ru.snowadv.civic_climate_control.NotifierUtility;
+import ru.snowadv.civic_climate_control.R;
+import ru.snowadv.civic_climate_control.SerializableUsbDevice;
+import ru.snowadv.civic_climate_control.SettingsActivity;
 import ru.snowadv.civic_climate_control.adapter.AdapterService;
 import ru.snowadv.civic_climate_control.adapter.AdapterState;
 
 
 /**
- * This activity is responsible for overlay   TODO: maybe should receive USB_ATTACH
+ * This activity is responsible for overlay. Made using layouts
  */
-public class ClimateOverlayService extends Service implements AdapterService.OnNewStateReceivedListener, ServiceConnection {
+public class LayoutClimateOverlay extends Service implements AdapterService.OnNewStateReceivedListener, ServiceConnection {
 
     static final String CHANNEL_ID = "Overlay_notification_channel";
     private static boolean climateActivityIsVisible = false;
@@ -58,8 +62,6 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
     private View autoGlyph, acOnGlyph, acOffGlyph, windshieldGlyph;
     private ImageView fanSpeedView, fanDirectionView;
 
-
-    //private CycleChangeThread cycleChangeThread;
 
     private NotificationManager notificationManager;
     private NotificationChannel notificationChannel;
@@ -106,20 +108,18 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
             startNotification();
         }
 
-        if(getSecondsToCloseFromPreferences() != 0) {
-            layoutView.setAlpha(0.0f); // hide at start
+        if(getSecondsToCloseFromPreferences() != 0) { // hide at start
+            layoutView.post(() -> {
+                layoutView.setAlpha(0.0f);
+                ViewGroup.LayoutParams layoutParams = layoutView.getLayoutParams();
+                layoutParams.height = 0;
+                layoutParams.width = 0;
+            });
         }
 
-        initAdapterService();
+        AdapterService.initAdapterService(this, this);
     }
 
-    private void initAdapterService() {
-        Log.d(TAG, "initAdapterService: starting adapter service");
-        String adapterDeviceJson = PreferenceManager.getDefaultSharedPreferences(this)
-                .getString("adapter_name", null);
-        SerializableUsbDevice adapterDevice = SerializableUsbDevice.fromJson(adapterDeviceJson);
-        AdapterService.getAccessAndBindService(this, adapterDevice, this);
-    }
 
 
     private void setHeightFromSharedPrefs() {
@@ -195,11 +195,11 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
 
 
     public static ComponentName start(Context context) {
-        return context.startService(new Intent(context, ClimateOverlayService.class));
+        return context.startService(new Intent(context, LayoutClimateOverlay.class));
     }
 
     public static boolean stop(Context context) {
-        return context.stopService(new Intent(context, ClimateOverlayService.class));
+        return context.stopService(new Intent(context, LayoutClimateOverlay.class));
     }
 
     public static void changeServiceState(boolean newState, Context context) {
@@ -256,10 +256,9 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
         acOffGlyph.post(() -> acOffGlyph.setAlpha(newState.getAcState() ==
                 AdapterState.ACState.OFF ? 1.0f : 0.0f));
 
-        autoGlyph.post(() -> autoGlyph.setVisibility(newState.isAuto() ? View.VISIBLE : View.GONE));
+        autoGlyph.post(() -> autoGlyph.setVisibility(newState.getAcState() == AdapterState.ACState.HIDDEN ? View.GONE : View.VISIBLE));
         fanSpeedView.post(() -> fanSpeedView.setImageResource(newState.getFanLevel().getResourceId()));
         fanDirectionView.post(() -> fanDirectionView.setImageResource(newState.getFanDirection().getResourceId()));
-//        Log.e(TAG, "onNewAdapterStateReceived: " + new Gson().toJson(newState));
     }
 
     @Override
@@ -332,19 +331,29 @@ public class ClimateOverlayService extends Service implements AdapterService.OnN
         @Override
         public void run() {
             if(layoutView == null) return;
-            layoutView.post(() -> layoutView.setAlpha(1.0f));
+            layoutView.post(() -> {
+                layoutView.setAlpha(1.0f);
+                ViewGroup.LayoutParams layoutParams = layoutView.getLayoutParams();
+                layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+                layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            });
             try {
                 Thread.sleep(waitMillis);
             } catch (InterruptedException e) {
                 Log.d(TAG, "timerThread: sleep interrupted. length was " + waitMillis);
             }
             if(!isInterrupted()) {
-                layoutView.post(() -> layoutView.setAlpha(0.0f));
+                layoutView.post(() -> {
+                    layoutView.setAlpha(0.0f);
+                    ViewGroup.LayoutParams layoutParams = layoutView.getLayoutParams();
+                    layoutParams.height = 0;
+                    layoutParams.width = 0;
+                });
             }
         }
     }
 
     public static void setClimateActivityIsVisible(boolean climateActivityIsVisible) {
-        ClimateOverlayService.climateActivityIsVisible = climateActivityIsVisible;
+        LayoutClimateOverlay.climateActivityIsVisible = climateActivityIsVisible;
     }
 }

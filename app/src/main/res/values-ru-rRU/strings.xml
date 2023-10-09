@@ -64,4 +64,12 @@
     <string name="bottom_overlay_honda_skin">Полупрозрачная черная всплывающая панель (стиль Honda)</string>
     <string name="fullscren_type_r_honda_skin">Полноэкранная тема в стиле Honda MID [Type R]</string>
     <string name="overlay_skin">Скин всплывающей панели</string>
+    <string name="mode">Заслонка</string>
+    <string name="fan">Вентилятор</string>
+    <string name="climate_on">вкл</string>
+    <string name="climate_off">выкл</string>
+    <string name="notifications">Уведомления</string>
+    <string name="notifications_service_will_start_automatically_on_device_boot">Сервис уведомлений будет запущен автоматически при запуске устройства</string>
+    <string name="show_climate_status_through_notifications">Показывать состояние климата в уведомлениях</string>
+    <string name="notifications_summary">Производительность лучше, но менее интуитивно (отправляет состояние климата в уведомлениях)</string>
 </resources>

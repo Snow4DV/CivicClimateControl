@@ -61,5 +61,17 @@
     </PreferenceCategory>
 
 
+    <PreferenceCategory
+        app:title="@string/notifications"
+        app:summary="@string/notifications_summary">
+
+    <SwitchPreferenceCompat
+        app:key="notifications_enabled"
+        app:title="@string/show_climate_status_through_notifications"
+        app:summary="@string/notifications_service_will_start_automatically_on_device_boot"/>
+
+</PreferenceCategory>
+
+
 
 </PreferenceScreen>
