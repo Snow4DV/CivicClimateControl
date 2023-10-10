@@ -76,10 +76,12 @@ public class NotificationClimateOverlay extends Service implements AdapterServic
 
 
     public static ComponentName start(Context context) {
+        Log.d(TAG, "starting Notification climate overlay");
         return context.startService(new Intent(context, NotificationClimateOverlay.class));
     }
 
     public static boolean stop(Context context) {
+        Log.d(TAG, "stopping Notification climate overlay");
         return context.stopService(new Intent(context, NotificationClimateOverlay.class));
     }
 
@@ -94,7 +96,7 @@ public class NotificationClimateOverlay extends Service implements AdapterServic
     @Override
     public void onNewAdapterStateReceived(AdapterState newState) { // it runs in service's thread
         if(lastState == null || !lastState.equals(newState)) {
-            notifierUtility.showNewStatus(this, newState.toDisplayString(this));
+            notifierUtility.showNewStatus(this, newState.toDisplayStringWithoutMode(this), newState.getFanDirection().getResourceId());
             lastState = newState;
         }
     }

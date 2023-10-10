@@ -256,7 +256,7 @@ public class LayoutClimateOverlay extends Service implements AdapterService.OnNe
         acOffGlyph.post(() -> acOffGlyph.setAlpha(newState.getAcState() ==
                 AdapterState.ACState.OFF ? 1.0f : 0.0f));
 
-        autoGlyph.post(() -> autoGlyph.setVisibility(newState.getAcState() == AdapterState.ACState.HIDDEN ? View.GONE : View.VISIBLE));
+        autoGlyph.post(() -> autoGlyph.setVisibility(newState.getAuto() ? View.VISIBLE : View.GONE));
         fanSpeedView.post(() -> fanSpeedView.setImageResource(newState.getFanLevel().getResourceId()));
         fanDirectionView.post(() -> fanDirectionView.setImageResource(newState.getFanDirection().getResourceId()));
     }

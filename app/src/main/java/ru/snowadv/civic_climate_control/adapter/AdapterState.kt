@@ -1,25 +1,32 @@
 package ru.snowadv.civic_climate_control.adapter
 
 import android.content.Context
+import com.google.gson.annotations.SerializedName
 import ru.snowadv.civic_climate_control.R
 
 data class AdapterState(
+    @SerializedName("fanLevel")
     private val fanLevelRaw: Int = 0,
+    @SerializedName("tempLeft")
     val tempLeft: Int = 0,
+    @SerializedName("tempRight")
     val tempRight: Int = 0,
+    @SerializedName("fanDirection")
     private val fanDirectionRaw: Int = 0,
+    @SerializedName("ac")
     private val acRaw: Int = 0,
-    private val autoRaw: Boolean = false
+    @SerializedName("auto")
+    public val auto: Boolean = false
 ) {
     enum class ACState (val displayStringId: Int) {
         HIDDEN(R.string.climate_none), ON(R.string.climate_on), OFF(R.string.climate_off)
     }
 
-    enum class FanLevel(val resourceId: Int, val value: Int) {
-        LEVEL_0(R.drawable.ic_fan_speed_0, 0), LEVEL_1(R.drawable.ic_fan_speed_1, 1),
-        LEVEL_2(R.drawable.ic_fan_speed_2, 2), LEVEL_3(R.drawable.ic_fan_speed_3, 3),
-        LEVEL_4(R.drawable.ic_fan_speed_4, 4), LEVEL_5(R.drawable.ic_fan_speed_5, 5),
-        LEVEL_6(R.drawable.ic_fan_speed_6, 6), LEVEL_7(R.drawable.ic_fan_speed_7, 7);
+    enum class FanLevel(val resourceId: Int, val stringValueId: Int) {
+        LEVEL_0(R.drawable.ic_fan_speed_0, R.string.fan_0), LEVEL_1(R.drawable.ic_fan_speed_1, R.string.fan_1),
+        LEVEL_2(R.drawable.ic_fan_speed_2, R.string.fan_2), LEVEL_3(R.drawable.ic_fan_speed_3, R.string.fan_3),
+        LEVEL_4(R.drawable.ic_fan_speed_4, R.string.fan_4), LEVEL_5(R.drawable.ic_fan_speed_5, R.string.fan_5),
+        LEVEL_6(R.drawable.ic_fan_speed_6, R.string.fan_6), LEVEL_7(R.drawable.ic_fan_speed_7, R.string.fan_7);
 
     }
 
@@ -82,7 +89,17 @@ data class AdapterState(
 
     fun toDisplayString(context: Context): String {
         return "${if (tempLeftVisibility) "[$tempLeftString] | " else ""}${context.getString(R.string.mode)}: ${context.getString(fanDirection.stringId)} |" +
-                " ${context.getString(R.string.fan)}: ${fanLevel.value} | ${context.getString(R.string.ac)}: ${context.getString(acState.displayStringId)}${if (tempRightVisibility) " | [$tempRightString]" else ""}"
+                " ${context.getString(R.string.fan)}: ${context.getString(fanLevel.stringValueId)} | ${if (tempRightVisibility) " | [$tempRightString]" else ""}"
+    }
+
+
+    fun toDisplayStringWithoutMode(context: Context): String {
+        return "${if (tempLeftVisibility) "[$tempLeftString] | " else ""} |" +
+                " ${if(fanLevel != FanLevel.LEVEL_0) context.getString(R.string.fan) else ""}: ${context.getString(fanLevel.stringValueId)} | ${if (acState != ACState.HIDDEN) "${context.getString(R.string.ac)}: ${context.getString(acState.displayStringId)}" else if(auto) context.getString(R.string.climate_auto) else ""}${if (tempRightVisibility) " | [$tempRightString]" else ""}"
+    }
+
+    override fun toString(): String {
+        return "AdapterState(fanLevelRaw=$fanLevelRaw, tempLeft=$tempLeft, tempRight=$tempRight, fanDirectionRaw=$fanDirectionRaw, acRaw=$acRaw, autoRaw=$auto, acState=$acState, fanDirection=$fanDirection, fanLevel=$fanLevel, tempLeftString='$tempLeftString', tempRightString='$tempRightString', tempRightVisibility=$tempRightVisibility, tempLeftVisibility=$tempLeftVisibility)"
     }
 
 

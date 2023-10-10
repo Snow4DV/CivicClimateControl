@@ -54,6 +54,7 @@
 
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
                 <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
+                <category android:name="android.intent.category.HOME" />
             </intent-filter>
 
             <meta-data
@@ -84,6 +85,7 @@
         </receiver>
 
         <service android:name=".overlay.LayoutClimateOverlay" />
+        <service android:name=".overlay.NotificationClimateOverlay" />
         <service
             android:name=".adapter.AdapterService"
             android:exported="false">

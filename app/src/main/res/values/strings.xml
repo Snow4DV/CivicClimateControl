@@ -29,6 +29,7 @@
     <string name="cancel">Cancel</string>
     <string name="please_allow_overlay">To draw overlay or autostart application needs permission to draw on top of other applications. You will need to allow it in settings.</string>
     <string name="overlay_notification_channel_name">Climate Control Overlay</string>
+    <string name="status_notification_channel_name">Climate Control Notifications</string>
     <string name="overlay_running">Climate Control Overlay is running</string>
     <string name="disconnected">Disconnected</string>
     <string name="connected">Connected</string>
@@ -82,10 +83,21 @@
     <string name="fan_down_windshield" translatable="false">[↑↓]️</string>
     <string name="fan_windshield" translatable="false">[↑]</string>
     <string name="ac" translatable="false">AC</string>
+    <string name="climate_auto">AUTO</string>
     <string name="climate_on">on</string>
     <string name="climate_off">off</string>
     <string name="notifications">Notifications</string>
     <string name="notifications_service_will_start_automatically_on_device_boot">Notifications service will start automatically on device boot</string>
     <string name="show_climate_status_through_notifications">Show climate status through notifications</string>
     <string name="notifications_summary">More performant but less intuitive (sends new climate\'s statuses through notifications)</string>
+    <string name="run_app">Run app</string>
+    <string name="fan_0" translatable="false">       </string>
+    <string name="fan_1" translatable="false">▁      </string>
+    <string name="fan_2" translatable="false">▁▂     </string>
+    <string name="fan_3" translatable="false">▁▂▃    </string>
+    <string name="fan_4" translatable="false">▁▂▃▄   </string>
+    <string name="fan_5" translatable="false">▁▂▃▄▅  </string>
+    <string name="fan_6" translatable="false">▁▂▃▄▅▆ </string>
+    <string name="fan_7" translatable="false">▁▂▃▄▅▆▇</string>
+
 </resources>

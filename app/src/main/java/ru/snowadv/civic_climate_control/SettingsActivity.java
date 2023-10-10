@@ -150,17 +150,19 @@ public class SettingsActivity extends AppCompatActivity {
         private ListPreference selectedSkin;
         private Preference adapterStatus;
         private SwitchPreferenceCompat floatingPanelSwitch;
+        private SwitchPreferenceCompat notificationsSwitch;
         private SeekBarPreference floatingPanelDuration;
         private SeekBarPreference floatingPanelHeight;
         private Preference flashAdapterButton;
 
-        private ActivityResultLauncher<String> askPermission;
+        private ActivityResultLauncher<String> askPermission;;
 
         private void initFields() {
             preferenceScreen = getPreferenceScreen();
             connectedDevices = findPreference("adapter_name");
             adapterStatus = findPreference("adapter_status");
             floatingPanelSwitch = findPreference("floating_panel_enabled");
+            notificationsSwitch = findPreference("notifications_enabled");
             floatingPanelDuration = findPreference("floating_panel_duration");
             floatingPanelHeight = findPreference("overlay_height");
             flashAdapterButton = findPreference("flash_adapter");
@@ -232,6 +234,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void initListeners() {
             floatingPanelSwitch.setOnPreferenceChangeListener(this);
+            notificationsSwitch.setOnPreferenceChangeListener(this);
             connectedDevices.setOnPreferenceChangeListener(this);
             floatingPanelDuration.setOnPreferenceChangeListener(this);
             floatingPanelHeight.setOnPreferenceChangeListener(this);

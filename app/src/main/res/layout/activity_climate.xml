@@ -32,6 +32,16 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_margin="15dp"/>
     <ImageButton
+        android:id="@+id/apps_button"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_apps"
+        android:background="@color/transparent"
+        app:layout_constraintRight_toLeftOf="@id/settings_button"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="15dp"/>
+    <ImageButton
         android:id="@+id/adapter_status_button"
         android:layout_width="50dp"
         android:layout_height="50dp"

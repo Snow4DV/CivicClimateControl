@@ -72,4 +72,7 @@
     <string name="notifications_service_will_start_automatically_on_device_boot">Сервис уведомлений будет запущен автоматически при запуске устройства</string>
     <string name="show_climate_status_through_notifications">Показывать состояние климата в уведомлениях</string>
     <string name="notifications_summary">Производительность лучше, но менее интуитивно (отправляет состояние климата в уведомлениях)</string>
+    <string name="run_app">Запустить приложение</string>
+    <string name="climate_auto">Авто</string>
+    <string name="status_notification_channel_name">Уведомления о состоянии климата</string>
 </resources>
