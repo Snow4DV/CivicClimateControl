@@ -91,13 +91,19 @@
     <string name="show_climate_status_through_notifications">Show climate status through notifications</string>
     <string name="notifications_summary">More performant but less intuitive (sends new climate\'s statuses through notifications)</string>
     <string name="run_app">Run app</string>
-    <string name="fan_0" translatable="false">       </string>
-    <string name="fan_1" translatable="false">▁      </string>
-    <string name="fan_2" translatable="false">▁▂     </string>
-    <string name="fan_3" translatable="false">▁▂▃    </string>
-    <string name="fan_4" translatable="false">▁▂▃▄   </string>
-    <string name="fan_5" translatable="false">▁▂▃▄▅  </string>
-    <string name="fan_6" translatable="false">▁▂▃▄▅▆ </string>
-    <string name="fan_7" translatable="false">▁▂▃▄▅▆▇</string>
+    <string name="fan_0" translatable="false">▁▁▁▁▁▁▁</string>
+    <string name="fan_1" translatable="false">▂▁▁▁▁▁▁</string>
+    <string name="fan_2" translatable="false">▂▃▁▁▁▁▁</string>
+    <string name="fan_3" translatable="false">▂▃▄▁▁▁▁</string>
+    <string name="fan_4" translatable="false">▂▃▄▅▁▁▁</string>
+    <string name="fan_5" translatable="false">▂▃▄▅▆▁▁</string>
+    <string name="fan_6" translatable="false">▂▃▄▅▆▇▁</string>
+    <string name="fan_7" translatable="false">▂▃▄▅▆▇█</string>
+    <string name="activity_offset">Activity offset</string>
+    <string name="layout_width">Layout width</string>
+    <string name="layout_height">Layout height</string>
+    <string name="layout_margin_top">Layout margin top</string>
+    <string name="layout_margin_left">Layout margin left</string>
+    <string name="one_hundred_to_keep">100 is to keep match_parent</string>
 
 </resources>

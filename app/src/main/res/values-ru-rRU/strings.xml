@@ -75,4 +75,10 @@
     <string name="run_app">Запустить приложение</string>
     <string name="climate_auto">Авто</string>
     <string name="status_notification_channel_name">Уведомления о состоянии климата</string>
+    <string name="activity_offset">Смещение изображения главного экрана</string>
+    <string name="layout_width">Ширина</string>
+    <string name="layout_height">Высота</string>
+    <string name="layout_margin_top">Смещение сверху</string>
+    <string name="layout_margin_left">Смещение слева</string>
+    <string name="one_hundred_to_keep">Оставьте 100 для растягивания на полный экран</string>
 </resources>

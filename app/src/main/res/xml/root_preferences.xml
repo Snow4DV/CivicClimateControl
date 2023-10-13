@@ -73,5 +73,45 @@
 </PreferenceCategory>
 
 
+    <PreferenceCategory app:title="@string/activity_offset"
+        app:summary="This is experimental feature if visible part of screen is smaller than screen itself">
+
+        <SeekBarPreference
+            app:title="@string/layout_margin_left"
+            app:showSeekBarValue="true"
+            app:key="activity_margin_left"
+            android:max="800"
+            app:min="0"
+            app:defaultValue="0"/>
+
+        <SeekBarPreference
+            app:title="@string/layout_margin_top"
+            app:showSeekBarValue="true"
+            app:key="activity_margin_top"
+            android:max="800"
+            app:min="0"
+            app:defaultValue="0"/>
+
+        <SeekBarPreference
+            app:title="@string/layout_width"
+            app:showSeekBarValue="true"
+            app:summary="@string/one_hundred_to_keep"
+            app:key="activity_width"
+            android:max="1600"
+            app:min="100"
+            app:defaultValue="100"/>
+
+        <SeekBarPreference
+            app:title="@string/layout_height"
+            app:summary="@string/one_hundred_to_keep"
+            app:showSeekBarValue="true"
+            app:key="activity_height"
+            android:max="1600"
+            app:min="100"
+            app:defaultValue="100"/>
+
+    </PreferenceCategory>
+
+
 
 </PreferenceScreen>

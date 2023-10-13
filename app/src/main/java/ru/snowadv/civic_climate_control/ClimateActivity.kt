@@ -1,5 +1,6 @@
 package ru.snowadv.civic_climate_control
 
+import android.app.ActionBar.LayoutParams
 import android.app.AlertDialog
 import android.content.BroadcastReceiver
 import android.content.ComponentName
@@ -9,14 +10,16 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
@@ -28,13 +31,13 @@ import ru.snowadv.civic_climate_control.adapter.AdapterState
 import ru.snowadv.civic_climate_control.databinding.ActivityClimateBinding
 import ru.snowadv.civic_climate_control.overlay.LayoutClimateOverlay
 import ru.snowadv.civic_climate_control.ui.AppListDialog
-import java.util.Objects
+
 
 class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceivedListener {
     private val TAG = "ClimateActivity"
     private val DONT_SHOW_NEW_DEVICE_DIALOG = true
     private var binding: ActivityClimateBinding? = null
-    private var settingsPreferences: SharedPreferences? = null
+    private lateinit var settingsPreferences: SharedPreferences
     private var notifierUtility: NotifierUtility? = null
     private var serviceConnectionAlive = false
     private var usbConnectedBroadcastReceiver: UsbConnectedBroadcastReceiver? = null
@@ -69,6 +72,46 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
         registerReceiver(usbConnectedBroadcastReceiver, filter)
     }
 
+
+    private fun setSizeAndMarginOfConstraintLayout() {
+        try {
+            val width = settingsPreferences.getInt("activity_width", 100)
+            val height = settingsPreferences.getInt("activity_height", 100)
+            val marginTop = settingsPreferences.getInt("activity_margin_top", 0)
+            val marginLeft = settingsPreferences.getInt("activity_margin_left", 0)
+
+            val widthDp = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                width.toFloat(),
+                resources.getDisplayMetrics()
+            ).toInt();
+            val heightDp = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                height.toFloat(),
+                resources.getDisplayMetrics()
+            ).toInt();
+            val marginLeftDp = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                marginTop.toFloat(),
+                resources.getDisplayMetrics()
+            ).toInt();
+            val marginRightDp = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                marginLeft.toFloat(),
+                resources.getDisplayMetrics()
+            ).toInt();
+
+
+            val params = FrameLayout.LayoutParams(
+                if (width != 100) widthDp else LayoutParams.MATCH_PARENT,
+                if (height != 100) heightDp else LayoutParams.MATCH_PARENT
+            )
+            params.setMargins(marginLeftDp, marginRightDp, 0, 0)
+            binding?.root?.layoutParams = params
+        } catch(exception: Exception) {
+            Log.e(TAG, "setSizeAndMarginOfConstraintLayout: unable to set res", exception)
+        }
+    }
     private fun saveDeviceToSettings(serializableUsbDevice: SerializableUsbDevice) {
         val edit = PreferenceManager.getDefaultSharedPreferences(this).edit()
         edit.putString("adapter_name", serializableUsbDevice.toJson())
@@ -76,12 +119,12 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
     }
 
     private fun initAdapterService() {
-        val prefManager = PreferenceManager.getDefaultSharedPreferences(this)
+
         try {
-            val adapterDevice = getStoredSerializableUsbDevice(prefManager)
+            val adapterDevice = getStoredSerializableUsbDevice(settingsPreferences)
             initAdapterService(adapterDevice)
         } catch (exception: JsonSyntaxException) {
-            prefManager.edit().remove("adapter_name").apply()
+            settingsPreferences.edit().remove("adapter_name").apply()
             initAdapterService(null)
         }
     }
@@ -110,6 +153,7 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
             initAdapterService()
         }
         changeOverlayServiceState(true)
+        setSizeAndMarginOfConstraintLayout()
     }
 
     override fun onPause() {
@@ -236,9 +280,11 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
                         if (newState.tempRightVisibility) View.VISIBLE else View.GONE
                     temp2.text = newState.tempRightString
 
-                    acOnGlyph.alpha = if (newState.acState == AdapterState.ACState.ON) 1.0f else 0.0f
+                    acOnGlyph.visibility =
+                        if (newState.acState == AdapterState.ACState.ON) View.VISIBLE else View.GONE
 
-                    acOffGlyph.alpha = if (newState.acState == AdapterState.ACState.OFF) 1.0f else 0.0f
+                    acOffGlyph.visibility =
+                        if (newState.acState == AdapterState.ACState.OFF) View.VISIBLE else View.GONE
 
                     autoGlyph.visibility = if (newState.acState == AdapterState.ACState.ON) View.VISIBLE else View.GONE
 
@@ -258,7 +304,7 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
         }
         Log.e(TAG, "onAdapterServiceStartOrFail: adapter service connection died")
         notifierUtility?.reportErrorInNotification(this, R.string.adapter_not_connected)
-        binding?.adapterStatusButton?.setImageResource(R.drawable.ic_disconnected)
+        binding?.root?.post { binding?.adapterStatusButton?.setImageResource(R.drawable.ic_disconnected) }
         serviceConnectionAlive = false
     }
 
