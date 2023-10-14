@@ -90,12 +90,12 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
                 height.toFloat(),
                 resources.getDisplayMetrics()
             ).toInt();
-            val marginLeftDp = TypedValue.applyDimension(
+            val marginTopDp = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 marginTop.toFloat(),
                 resources.getDisplayMetrics()
             ).toInt();
-            val marginRightDp = TypedValue.applyDimension(
+            val marginLeftDp = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 marginLeft.toFloat(),
                 resources.getDisplayMetrics()
@@ -106,7 +106,7 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
                 if (width != 100) widthDp else LayoutParams.MATCH_PARENT,
                 if (height != 100) heightDp else LayoutParams.MATCH_PARENT
             )
-            params.setMargins(marginLeftDp, marginRightDp, 0, 0)
+            params.setMargins(marginLeftDp, marginTopDp, 0, 0)
             binding?.root?.layoutParams = params
         } catch(exception: Exception) {
             Log.e(TAG, "setSizeAndMarginOfConstraintLayout: unable to set res", exception)
