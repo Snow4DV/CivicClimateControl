@@ -50,26 +50,6 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
         setContentView(rootView)
         initFields()
         initInterfaceListeners()
-        restartOverlayServiceIfNeeded()
-        val intent = intent
-        if (intent.action == "android.hardware.usb.action.USB_DEVICE_ATTACHED") {
-            val device = intent.getParcelableExtra<UsbDevice>(UsbManager.EXTRA_DEVICE)
-            Toast.makeText(
-                this, String.format(
-                    getString(R.string.set_default_device),
-                    device!!.productName
-                ), Toast.LENGTH_LONG
-            ).show()
-            val serializableUsbDevice = SerializableUsbDevice(device)
-            saveDeviceToSettings(serializableUsbDevice)
-            initAdapterService(serializableUsbDevice)
-        } else {
-            initAdapterService()
-        }
-        usbConnectedBroadcastReceiver = UsbConnectedBroadcastReceiver()
-        val filter = IntentFilter()
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED)
-        registerReceiver(usbConnectedBroadcastReceiver, filter)
     }
 
 
@@ -149,10 +129,6 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
 
     public override fun onResume() {
         super.onResume()
-        if (!serviceConnectionAlive) {
-            initAdapterService()
-        }
-        changeOverlayServiceState(true)
         setSizeAndMarginOfConstraintLayout()
     }
 
