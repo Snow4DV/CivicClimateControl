@@ -73,7 +73,8 @@ public class SerializableUsbDevice {
     public boolean equals(@Nullable Object obj) {
         if(obj instanceof SerializableUsbDevice) {
             SerializableUsbDevice device = (SerializableUsbDevice) obj;
-            return vendorId == device.getVendorId() && productId == device.getProductId();
+            return vendorId == device.getVendorId() && productId == device.getProductId()
+                    && productName.equals(device.getProductName());
         }
         return false;
     }
