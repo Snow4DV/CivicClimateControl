@@ -81,4 +81,10 @@
     <string name="layout_margin_top">Смещение сверху</string>
     <string name="layout_margin_left">Смещение слева</string>
     <string name="one_hundred_to_keep">Оставьте 100 для растягивания на полный экран</string>
+    <string name="companion_device">Компаньон</string>
+    <string name="activity_offset_experimental_feature">Это экспериментальная фитча для тех, у кого экран частично перекрыт</string>
+    <string name="companion_desc">Установите приложение-компаньон (нажмите для загрузки), сопрягите устройства через настройки, выберите bluetooth устройство в списке и включите сервис компаньона (тумблер ниже)</string>
+    <string name="select_companion_bt_device_from_the_list">Выберите BT устройство-компаньон</string>
+    <string name="companion_bluetooth_device">Bluetooth компаньон</string>
+    <string name="companion_summary">Это устройство будет хостом для компаньона, который подключится по блютузу</string>
 </resources>

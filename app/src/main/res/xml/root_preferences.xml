@@ -74,7 +74,7 @@
 
 
     <PreferenceCategory app:title="@string/activity_offset"
-        app:summary="This is experimental feature if visible part of screen is smaller than screen itself">
+        app:summary="@string/activity_offset_experimental_feature">
 
         <SeekBarPreference
             app:title="@string/layout_margin_left"
@@ -109,6 +109,24 @@
             android:max="1600"
             app:min="100"
             app:defaultValue="100"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/companion_device" app:isPreferenceVisible="false">
+
+        <Preference
+            android:key="companion_description"
+            android:title="@string/companion_desc"/>
+        <ListPreference
+            app:key="companion_mac_address"
+            app:defaultValue="00:11:22:33:FF:EE"
+            app:summary="@string/select_companion_bt_device_from_the_list"
+            app:title="@string/companion_bluetooth_device">
+        </ListPreference>
+        <SwitchPreferenceCompat
+            app:key="companion_enabled"
+            app:title="Enable companion service"
+            app:summary="@string/companion_summary"/>
 
     </PreferenceCategory>
 

@@ -105,5 +105,13 @@
     <string name="layout_margin_top">Layout margin top</string>
     <string name="layout_margin_left">Layout margin left</string>
     <string name="one_hundred_to_keep">100 is to keep match_parent</string>
+    <string name="companion_device">Companion</string>
+    <string name="activity_offset_experimental_feature">This is experimental feature if visible part of screen is smaller than screen itself</string>
+    <string name="companion_desc">Install companion app (click to download), pair devices together using settings, select bluetooth device from the list and enable companion service</string>
+    <string name="select_companion_bt_device_from_the_list">Select companion bt device from the list</string>
+    <string name="companion_bluetooth_device">Companion bluetooth device</string>
+    <string name="companion_summary">This device will act as a host for companion device that will connect over bt</string>
+    <string name="please_allow_bt_access">To connect to bluetooth companion device, you need to allow this application to access bluetooth devices</string>
+    <string name="unable_to_get_overlay_permission">Unable to get overlay permission</string>
 
 </resources>

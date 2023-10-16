@@ -77,11 +77,9 @@ public class LayoutClimateOverlay extends Service implements AdapterService.OnNe
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate: creating overlay service");
+
+
         notifierUtility = new NotifierUtility(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkIfServiceCanDrawOverlays()) {
-            Log.e(TAG, "onCreate: service cant draw overlay. stopping");
-            stop(this);
-        }
 
 
         params = new WindowManager.LayoutParams(
@@ -98,7 +96,19 @@ public class LayoutClimateOverlay extends Service implements AdapterService.OnNe
 
         initViewFields(layoutView);
 
-        windowManager.addView(layoutView, params);
+        boolean unableToDraw = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this);
+        try {
+            windowManager.addView(layoutView, params);
+        } catch(Exception exception) {
+            unableToDraw = true;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && unableToDraw) {
+            Log.e(TAG, "onCreate: no overlays permission. failing");
+            Toast.makeText(this, "Could not start overlay service: no overlay permission", Toast.LENGTH_LONG).show();
+            startNotification();
+            stopSelf();
+        }
 
         setHeightFromSharedPrefs();
 
