@@ -207,7 +207,7 @@ class SettingsActivity : AppCompatActivity() {
         override fun onResume() {
             super.onResume()
             updateDevicesList()
-            updateBluetoothDevicesList()
+            //updateBluetoothDevicesList()
         }
 
         private fun initListeners() {

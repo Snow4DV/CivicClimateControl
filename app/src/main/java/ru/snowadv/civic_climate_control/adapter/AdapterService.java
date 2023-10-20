@@ -153,12 +153,12 @@ public class AdapterService extends Service implements SerialInputOutputManager.
         }
 
 
-        ProbeTable adapterProbeTable = new ProbeTable();
+        ProbeTable adapterProbeTable = UsbSerialProber.getDefaultProbeTable();
 
         adapterProbeTable.addProduct(currentDevice.getVendorId(), currentDevice.getProductId(),
                 Ch34xSerialDriver.class); // TODO: add driver selection
 
-        UsbSerialProber prober = (true ? UsbSerialProber.getDefaultProber() : new UsbSerialProber(adapterProbeTable));
+        UsbSerialProber prober = (false ? UsbSerialProber.getDefaultProber() : new UsbSerialProber(adapterProbeTable));
 
         UsbSerialDriver usbSerialDriver = prober
                 .findAllDrivers(manager).stream()
@@ -339,6 +339,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
                 adapterState = gson.fromJson(buildingResponse.toString(), AdapterState.class);
             } catch(Exception ex) {
                 Log.e(TAG, "onNewData: communication failed when deserializing");
+                Log.e(TAG, buildingResponse.toString());
                 ex.printStackTrace();
             }
             sendStateToListeners(adapterState);

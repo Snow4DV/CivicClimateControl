@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import java.util.Objects;
+
 public class SerializableUsbDevice {
     private static final String TAG = "SerializableUsbDevice";
     private int vendorId;
@@ -51,8 +53,7 @@ public class SerializableUsbDevice {
 
     public static @Nullable SerializableUsbDevice fromJson(String json) {
         try {
-            SerializableUsbDevice serializableUsbDevice = gson.fromJson(json, SerializableUsbDevice.class);
-            return serializableUsbDevice;
+            return gson.fromJson(json, SerializableUsbDevice.class);
         } catch(JsonSyntaxException exception) {
             Log.e(TAG, "fromJson: error while parsing", exception);
             return null;
@@ -66,13 +67,12 @@ public class SerializableUsbDevice {
     }
 
     public boolean isDescribingUsbDevice(UsbDevice device) {
-        return vendorId == device.getVendorId() && productId == device.getProductId();
+        return vendorId == device.getVendorId() && productId == device.getProductId() && Objects.equals(productName, device.getProductName());
     }
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if(obj instanceof SerializableUsbDevice) {
-            SerializableUsbDevice device = (SerializableUsbDevice) obj;
+        if(obj instanceof SerializableUsbDevice device) {
             return vendorId == device.getVendorId() && productId == device.getProductId()
                     && productName.equals(device.getProductName());
         }
