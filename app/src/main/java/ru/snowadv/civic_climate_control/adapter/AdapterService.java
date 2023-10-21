@@ -158,7 +158,7 @@ public class AdapterService extends Service implements SerialInputOutputManager.
         adapterProbeTable.addProduct(currentDevice.getVendorId(), currentDevice.getProductId(),
                 Ch34xSerialDriver.class); // TODO: add driver selection
 
-        UsbSerialProber prober = (false ? UsbSerialProber.getDefaultProber() : new UsbSerialProber(adapterProbeTable));
+        UsbSerialProber prober = (true ? UsbSerialProber.getDefaultProber() : new UsbSerialProber(adapterProbeTable));
 
         UsbSerialDriver usbSerialDriver = prober
                 .findAllDrivers(manager).stream()

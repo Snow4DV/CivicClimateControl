@@ -73,6 +73,7 @@
     <string name="show_climate_status_through_notifications">Показывать состояние климата в уведомлениях</string>
     <string name="notifications_summary">Производительность лучше, но менее интуитивно (отправляет состояние климата в уведомлениях)</string>
     <string name="run_app">Запустить приложение</string>
+    <string name="fan_down_windshield">dsa</string>
     <string name="climate_auto">Авто</string>
     <string name="status_notification_channel_name">Уведомления о состоянии климата</string>
     <string name="activity_offset">Смещение изображения главного экрана</string>

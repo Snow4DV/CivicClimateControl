@@ -33,7 +33,9 @@ data class AdapterState(
     enum class FanDirection(val resourceId: Int, val stringId: Int) {
         NONE(R.drawable.ic_fan_dir_none, R.string.climate_none), UP(R.drawable.ic_fan_dir_up, R.string.fan_up), DOWN(R.drawable.ic_fan_dir_down, R.string.fan_down),
         UP_DOWN(R.drawable.ic_fan_dir_up_down, R.string.fan_up_and_down), DOWN_WINDSHIELD(R.drawable.ic_fan_dir_down_windshield, R.string.fan_down_windshield),
-        WINDSHIELD(R.drawable.ic_fan_dir_windshield, R.string.fan_windshield);
+        WINDSHIELD(R.drawable.ic_fan_dir_windshield, R.string.fan_windshield), UP_UPPER(R.drawable.ic_fan_dir_up_upper, R.string.fan_up_upper),
+        DOWN_UPPER(R.drawable.ic_fan_dir_down_upper, R.string.fan_down_upper), UP_DOWN_UPPER(R.drawable.ic_fan_dir_up_down_upper, R.string.fan_up_down_upper),
+        UPPER(R.drawable.ic_fan_dir_upper, R.string.fan_upper);
 
     }
 
@@ -53,6 +55,10 @@ data class AdapterState(
             3 -> FanDirection.DOWN
             4 -> FanDirection.DOWN_WINDSHIELD
             5 -> FanDirection.WINDSHIELD
+            6 -> FanDirection.UPPER
+            7 -> FanDirection.DOWN_UPPER
+            8 -> FanDirection.UP_UPPER
+            9 -> FanDirection.UP_DOWN_UPPER
             else -> FanDirection.NONE
         }
     val fanLevel: FanLevel

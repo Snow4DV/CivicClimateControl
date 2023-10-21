@@ -80,8 +80,14 @@
     <string name="climate_none" translatable="false">-</string>
     <string name="fan_down" translatable="false">↓</string>
     <string name="fan_up_and_down" translatable="false">↓→</string>
-    <string name="fan_down_windshield" translatable="false">[↑↓]️</string>
-    <string name="fan_windshield" translatable="false">[↑]</string>
+    <string name="fan_down_windshield" translatable="false">W↓️</string>
+    <string name="fan_windshield" translatable="false">W</string>
+
+    <string name="fan_up_down_upper" translatable="false">↑↓→</string>
+    <string name="fan_up_upper" translatable="false">↑→</string>
+    <string name="fan_down_upper" translatable="false">↓↑</string>
+    <string name="fan_upper" translatable="false">↑</string>
+
     <string name="ac" translatable="false">AC</string>
     <string name="climate_auto">AUTO</string>
     <string name="climate_on">on</string>
