@@ -121,5 +121,6 @@
     <string name="unable_to_get_overlay_permission">Unable to get overlay permission</string>
     <string name="adapter_driver">Adapter\'s driver</string>
     <string name="change_only_if_vid_pid_are_changed">Change only if VID/PID are changed</string>
+    <string name="fan_dir_auto" translatable="false">A</string>
 
 </resources>

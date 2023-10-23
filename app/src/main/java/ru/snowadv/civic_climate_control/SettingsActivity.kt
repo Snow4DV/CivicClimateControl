@@ -227,7 +227,7 @@ class SettingsActivity : AppCompatActivity() {
         private fun askAndOpenFlashActivity(): Boolean {
             activity?.let { activity ->
                 val builder = AlertDialog.Builder(
-                    activity.applicationContext
+                    requireContext()
                 )
                 if (!isAdapterConnected) {
                     builder.setMessage(R.string.please_choose_adapter)
