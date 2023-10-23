@@ -1,0 +1,10 @@
+<resources>
+    <string-array name="driver_entries" >
+        <item>По умолчанию</item>
+        <item>CdcAcm</item>
+        <item>CH34x (CH340 и тд)</item>
+        <item>CP21xx (CP2102 и тд)</item>
+        <item>FTDI</item>
+        <item>Prolific</item>
+    </string-array>
+</resources>

@@ -9,4 +9,20 @@
         <item>reply</item>
         <item>reply_all</item>
     </string-array>
+    <string-array name="driver_entries" >
+        <item>Default</item>
+        <item>CdcAcm</item>
+        <item>CH34x (CH340 and etc)</item>
+        <item>CP21xx (CP2102 and etc)</item>
+        <item>FTDI</item>
+        <item>Prolific</item>
+    </string-array>
+    <string-array name="driver_values" >
+        <item>default</item>
+        <item>cdcacm</item>
+        <item>ch34x</item>
+        <item>cp21xx</item>
+        <item>ftdi</item>
+        <item>prolific</item>
+    </string-array>
 </resources>

@@ -119,5 +119,7 @@
     <string name="companion_summary">This device will act as a host for companion device that will connect over bt</string>
     <string name="please_allow_bt_access">To connect to bluetooth companion device, you need to allow this application to access bluetooth devices</string>
     <string name="unable_to_get_overlay_permission">Unable to get overlay permission</string>
+    <string name="adapter_driver">Adapter\'s driver</string>
+    <string name="change_only_if_vid_pid_are_changed">Change only if VID/PID are changed</string>
 
 </resources>

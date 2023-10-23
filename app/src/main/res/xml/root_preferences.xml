@@ -10,6 +10,16 @@
             app:title="@string/current_adapter_device">
         </ListPreference>
 
+
+        <ListPreference
+            app:key="adapter_driver"
+            android:entries="@array/driver_entries"
+            android:entryValues="@array/driver_values"
+            app:defaultValue="default"
+            app:summary="@string/change_only_if_vid_pid_are_changed"
+            app:title="@string/adapter_driver">
+        </ListPreference>
+
         <Preference
             app:selectable="true"
             app:enabled="true"

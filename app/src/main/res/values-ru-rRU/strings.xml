@@ -73,7 +73,6 @@
     <string name="show_climate_status_through_notifications">Показывать состояние климата в уведомлениях</string>
     <string name="notifications_summary">Производительность лучше, но менее интуитивно (отправляет состояние климата в уведомлениях)</string>
     <string name="run_app">Запустить приложение</string>
-    <string name="fan_down_windshield">dsa</string>
     <string name="climate_auto">Авто</string>
     <string name="status_notification_channel_name">Уведомления о состоянии климата</string>
     <string name="activity_offset">Смещение изображения главного экрана</string>
@@ -88,4 +87,10 @@
     <string name="select_companion_bt_device_from_the_list">Выберите BT устройство-компаньон</string>
     <string name="companion_bluetooth_device">Bluetooth компаньон</string>
     <string name="companion_summary">Это устройство будет хостом для компаньона, который подключится по блютузу</string>
+    <string name="please_allow_bt_access">Для подключения по bluetooth дайте приложению доступ</string>
+
+
+    <string name="unable_to_get_overlay_permission">Не удалось получить разрешение на отрисовку оверлея</string>
+    <string name="adapter_driver">Драйвер адаптера</string>
+    <string name="change_only_if_vid_pid_are_changed">Меняйте только если VID/PID нестандартные</string>
 </resources>

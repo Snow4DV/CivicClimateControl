@@ -20,8 +20,12 @@ import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
 import com.google.gson.Gson;
+import com.hoho.android.usbserial.driver.CdcAcmSerialDriver;
 import com.hoho.android.usbserial.driver.Ch34xSerialDriver;
+import com.hoho.android.usbserial.driver.Cp21xxSerialDriver;
+import com.hoho.android.usbserial.driver.FtdiSerialDriver;
 import com.hoho.android.usbserial.driver.ProbeTable;
+import com.hoho.android.usbserial.driver.ProlificSerialDriver;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
 import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
@@ -153,12 +157,9 @@ public class AdapterService extends Service implements SerialInputOutputManager.
         }
 
 
-        ProbeTable adapterProbeTable = UsbSerialProber.getDefaultProbeTable();
 
-        adapterProbeTable.addProduct(currentDevice.getVendorId(), currentDevice.getProductId(),
-                Ch34xSerialDriver.class); // TODO: add driver selection
-
-        UsbSerialProber prober = (true ? UsbSerialProber.getDefaultProber() : new UsbSerialProber(adapterProbeTable));
+        ProbeTable adapterProbeTable = getProbeTableFromPreferences(this);
+        UsbSerialProber prober = new UsbSerialProber(adapterProbeTable);
 
         UsbSerialDriver usbSerialDriver = prober
                 .findAllDrivers(manager).stream()
@@ -190,6 +191,39 @@ public class AdapterService extends Service implements SerialInputOutputManager.
         }
 
 
+    }
+
+    private ProbeTable getProbeTableFromPreferences(Context context) {
+        String driver = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString("adapter_driver", "default");
+
+        Class<? extends UsbSerialDriver> driverClass = null;
+        switch(driver) {
+            case "cdcacm":
+                driverClass = CdcAcmSerialDriver.class;
+                break;
+            case "ch34x":
+                driverClass = Ch34xSerialDriver.class;
+                break;
+            case "cp21xx":
+                driverClass = Cp21xxSerialDriver.class;
+                break;
+            case "ftdi":
+                driverClass = FtdiSerialDriver.class;
+                break;
+            case "prolific":
+                driverClass = ProlificSerialDriver.class;
+                break;
+        }
+
+        if(driverClass == null) {
+            return UsbSerialProber.getDefaultProbeTable();
+        } else {
+            ProbeTable probeTable = new ProbeTable();
+            probeTable.addProduct(currentDevice.getVendorId(), currentDevice.getProductId(),
+                    driverClass);
+            return probeTable;
+        }
     }
 
     private int registerListener(OnNewStateReceivedListener listener) {
