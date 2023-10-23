@@ -96,7 +96,7 @@ public class NotificationClimateOverlay extends Service implements AdapterServic
     @Override
     public void onNewAdapterStateReceived(AdapterState newState) { // it runs in service's thread
         if(lastState == null || !lastState.equals(newState)) {
-            notifierUtility.showNewStatus(this, newState.toDisplayStringWithoutMode(this), newState.getFanDirection().getResourceId());
+            notifierUtility.showNewStatus(this, newState.toDisplayString(this, false), newState.getFanDirection().getResourceId());
             lastState = newState;
         }
     }

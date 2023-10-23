@@ -286,7 +286,7 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
                     acOffGlyph.visibility =
                         if (newState.acState == AdapterState.ACState.OFF) View.VISIBLE else View.GONE
 
-                    autoGlyph.visibility = if (newState.acState == AdapterState.ACState.ON) View.VISIBLE else View.GONE
+                    autoGlyph.visibility = if (newState.auto) View.VISIBLE else View.GONE
 
                     fanSpeed.setImageResource(newState.fanLevel.resourceId)
 

@@ -35,8 +35,7 @@ data class AdapterState(
         UP_DOWN(R.drawable.ic_fan_dir_up_down, R.string.fan_up_and_down), DOWN_WINDSHIELD(R.drawable.ic_fan_dir_down_windshield, R.string.fan_down_windshield),
         WINDSHIELD(R.drawable.ic_fan_dir_windshield, R.string.fan_windshield), UP_UPPER(R.drawable.ic_fan_dir_up_upper, R.string.fan_up_upper),
         DOWN_UPPER(R.drawable.ic_fan_dir_down_upper, R.string.fan_down_upper), UP_DOWN_UPPER(R.drawable.ic_fan_dir_up_down_upper, R.string.fan_up_down_upper),
-        UPPER(R.drawable.ic_fan_dir_upper, R.string.fan_upper);
-
+        UPPER(R.drawable.ic_fan_dir_upper, R.string.fan_upper), AUTO(R.drawable.ic_fan_dir_auto, R.string.fan_dir_auto)
     }
 
     val acState: ACState
@@ -59,6 +58,7 @@ data class AdapterState(
             7 -> FanDirection.DOWN_UPPER
             8 -> FanDirection.UP_UPPER
             9 -> FanDirection.UP_DOWN_UPPER
+            10 -> FanDirection.AUTO
             else -> FanDirection.NONE
         }
     val fanLevel: FanLevel
@@ -93,20 +93,14 @@ data class AdapterState(
     val tempLeftVisibility: Boolean
         get() = tempLeft != -1 && tempLeft != 78 && tempLeft != 79
 
-    fun toDisplayString(context: Context): String {
-        return "${if (tempLeftVisibility) "[$tempLeftString] | " else ""}${context.getString(R.string.mode)}: ${context.getString(fanDirection.stringId)} |" +
-                " ${context.getString(R.string.fan)}: ${context.getString(fanLevel.stringValueId)} | ${if (tempRightVisibility) " | [$tempRightString]" else ""}"
+    fun toDisplayString(context: Context, includeMode: Boolean = true): String {
+        val state = listOfNotNull(
+            if (tempLeftVisibility) tempLeftString else null,
+            if (includeMode) ("${context.getString(R.string.mode)}: ${context.getString(fanDirection.stringId)}") else null,
+            if (fanLevel != FanLevel.LEVEL_0) "${context.getString(R.string.fan)}: ${context.getString(fanLevel.stringValueId)}" else null,
+            if (tempRightVisibility) tempRightString else null,
+            if (auto) R.string.climate_auto else null
+        )
+        return state.joinToString(" | ")
     }
-
-
-    fun toDisplayStringWithoutMode(context: Context): String {
-        return "${if (tempLeftVisibility) "[$tempLeftString] | " else ""} |" +
-                " ${if(fanLevel != FanLevel.LEVEL_0) context.getString(R.string.fan) else ""}: ${context.getString(fanLevel.stringValueId)} | ${if (acState != ACState.HIDDEN) "${context.getString(R.string.ac)}: ${context.getString(acState.displayStringId)}" else if(auto) context.getString(R.string.climate_auto) else ""}${if (tempRightVisibility) " | [$tempRightString]" else ""}"
-    }
-
-    override fun toString(): String {
-        return "AdapterState(fanLevelRaw=$fanLevelRaw, tempLeft=$tempLeft, tempRight=$tempRight, fanDirectionRaw=$fanDirectionRaw, acRaw=$acRaw, autoRaw=$auto, acState=$acState, fanDirection=$fanDirection, fanLevel=$fanLevel, tempLeftString='$tempLeftString', tempRightString='$tempRightString', tempRightVisibility=$tempRightVisibility, tempLeftVisibility=$tempLeftVisibility)"
-    }
-
-
 }
