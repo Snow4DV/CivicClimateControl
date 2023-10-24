@@ -105,6 +105,7 @@
     <string name="fan_5" translatable="false">▂▃▄▅▆▁▁</string>
     <string name="fan_6" translatable="false">▂▃▄▅▆▇▁</string>
     <string name="fan_7" translatable="false">▂▃▄▅▆▇█</string>
+    <string name="fan_auto" translatable="false">▁AUTO▁▁</string>
     <string name="activity_offset">Activity offset</string>
     <string name="layout_width">Layout width</string>
     <string name="layout_height">Layout height</string>

@@ -26,7 +26,8 @@ data class AdapterState(
         LEVEL_0(R.drawable.ic_fan_speed_0, R.string.fan_0), LEVEL_1(R.drawable.ic_fan_speed_1, R.string.fan_1),
         LEVEL_2(R.drawable.ic_fan_speed_2, R.string.fan_2), LEVEL_3(R.drawable.ic_fan_speed_3, R.string.fan_3),
         LEVEL_4(R.drawable.ic_fan_speed_4, R.string.fan_4), LEVEL_5(R.drawable.ic_fan_speed_5, R.string.fan_5),
-        LEVEL_6(R.drawable.ic_fan_speed_6, R.string.fan_6), LEVEL_7(R.drawable.ic_fan_speed_7, R.string.fan_7);
+        LEVEL_6(R.drawable.ic_fan_speed_6, R.string.fan_6), LEVEL_7(R.drawable.ic_fan_speed_7, R.string.fan_7),
+        AUTO(R.drawable.ic_fan_speed_auto, R.string.fan_auto)
 
     }
 
@@ -63,6 +64,7 @@ data class AdapterState(
         }
     val fanLevel: FanLevel
         get() = when (fanLevelRaw) {
+            -1 -> FanLevel.AUTO
             0 -> FanLevel.LEVEL_0
             1 -> FanLevel.LEVEL_1
             2 -> FanLevel.LEVEL_2
