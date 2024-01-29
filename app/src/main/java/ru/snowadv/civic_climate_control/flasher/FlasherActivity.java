@@ -17,13 +17,22 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+
+import com.google.gson.Gson;
+
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Collection;
+import java.util.List;
+
+import javax.xml.transform.Result;
 
 import ArduinoUploader.ArduinoSketchUploader;
 import ArduinoUploader.Config.Arduino;
@@ -37,11 +46,10 @@ import ru.snowadv.civic_climate_control.databinding.ActivityFlasherBinding;
 public class FlasherActivity extends AppCompatActivity {
 
     public static final String TAG = FlasherActivity.class.getSimpleName();
-
     private UsbDevice currentDevice;
-
     private ActivityFlasherBinding binding;
     private String deviceKeyName;
+
 
     private final BroadcastReceiver mUsbNotifyReceiver = new BroadcastReceiver() {
         @Override
@@ -223,11 +231,60 @@ public class FlasherActivity extends AppCompatActivity {
 
     private String getFirmwareDownloadLink(Boards board) {
         boolean isMaster = binding.masterCheckbox.isChecked();
-        return String.format("https://github.com/Snow4DV/civic-adapter-platformio/releases/" +
-                "latest/download/%s-%s.hex", isMaster ? "MASTER" : "SLAVE", board.toString());
+        boolean isPreRelease = binding.preReleaseCheckbox.isChecked();
+        String tag = (isPreRelease) ? getLatestPreReleaseTag("Snow4DV", "civic-adapter-platformio")
+                : "latest";
+        return String.format(isPreRelease ? "https://github.com/Snow4DV/civic-adapter-platformio/releases/download/%s/%s-%s.hex" : "https://github.com/Snow4DV/civic-adapter-platformio/releases/" +
+                "%s/download/%s-%s.hex", tag, isMaster ? "MASTER" : "SLAVE", board.toString());
+    }
+
+    public static String getLatestPreReleaseTag(String owner, String repo)  {
+        try {
+            String apiUrl = "https://api.github.com/repos/" + owner + "/" + repo + "/releases";
+
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/json");
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+
+                reader.close();
+
+                Gson gson = new Gson();
+                GitHubRelease[] releases = gson.fromJson(response.toString(), GitHubRelease[].class);
+
+                for (GitHubRelease release : releases) {
+                    if (release.prerelease) {
+                        return release.tag_name;
+                    }
+                }
+
+                System.out.println("No pre-release tag found.");
+                return null;
+            } else {
+                System.out.println("Failed to fetch GitHub releases. Status code: " + responseCode);
+                return null;
+            }
+        } catch(IOException exception) {
+            return null;
+        }
     }
 
 
+    class GitHubRelease {
+        String tag_name;
+        boolean prerelease;
+    }
 
 
 }

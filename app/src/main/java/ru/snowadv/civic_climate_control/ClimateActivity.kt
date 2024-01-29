@@ -33,14 +33,10 @@ import ru.snowadv.civic_climate_control.overlay.LayoutClimateOverlay
 import ru.snowadv.civic_climate_control.ui.AppListDialog
 
 
-class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceivedListener {
-    private val TAG = "ClimateActivity"
-    private val DONT_SHOW_NEW_DEVICE_DIALOG = true
+class ClimateActivity : AbstractServiceConnectedActivity() {
+    override val TAG = "ClimateActivity"
     private var binding: ActivityClimateBinding? = null
-    private lateinit var settingsPreferences: SharedPreferences
     private var notifierUtility: NotifierUtility? = null
-    private var serviceConnectionAlive = false
-    private var usbConnectedBroadcastReceiver: UsbConnectedBroadcastReceiver? = null
     private var rootView: View? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,28 +44,8 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
         hideTitleAndNotificationBars()
         rootView = initViewBinding()
         setContentView(rootView)
-        initFields()
         initInterfaceListeners()
         restartOverlayServiceIfNeeded()
-        val intent = intent
-        if (intent.action == "android.hardware.usb.action.USB_DEVICE_ATTACHED") {
-            val device = intent.getParcelableExtra<UsbDevice>(UsbManager.EXTRA_DEVICE)
-            Toast.makeText(
-                this, String.format(
-                    getString(R.string.set_default_device),
-                    device!!.productName
-                ), Toast.LENGTH_LONG
-            ).show()
-            val serializableUsbDevice = SerializableUsbDevice(device)
-            saveDeviceToSettings(serializableUsbDevice)
-            initAdapterService(serializableUsbDevice)
-        } else {
-            initAdapterService()
-        }
-        usbConnectedBroadcastReceiver = UsbConnectedBroadcastReceiver()
-        val filter = IntentFilter()
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED)
-        registerReceiver(usbConnectedBroadcastReceiver, filter)
     }
 
 
@@ -112,46 +88,9 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
             Log.e(TAG, "setSizeAndMarginOfConstraintLayout: unable to set res", exception)
         }
     }
-    private fun saveDeviceToSettings(serializableUsbDevice: SerializableUsbDevice) {
-        val edit = PreferenceManager.getDefaultSharedPreferences(this).edit()
-        edit.putString("adapter_name", serializableUsbDevice.toJson())
-        edit.apply()
-    }
 
-    private fun initAdapterService() {
-
-        try {
-            val adapterDevice = getStoredSerializableUsbDevice(settingsPreferences)
-            initAdapterService(adapterDevice)
-        } catch (exception: JsonSyntaxException) {
-            settingsPreferences.edit().remove("adapter_name").apply()
-            initAdapterService(null)
-        }
-    }
-
-    private fun getStoredSerializableUsbDevice(prefManager: SharedPreferences): SerializableUsbDevice? {
-        val adapterDeviceJson = prefManager.getString("adapter_name", null)
-        return SerializableUsbDevice.fromJson(adapterDeviceJson)
-    }
-
-    private val storedSerializableUsbDevice: SerializableUsbDevice?
-        private get() = getStoredSerializableUsbDevice(
-            PreferenceManager.getDefaultSharedPreferences(
-                this
-            )
-        )
-
-    private fun initAdapterService(adapterDevice: SerializableUsbDevice?) {
-        adapterDevice?.let { AdapterService.getAccessAndBindService(this, it, this) }
-            ?: Toast.makeText(this,
-                R.string.set_device_please, Toast.LENGTH_LONG).show()
-    }
-
-    public override fun onResume() {
+    override fun onResume() {
         super.onResume()
-        if (!serviceConnectionAlive) {
-            initAdapterService()
-        }
         changeOverlayServiceState(true)
         setSizeAndMarginOfConstraintLayout()
     }
@@ -165,7 +104,7 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
         binding = ActivityClimateBinding.inflate(
             layoutInflater
         )
-        return binding!!.root
+        return binding?.root ?: throw IllegalStateException("Binding doesn't have root view")
     }
 
     private fun restartOverlayServiceIfNeeded() {
@@ -173,20 +112,9 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
         climateAutoStart.onReceive(this, this.intent)
     }
 
-    private fun initFields() {
-        settingsPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-    }
-
-    override fun onDestroy() {
-        if (usbConnectedBroadcastReceiver != null) {
-            unregisterReceiver(usbConnectedBroadcastReceiver)
-        }
-        super.onDestroy()
-    }
-
     private fun initInterfaceListeners() {
-        binding?.settingsButton?.setOnClickListener { view: View? -> openSettingsActivity() }
-        binding?.adapterStatusButton?.setOnClickListener { view: View? ->
+        binding?.settingsButton?.setOnClickListener { openSettingsActivity() }
+        binding?.adapterStatusButton?.setOnClickListener {
             restartServiceDialog(
                 serviceConnectionAlive
             )
@@ -235,31 +163,18 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
     }
 
     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-        val binder = if (service is AdapterBinder) service else null
-        binder?.let {
-            binder.registerListener(this)
-            binding?.adapterStatusButton?.setImageResource(R.drawable.ic_connected)
-            serviceConnectionAlive = true
-        } ?: run {
-            Log.e(TAG, "onAdapterServiceStartOrFail: adapter service connection failed")
-            notifierUtility?.reportErrorInNotification(this, R.string.adapter_not_connected)
-            Toast.makeText(this, getString(R.string.connection_failed), Toast.LENGTH_SHORT)
-                .show()
-        }
+        super.onServiceConnected(name, service)
+        binding?.adapterStatusButton?.setImageResource(R.drawable.ic_connected)
     }
 
     override fun onServiceDisconnected(name: ComponentName) {
-        Log.e(TAG, "onAdapterServiceStartOrFail: adapter service connection died")
-        notifierUtility?.reportErrorInNotification(this, R.string.adapter_not_connected)
+        super.onServiceDisconnected(name)
         binding?.adapterStatusButton?.setImageResource(R.drawable.ic_disconnected)
-        serviceConnectionAlive = false
     }
 
     override fun onBindingDied(name: ComponentName) {
-        Log.e(TAG, "onAdapterServiceStartOrFail: adapter service connection's binding died")
-        notifierUtility!!.reportErrorInNotification(this, R.string.adapter_not_connected)
-        binding!!.adapterStatusButton.setImageResource(R.drawable.ic_disconnected)
-        serviceConnectionAlive = false
+        super.onBindingDied(name)
+        binding?.adapterStatusButton?.setImageResource(R.drawable.ic_disconnected)
     }
 
     override fun onNewAdapterStateReceived(newState: AdapterState) { // it runs in service's thread
@@ -297,56 +212,11 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
     }
 
     override fun onAdapterDisconnected() {
-        try {
-            unbindService(this)
-        } catch (exception: IllegalArgumentException) {
-            Log.e(TAG, "onAdapterDisconnected: tried to unbind service, but it is already dead")
-        }
-        Log.e(TAG, "onAdapterServiceStartOrFail: adapter service connection died")
-        notifierUtility?.reportErrorInNotification(this, R.string.adapter_not_connected)
+        super.onAdapterDisconnected()
         binding?.root?.post { binding?.adapterStatusButton?.setImageResource(R.drawable.ic_disconnected) }
-        serviceConnectionAlive = false
     }
 
-    inner class UsbConnectedBroadcastReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val action = intent.action
-            if (UsbManager.ACTION_USB_DEVICE_ATTACHED == action) {
-                val device =
-                    SerializableUsbDevice(intent.getParcelableExtra(UsbManager.EXTRA_DEVICE))
-                if (device == storedSerializableUsbDevice) {
-                    initAdapterService(device)
-                } else {
-                    offerToSetNewUsbDevice(device)
-                }
-            }
-        }
-    }
 
-    private fun offerToSetNewUsbDevice(device: SerializableUsbDevice) {
-        if (DONT_SHOW_NEW_DEVICE_DIALOG) {
-            return
-        }
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle(R.string.device_detected)
-            .setMessage(
-                String.format(
-                    getString(R.string.set_new_device_as_default),
-                    device.productName
-                )
-            )
-            .setPositiveButton(android.R.string.yes) { dialog: DialogInterface?, which: Int ->
-                if (serviceConnectionAlive) {
-                    val myService = Intent(
-                        this@ClimateActivity,
-                        AdapterService::class.java
-                    )
-                    stopService(myService)
-                }
-                saveDeviceToSettings(device)
-                initAdapterService(device)
-            }
-            .setNegativeButton(android.R.string.no) { dialog: DialogInterface?, which: Int -> }
-        builder.create().show()
-    }
+
+
 }

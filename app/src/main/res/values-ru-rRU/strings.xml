@@ -93,4 +93,6 @@
     <string name="unable_to_get_overlay_permission">Не удалось получить разрешение на отрисовку оверлея</string>
     <string name="adapter_driver">Драйвер адаптера</string>
     <string name="change_only_if_vid_pid_are_changed">Меняйте только если VID/PID нестандартные</string>
+    <string name="about_car">О машине</string>
+    <string name="pre_release">Предв. релиз</string>
 </resources>

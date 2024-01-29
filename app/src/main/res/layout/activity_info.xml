@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:clickable="false"
+    android:background="@drawable/blue_gradient_dark"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ListView
+        android:id="@+id/car_params_list_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_panel"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        app:layout_constraintHeight="percent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+
+        android:id="@+id/bottom_panel"
+        app:layout_constraintHeight_percent=".2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/ic_bottom_separator">
+
+        <ImageView
+            android:id="@+id/windshield_heating"
+            android:layout_width="0dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="10dp"
+            android:src="@drawable/ic_fan_dir_windshield"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight="percent"
+            app:layout_constraintHeight_percent=".78"
+            app:layout_constraintWidth="percent"
+            app:layout_constraintWidth_percent=".12"
+            app:tint="@color/white" />
+
+        <TextView
+            android:text="@string/about_car"
+            android:id="@+id/auto_glyph"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:paddingHorizontal="50dp"
+
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth="percent"
+            app:layout_constraintWidth_percent="0.33"
+
+            tools:targetApi="o"
+
+            android:gravity="center"
+            android:maxLines="1"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight="percent"
+            app:layout_constraintHorizontal_bias="0.538"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="10sp"
+            app:autoSizeMaxTextSize="260sp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

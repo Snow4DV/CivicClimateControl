@@ -123,5 +123,7 @@
     <string name="adapter_driver">Adapter\'s driver</string>
     <string name="change_only_if_vid_pid_are_changed">Change only if VID/PID are changed</string>
     <string name="fan_dir_auto" translatable="false">A</string>
+    <string name="about_car">About car</string>
+    <string name="pre_release">Pre-release</string>
 
 </resources>

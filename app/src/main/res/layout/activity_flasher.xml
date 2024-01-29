@@ -30,6 +30,17 @@
 
 
     <CheckBox
+        android:id="@+id/pre_release_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pre_release"
+        android:checked="true"
+        app:layout_constraintLeft_toRightOf="@id/master_checkbox"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+
+        android:padding="5dp"/>
+    <CheckBox
         android:id="@+id/master_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,7 +59,7 @@
         android:paddingVertical="5dp"
         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/master_checkbox"
+        app:layout_constraintLeft_toRightOf="@id/pre_release_checkbox"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/buttonFlash"
         >
