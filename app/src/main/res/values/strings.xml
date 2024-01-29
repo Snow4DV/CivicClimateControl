@@ -123,5 +123,7 @@
     <string name="adapter_driver">Adapter\'s driver</string>
     <string name="change_only_if_vid_pid_are_changed">Change only if VID/PID are changed</string>
     <string name="fan_dir_auto" translatable="false">A</string>
+    <string name="make_main_screen_red">Make main activity red</string>
+    <string name="main_screen_red_description">This setting changes color of main screen to red</string>
 
 </resources>

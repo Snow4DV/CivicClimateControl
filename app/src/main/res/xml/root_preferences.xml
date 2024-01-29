@@ -120,6 +120,10 @@
             app:min="100"
             app:defaultValue="100"/>
 
+        <SwitchPreferenceCompat
+            app:key="red_activity"
+            app:title="@string/make_main_screen_red"
+            app:summary="@string/main_screen_red_description"/>
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/companion_device" app:isPreferenceVisible="false">

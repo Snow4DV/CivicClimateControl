@@ -93,4 +93,6 @@
     <string name="unable_to_get_overlay_permission">Не удалось получить разрешение на отрисовку оверлея</string>
     <string name="adapter_driver">Драйвер адаптера</string>
     <string name="change_only_if_vid_pid_are_changed">Меняйте только если VID/PID нестандартные</string>
+    <string name="make_main_screen_red">Сделать главный экран красным</string>
+    <string name="main_screen_red_description">Эта настройка меняет синий цвет главной активности на красный</string>
 </resources>

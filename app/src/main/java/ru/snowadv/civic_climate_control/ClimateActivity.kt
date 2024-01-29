@@ -10,7 +10,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.content.SharedPreferences
-import android.content.res.Resources
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 import android.os.Bundle
@@ -22,6 +21,7 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.google.gson.JsonSyntaxException
 import ru.snowadv.civic_climate_control.adapter.AdapterService
@@ -70,6 +70,15 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
         val filter = IntentFilter()
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED)
         registerReceiver(usbConnectedBroadcastReceiver, filter)
+    }
+
+    private fun setGradientToConfigured() {
+        val gradIsRed = settingsPreferences.getBoolean("red_activity", false)
+        if(gradIsRed) {
+            binding?.root?.background = ContextCompat.getDrawable(this, R.drawable.red_gradient)
+        } else {
+            binding?.root?.background = ContextCompat.getDrawable(this, R.drawable.blue_gradient)
+        }
     }
 
 
@@ -154,6 +163,7 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
         }
         changeOverlayServiceState(true)
         setSizeAndMarginOfConstraintLayout()
+        setGradientToConfigured()
     }
 
     override fun onPause() {
@@ -349,4 +359,6 @@ class ClimateActivity : AppCompatActivity(), ServiceConnection, OnNewStateReceiv
             .setNegativeButton(android.R.string.no) { dialog: DialogInterface?, which: Int -> }
         builder.create().show()
     }
+
+
 }
